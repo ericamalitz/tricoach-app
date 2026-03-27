@@ -1119,29 +1119,33 @@ async function submitLog() {
   var startDate = P.start_date ? new Date(P.start_date) : TODAY;
   var daysSinceStart = Math.floor((TODAY - startDate) / 86400000);
   var weekNum = daysSinceStart < 0 ? 1 : Math.floor(daysSinceStart / 7) + 1;
+  var feeling = selectedFeeling || 'ok'; // default so DB never gets null
+  var actualDur = document.getElementById('log-duration').value.trim();
+  var note = document.getElementById('log-note').value.trim();
   try {
     await apiPost('/api/workout', {
       week: weekNum,
       day: DAYS[TODAY.getDay()],
-      sport: currentLogSession.sport,
-      planned_title: currentLogSession.title,
-      planned_duration: currentLogSession.duration,
-      actual_duration: document.getElementById('log-duration').value.trim(),
-      feeling: selectedFeeling,
-      note: document.getElementById('log-note').value.trim()
+      sport: currentLogSession.sport || 'other',
+      planned_title: currentLogSession.title || 'Session',
+      planned_duration: currentLogSession.duration || '',
+      actual_duration: actualDur,
+      feeling: feeling,
+      note: note
     });
     document.getElementById('log-modal').classList.remove('open');
     btn.disabled = false; btn.textContent = 'Save workout ✅';
+    progressLoaded = false; // invalidate cache so Progress tab refreshes
     // Send to coach chat
     var feelingText = selectedFeeling ? ' Felt: ' + selectedFeeling + '.' : '';
-    var durationText = document.getElementById('log-duration').value.trim();
-    var noteText = document.getElementById('log-note').value.trim();
-    var msg = 'Just completed: ' + currentLogSession.title + (durationText ? ' (' + durationText + ')' : '') + '.' + feelingText + (noteText ? ' ' + noteText : '');
+    var msg = 'Just completed: ' + currentLogSession.title + (actualDur ? ' (' + actualDur + ')' : '') + '.' + feelingText + (note ? ' ' + note : '');
     showTab('chat');
     document.getElementById('chat-in').value = msg;
     sendMsg();
   } catch(e) {
-    alert('Could not save — try again');
+    var detail = e && e.message ? e.message : 'Unknown error';
+    alert('Could not save — ' + detail);
+    console.error('submitLog error:', e);
     btn.disabled = false; btn.textContent = 'Save workout ✅';
   }
 }
