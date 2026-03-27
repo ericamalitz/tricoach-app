@@ -155,7 +155,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .mobile-brand-name span{color:#93c5fd;}
 .mobile-race-pill{background:rgba(255,255,255,0.12);border-radius:100px;padding:0.3rem 0.8rem;font-size:11px;font-weight:700;color:white;}
 .mobile-race-pill span{color:#93c5fd;}
-.bottom-bar{display:none;background:var(--white);border-top:1px solid var(--gray-200);padding:0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));flex-shrink:0;z-index:100;}
+.bottom-bar{display:none;background:var(--white);border-top:1px solid var(--gray-200);padding:0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));flex-shrink:0;z-index:100;position:fixed;bottom:0;left:0;right:0;}
 .bottom-nav{display:flex;justify-content:space-around;}
 .bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0.4rem 0.5rem;cursor:pointer;border-radius:10px;transition:all 0.15s;flex:1;border:none;background:none;font-family:var(--font);}
 .bottom-nav-item:active{background:var(--gray-100);}
@@ -276,10 +276,10 @@ nav.nav{flex:1;padding:0 0.65rem;}
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  .sidebar { display: none !important; }
+  .sidebar { display: none !important; width: 0 !important; min-width: 0 !important; }
   .mobile-top-bar { display: flex !important; }
   .bottom-bar { display: block !important; }
-  .main { height: calc(100vh - 52px - var(--bottom-bar)); }
+  .main { height: calc(100vh - 52px); padding-bottom: var(--bottom-bar); }
   .tab-panel { height: 100%; }
   .chat-top { padding: 0.7rem 1rem; }
   .messages { padding: 0.85rem; }
