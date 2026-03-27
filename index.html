@@ -1601,6 +1601,7 @@ function renderRecentSessions(workouts) {
       '<div class="recent-meta">' + (dur ? dur : '') + (w.note ? (dur ? ' &bull; ' : '') + w.note : '') + '</div></div>' +
       (feel ? '<div class="recent-feeling">' + feel + '</div>' : '') +
       '<div class="recent-date">' + dateStr + '</div>' +
+      '<button class="recent-delete" onclick="openEditModal(' + JSON.stringify(w).replace(/'/g,"&#39;") + ')" title="Edit" style="color:var(--blue)">&#x270E;</button>' +
       '<button class="recent-delete" onclick="deleteWorkout(\'' + w.id + '\')" title="Delete">&#x2715;</button>' +
       '</div>';
   }).join('');
@@ -1626,7 +1627,56 @@ async function deleteWorkout(id) {
 }
 
 
-// APPLE HEALTH TOKEN
+// EDIT WORKOUT
+var _editWorkout = null;
+var _editFeeling = null;
+
+function openEditModal(w) {
+  _editWorkout = w;
+  _editFeeling = w.feeling || null;
+  document.getElementById('edit-modal-sub').textContent = w.planned_title || 'Session';
+  document.getElementById('edit-duration').value = w.actual_duration || '';
+  document.getElementById('edit-note').value = w.note || '';
+  document.querySelectorAll('#edit-modal .feeling-btn').forEach(function(b) {
+    b.classList.toggle('sel', b.dataset.v === _editFeeling);
+  });
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal(e) {
+  if (!e || e.target === document.getElementById('edit-modal')) {
+    document.getElementById('edit-modal').classList.remove('open');
+  }
+}
+
+function selEditFeeling(btn) {
+  document.querySelectorAll('#edit-modal .feeling-btn').forEach(function(b){ b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  _editFeeling = btn.dataset.v;
+}
+
+async function submitEdit() {
+  if (!_editWorkout) return;
+  var btn = document.getElementById('edit-submit-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  try {
+    await fetch(RAILWAY_URL + '/api/workout/' + _editWorkout.id, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+      body: JSON.stringify({
+        actual_duration: document.getElementById('edit-duration').value.trim(),
+        note: document.getElementById('edit-note').value.trim(),
+        feeling: _editFeeling || 'ok'
+      })
+    });
+    document.getElementById('edit-modal').classList.remove('open');
+    progressLoaded = false;
+    refreshProgress();
+  } catch(e) {
+    alert('Could not save — try again');
+  }
+  btn.disabled = false; btn.textContent = 'Save changes ✅';
+}
 var _healthToken = null;
 async function loadHealthToken() {
   try {
@@ -1741,5 +1791,25 @@ renderPills(0);
   </div>
 </div>
 <div id="ptr-bar"><div class="ptr-inner"><div class="ptr-spin"></div><span id="ptr-msg">Refreshing...</span></div></div>
+
+<!-- EDIT WORKOUT MODAL -->
+<div class="modal-overlay" id="edit-modal" onclick="closeEditModal(event)">
+  <div class="modal-card">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Edit session</div>
+    <div class="modal-sub" id="edit-modal-sub">Update how it went</div>
+    <div class="feeling-row">
+      <button class="feeling-btn" data-v="great" onclick="selEditFeeling(this)"><span>&#x1F929;</span><span class="feeling-label">Great!</span></button>
+      <button class="feeling-btn" data-v="good" onclick="selEditFeeling(this)"><span>&#x1F604;</span><span class="feeling-label">Good</span></button>
+      <button class="feeling-btn" data-v="ok" onclick="selEditFeeling(this)"><span>&#x1F610;</span><span class="feeling-label">OK</span></button>
+      <button class="feeling-btn" data-v="hard" onclick="selEditFeeling(this)"><span>&#x1F625;</span><span class="feeling-label">Hard</span></button>
+      <button class="feeling-btn" data-v="terrible" onclick="selEditFeeling(this)"><span>&#x1F915;</span><span class="feeling-label">Rough</span></button>
+    </div>
+    <div class="modal-field"><label>Duration</label><input type="text" id="edit-duration" placeholder="e.g. 45 min, 1.5km"/></div>
+    <div class="modal-field"><label>Notes</label><textarea id="edit-note" placeholder="How did it feel?"></textarea></div>
+    <button class="btn-log" id="edit-submit-btn" onclick="submitEdit()">Save changes &#x2705;</button>
+    <button class="btn-log-skip" onclick="closeEditModal()">Cancel</button>
+  </div>
+</div>
 </body>
 </html>
