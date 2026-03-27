@@ -285,10 +285,10 @@ nav.nav{flex:1;padding:0 0.65rem;}
   #screen-app { flex-direction: column !important; }
   .main { width: 100% !important; flex: 1; height: calc(100vh - 52px - 70px); padding-bottom: 0; }
   .tab-panel { height: 100%; }
-  #tab-chat { padding-bottom: 70px; }
-  #tab-plan { padding-bottom: 70px; }
-  #tab-week { padding-bottom: 70px; }
-  #tab-profile { padding-bottom: 70px; }
+  #tab-chat { padding-bottom: 100px; }
+  #tab-plan { padding-bottom: 100px; }
+  #tab-week { padding-bottom: 100px; }
+  #tab-profile { padding-bottom: 100px; }
   /* Padding adjustments */
   .chat-top { padding: 0.7rem 1rem; }
   .messages { padding: 0.85rem; }
@@ -768,9 +768,12 @@ function setQR(arr){document.getElementById('qr').innerHTML=arr.map(function(r){
 function quickSend(t){document.getElementById('qr').innerHTML='';document.getElementById('chat-in').value=t;sendMsg();}
 async function callCoach(message){var data=await apiPost('/api/chat',{message:message,history:chatHistory.slice(-20),profile:P,planPhase:P.plan&&P.plan.phase?P.plan.phase:'Base 1'});chatHistory.push({role:'user',content:message});chatHistory.push({role:'assistant',content:data.reply});return data.reply;}
 
+var briefSent=false;
 async function sendBrief(){
+  if(briefSent)return;
+  briefSent=true;
   var hour=TODAY.getHours();
-  var greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+  var greeting=hour>=5&&hour<12?'Good morning':hour>=12&&hour<18?'Good afternoon':'Good evening';
   var dow=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][TODAY.getDay()];
   var wo=P.race_date?Math.max(0,Math.ceil((new Date(P.race_date)-TODAY)/604800000)):'?';
   var startDate=P.start_date?new Date(P.start_date):TODAY;
