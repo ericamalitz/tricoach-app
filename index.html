@@ -333,6 +333,13 @@ nav.nav{flex:1;padding:0 0.65rem;}
 /* DRAG AND DROP */
 .cal-cell.drag-over { border-color: var(--teal) !important; background: var(--teal-light) !important; transform: scale(1.04); box-shadow: 0 0 0 3px rgba(13,148,136,0.3) !important; }
 .cal-cell { cursor: pointer; user-select: none; -webkit-user-select: none; }
+
+.toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--gray-200); border-radius: 24px; transition: 0.2s; }
+.toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+.toggle-switch input:checked + .toggle-slider { background: var(--teal); }
+.toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
 </style>
 </head>
 <body>
@@ -599,6 +606,22 @@ nav.nav{flex:1;padding:0 0.65rem;}
           <div class="pf"><label>Injuries or limitations</label><textarea id="p-injuries"></textarea></div>
           <div class="pf"><label>Anything else</label><textarea id="p-other"></textarea></div>
         </div>
+        <div class="profile-card">
+          <div class="profile-card-title">🔔 WhatsApp check-ins</div>
+          <div style="font-size:12px;color:var(--gray-500);margin-bottom:1rem;">Choose when your coach checks in via WhatsApp each day.</div>
+          <div class="pf" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.65rem;">
+            <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Morning brief</div><div style="font-size:11px;color:var(--gray-400);">Today's workout + motivation</div></div>
+            <div style="display:flex;align-items:center;gap:0.5rem;"><input type="time" id="p-notif-time-morning" style="font-size:12px;padding:0.3rem 0.5rem;border:1.5px solid var(--gray-200);border-radius:6px;width:80px;" value="07:00"/><label class="toggle-switch"><input type="checkbox" id="p-notif-morning" checked/><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="pf" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.65rem;">
+            <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Afternoon check-in</div><div style="font-size:11px;color:var(--gray-400);">Reminder + tip for the day</div></div>
+            <div style="display:flex;align-items:center;gap:0.5rem;"><input type="time" id="p-notif-time-afternoon" style="font-size:12px;padding:0.3rem 0.5rem;border:1.5px solid var(--gray-200);border-radius:6px;width:80px;" value="13:00"/><label class="toggle-switch"><input type="checkbox" id="p-notif-afternoon"/><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="pf" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0;">
+            <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Evening wrap-up</div><div style="font-size:11px;color:var(--gray-400);">Recap + tomorrow's session preview</div></div>
+            <div style="display:flex;align-items:center;gap:0.5rem;"><input type="time" id="p-notif-time-evening" style="font-size:12px;padding:0.3rem 0.5rem;border:1.5px solid var(--gray-200);border-radius:6px;width:80px;" value="20:00"/><label class="toggle-switch"><input type="checkbox" id="p-notif-evening"/><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
         <button class="btn-save" onclick="saveProfile()">Save changes</button>
         <div class="save-ok" id="save-ok">Saved!</div>
       </div>
@@ -790,9 +813,22 @@ function initApp(){
 
 function renderBars(){var c=document.getElementById('s-bars');c.innerHTML='';var d=P.training_days||4;for(var i=0;i<d;i++){var el=document.createElement('div');el.className='wk-bar '+(i<1?'done':i===1?'today':'');c.appendChild(el);}document.getElementById('s-wk-text').textContent='1 of '+(P.training_days||4)+' sessions';}
 
-function loadProfileForm(){document.getElementById('p-name').value=P.name||'';document.getElementById('p-event').value=P.event||'';document.getElementById('p-race').value=P.race_name||'';document.getElementById('p-date').value=P.race_date||'';document.getElementById('p-start').value=P.start_date||'';document.getElementById('p-phone').value=P.phone||'';document.getElementById('p-plan-type').value=P.plan_type==='own'?'My own plan (AI coached)':'AI generated plan';document.getElementById('p-level').value=P.level||'beginner';document.getElementById('p-days').value=String(P.training_days||4);document.getElementById('p-goal').value=P.goal||'';document.getElementById('p-injuries').value=P.injuries||'';document.getElementById('p-other').value=P.notes||'';}
+function loadProfileForm(){document.getElementById('p-name').value=P.name||'';document.getElementById('p-event').value=P.event||'';document.getElementById('p-race').value=P.race_name||'';document.getElementById('p-date').value=P.race_date||'';document.getElementById('p-start').value=P.start_date||'';document.getElementById('p-phone').value=P.phone||'';document.getElementById('p-plan-type').value=P.plan_type==='own'?'My own plan (AI coached)':'AI generated plan';document.getElementById('p-level').value=P.level||'beginner';document.getElementById('p-days').value=String(P.training_days||4);document.getElementById('p-goal').value=P.goal||'';document.getElementById('p-injuries').value=P.injuries||'';document.getElementById('p-other').value=P.notes||'';
+  document.getElementById('p-notif-morning').checked = P.notif_morning !== false;
+  document.getElementById('p-notif-afternoon').checked = P.notif_afternoon === true;
+  document.getElementById('p-notif-evening').checked = P.notif_evening === true;
+  document.getElementById('p-notif-time-morning').value = P.notif_time_morning || '07:00';
+  document.getElementById('p-notif-time-afternoon').value = P.notif_time_afternoon || '13:00';
+  document.getElementById('p-notif-time-evening').value = P.notif_time_evening || '20:00';
+}
 
-async function saveProfile(){P.name=document.getElementById('p-name').value.trim();P.race_name=document.getElementById('p-race').value.trim();P.race_date=document.getElementById('p-date').value;P.start_date=document.getElementById('p-start').value;P.phone=document.getElementById('p-phone').value.trim();P.level=document.getElementById('p-level').value;P.training_days=parseInt(document.getElementById('p-days').value);P.goal=document.getElementById('p-goal').value.trim();P.injuries=document.getElementById('p-injuries').value.trim();P.notes=document.getElementById('p-other').value.trim();document.getElementById('s-name').textContent=P.name;try{await apiPost('/api/profile',P);var ok=document.getElementById('save-ok');ok.classList.add('show');setTimeout(function(){ok.classList.remove('show');},2500);}catch(e){alert('Save failed');}}
+async function saveProfile(){P.name=document.getElementById('p-name').value.trim();P.race_name=document.getElementById('p-race').value.trim();P.race_date=document.getElementById('p-date').value;P.start_date=document.getElementById('p-start').value;P.phone=document.getElementById('p-phone').value.trim();P.level=document.getElementById('p-level').value;P.training_days=parseInt(document.getElementById('p-days').value);P.goal=document.getElementById('p-goal').value.trim();P.injuries=document.getElementById('p-injuries').value.trim();P.notes=document.getElementById('p-other').value.trim();
+  P.notif_morning=document.getElementById('p-notif-morning').checked;
+  P.notif_afternoon=document.getElementById('p-notif-afternoon').checked;
+  P.notif_evening=document.getElementById('p-notif-evening').checked;
+  P.notif_time_morning=document.getElementById('p-notif-time-morning').value;
+  P.notif_time_afternoon=document.getElementById('p-notif-time-afternoon').value;
+  P.notif_time_evening=document.getElementById('p-notif-time-evening').value;document.getElementById('s-name').textContent=P.name;try{await apiPost('/api/profile',P);var ok=document.getElementById('save-ok');ok.classList.add('show');setTimeout(function(){ok.classList.remove('show');},2500);}catch(e){alert('Save failed');}}
 
 // CHAT
 function addMsg(role,text){var c=document.getElementById('messages');var div=document.createElement('div');div.className='msg '+role;var t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});var av=role==='coach'?'TC':(P.name?P.name[0].toUpperCase():'U');div.innerHTML='<div class="msg-av">'+av+'</div><div><div class="msg-bubble">'+fmt(text)+'</div><div class="msg-time">'+t+'</div></div>';c.appendChild(div);c.scrollTop=c.scrollHeight;}
