@@ -394,6 +394,8 @@ nav.nav{flex:1;padding:0 0.65rem;}
 /* RECENT SESSIONS */
 .recent-list{display:flex;flex-direction:column;gap:0.4rem;}
 .recent-item{display:flex;align-items:center;gap:0.6rem;padding:0.55rem 0.7rem;background:var(--gray-100);border-radius:8px;}
+.recent-delete{flex-shrink:0;background:none;border:none;color:var(--gray-300);font-size:16px;cursor:pointer;padding:0.2rem 0.3rem;border-radius:5px;line-height:1;transition:all 0.15s;}
+.recent-delete:active,.recent-delete:hover{color:var(--red);background:var(--red-light);}
 .recent-sport{font-size:15px;flex-shrink:0;}
 .recent-info{flex:1;min-width:0;}
 .recent-title{font-size:12px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -1593,14 +1595,34 @@ function renderRecentSessions(workouts) {
     var dateStr = d ? DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] : '';
     var dur = w.actual_duration || w.planned_duration || '';
     var feel = feelEmoji[w.feeling] || '';
-    return '<div class="recent-item">' +
+    return '<div class="recent-item" id="wo-' + w.id + '">' +
       '<div class="recent-sport">' + si(w.sport) + '</div>' +
       '<div class="recent-info"><div class="recent-title">' + (w.planned_title || 'Session') + '</div>' +
       '<div class="recent-meta">' + (dur ? dur : '') + (w.note ? (dur ? ' &bull; ' : '') + w.note : '') + '</div></div>' +
       (feel ? '<div class="recent-feeling">' + feel + '</div>' : '') +
       '<div class="recent-date">' + dateStr + '</div>' +
+      '<button class="recent-delete" onclick="deleteWorkout(\'' + w.id + '\')" title="Delete">&#x2715;</button>' +
       '</div>';
   }).join('');
+}
+
+async function deleteWorkout(id) {
+  if (!confirm('Delete this workout?')) return;
+  try {
+    await fetch(RAILWAY_URL + '/api/workout/' + id, {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + authToken }
+    });
+    // Remove from DOM immediately
+    var el = document.getElementById('wo-' + id);
+    if (el) el.remove();
+    // Invalidate cache so full refresh picks up new counts
+    progressLoaded = false;
+    // Re-render stats from remaining items in DOM (full refresh on next tab visit)
+    refreshProgress();
+  } catch(e) {
+    alert('Could not delete — try again');
+  }
 }
 
 
