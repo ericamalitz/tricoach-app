@@ -2,15 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>TriCoach</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-:root{--bg:#f7f8fa;--white:#fff;--navy:#1a2640;--navy-mid:#2c3e5a;--blue:#3b82f6;--blue-light:#eff6ff;--blue-mid:#dbeafe;--teal:#0d9488;--teal-light:#f0fdf9;--orange:#f97316;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-800:#1f2937;--red:#dc2626;--red-light:#fef2f2;--purple:#7c3aed;--purple-light:#f3e8ff;--shadow-sm:0 1px 3px rgba(0,0,0,0.07);--shadow:0 4px 12px rgba(0,0,0,0.08);--shadow-lg:0 16px 40px rgba(0,0,0,0.12);--radius:14px;--radius-sm:8px;--radius-lg:22px;--font:'Nunito Sans',sans-serif;--font-d:'Nunito',sans-serif;}
-*{box-sizing:border-box;margin:0;padding:0;}html,body{height:100%;}
-body{font-family:var(--font);background:var(--bg);color:var(--navy);font-size:15px;line-height:1.6;overflow:hidden;}
+:root{--bg:#f7f8fa;--white:#fff;--navy:#1a2640;--navy-mid:#2c3e5a;--blue:#3b82f6;--blue-light:#eff6ff;--blue-mid:#dbeafe;--teal:#0d9488;--teal-light:#f0fdf9;--orange:#f97316;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-800:#1f2937;--red:#dc2626;--red-light:#fef2f2;--purple:#7c3aed;--purple-light:#f3e8ff;--shadow-sm:0 1px 3px rgba(0,0,0,0.07);--shadow:0 4px 12px rgba(0,0,0,0.08);--shadow-lg:0 16px 40px rgba(0,0,0,0.12);--radius:14px;--radius-sm:8px;--radius-lg:22px;--font:'Nunito Sans',sans-serif;--font-d:'Nunito',sans-serif;--bottom-bar:64px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--font);background:var(--bg);color:var(--navy);font-size:15px;line-height:1.6;}
 .screen{display:none;height:100vh;overflow:hidden;}.screen.active{display:flex;flex-direction:column;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+
+/* LOADING */
 #screen-loading{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;}
 .loading-brand{display:flex;align-items:center;gap:12px;}
 .loading-icon{width:44px;height:44px;background:var(--navy);border-radius:12px;display:flex;align-items:center;justify-content:center;}
@@ -18,9 +26,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);font-size:15
 .loading-name{font-family:var(--font-d);font-size:1.8rem;font-weight:800;color:var(--navy);}
 .loading-name span{color:var(--blue);}
 .loading-spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--gray-200);border-top-color:var(--blue);animation:spin 0.8s linear infinite;margin:1.5rem auto 0;}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-#screen-auth{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;padding:1.5rem;}
+
+/* AUTH */
+#screen-auth{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto;}
 .auth-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:2.5rem;width:100%;max-width:420px;animation:fadeUp 0.4s ease;}
 .auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:0.4rem;}
 .auth-brand-icon{width:40px;height:40px;background:var(--navy);border-radius:11px;display:flex;align-items:center;justify-content:center;}
@@ -34,84 +42,91 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);font-size:15
 .auth-form{display:none;}.auth-form.active{display:block;}
 .auth-field{margin-bottom:1rem;}
 .auth-field label{display:block;font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:0.35rem;text-transform:uppercase;}
-.auth-field input{width:100%;padding:0.75rem 1rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;color:var(--navy);background:var(--white);outline:none;transition:all 0.2s;}
+.auth-field input{width:100%;padding:0.75rem 1rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:16px;color:var(--navy);background:var(--white);outline:none;transition:all 0.2s;appearance:none;}
 .auth-field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
 .btn-auth{width:100%;padding:0.85rem;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-family:var(--font-d);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:0.75rem;}
-.btn-auth:hover{background:var(--blue);transform:translateY(-1px);}
-.btn-auth:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-auth:hover{background:var(--blue);}
+.btn-auth:disabled{opacity:0.5;cursor:not-allowed;}
 .auth-error{background:var(--red-light);border:1px solid #fecaca;border-radius:var(--radius-sm);padding:0.65rem 0.9rem;font-size:13px;color:var(--red);margin-bottom:1rem;display:none;}
 .auth-error.show{display:block;}
 .auth-success{background:var(--teal-light);border:1px solid #99f6e4;border-radius:var(--radius-sm);padding:0.65rem 0.9rem;font-size:13px;color:var(--teal);margin-bottom:1rem;display:none;}
 .auth-success.show{display:block;}
 .auth-footer{text-align:center;font-size:12px;color:var(--gray-400);margin-top:1rem;}
 .auth-footer a{color:var(--blue);cursor:pointer;font-weight:600;}
-#screen-onboard{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto;}
-.ob-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:2.25rem;width:100%;max-width:520px;margin:auto;animation:fadeUp 0.4s ease;}
-.ob-logo{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;}
-.ob-logo-icon{width:36px;height:36px;background:var(--navy);border-radius:9px;display:flex;align-items:center;justify-content:center;}
-.ob-logo-icon svg{width:18px;height:18px;fill:white;}
-.ob-logo-name{font-family:var(--font-d);font-size:1.3rem;font-weight:800;color:var(--navy);}
+
+/* ONBOARDING */
+#screen-onboard{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;padding:1rem;overflow-y:auto;}
+.ob-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:1.75rem;width:100%;max-width:520px;margin:auto;animation:fadeUp 0.4s ease;}
+.ob-logo{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;}
+.ob-logo-icon{width:32px;height:32px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.ob-logo-icon svg{width:16px;height:16px;fill:white;}
+.ob-logo-name{font-family:var(--font-d);font-size:1.2rem;font-weight:800;color:var(--navy);}
 .ob-logo-name span{color:var(--blue);}
-.step-pills{display:flex;gap:6px;margin-bottom:1.75rem;}
+.step-pills{display:flex;gap:6px;margin-bottom:1.5rem;}
 .step-pill{flex:1;height:4px;border-radius:2px;background:var(--gray-200);transition:background 0.3s;}
 .step-pill.active{background:var(--blue);}.step-pill.done{background:var(--teal);}
 .ob-step{display:none;}.ob-step.active{display:block;animation:fadeUp 0.2s ease;}
-.step-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:0.4rem;}
-.ob-step h2{font-family:var(--font-d);font-size:1.55rem;font-weight:800;color:var(--navy);margin-bottom:0.3rem;line-height:1.2;}
-.ob-step .step-sub{font-size:14px;color:var(--gray-500);margin-bottom:1.4rem;line-height:1.5;}
-.big-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1rem;}
-.big-card{border:2px solid var(--gray-200);border-radius:var(--radius);padding:1rem;cursor:pointer;transition:all 0.15s;background:var(--white);text-align:center;}
-.big-card:hover{border-color:var(--blue);background:var(--blue-light);transform:translateY(-1px);}
+.step-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:0.3rem;}
+.ob-step h2{font-family:var(--font-d);font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:0.25rem;line-height:1.2;}
+.ob-step .step-sub{font-size:13px;color:var(--gray-500);margin-bottom:1.2rem;line-height:1.5;}
+.big-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.85rem;}
+.big-card{border:2px solid var(--gray-200);border-radius:var(--radius);padding:0.85rem 0.75rem;cursor:pointer;transition:all 0.15s;background:var(--white);text-align:center;}
+.big-card:hover,.big-card:active{border-color:var(--blue);background:var(--blue-light);}
 .big-card.sel{border-color:var(--blue);background:var(--blue-light);}
-.big-card-emoji{font-size:2rem;margin-bottom:0.4rem;display:block;}
-.big-card-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:0.15rem;}
-.big-card-detail{font-size:11px;color:var(--gray-500);}
-.chip-row{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.9rem;}
-.chip{padding:0.45rem 1rem;border-radius:100px;border:2px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--font);}
-.chip:hover{border-color:var(--blue);background:var(--blue-light);color:var(--navy);}
+.big-card-emoji{font-size:1.6rem;margin-bottom:0.25rem;display:block;}
+.big-card-name{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:0.1rem;}
+.big-card-detail{font-size:10px;color:var(--gray-500);}
+.chip-row{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.85rem;}
+.chip{padding:0.4rem 0.85rem;border-radius:100px;border:2px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--font);}
+.chip:hover,.chip:active{border-color:var(--blue);background:var(--blue-light);color:var(--navy);}
 .chip.sel{border-color:var(--blue);background:var(--blue-light);color:var(--blue);}
-.ob-field{margin-bottom:1rem;}
-.ob-field label{display:block;font-size:12px;font-weight:700;color:var(--gray-600);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.04em;}
-.ob-field input,.ob-field textarea{width:100%;padding:0.7rem 1rem;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;color:var(--navy);background:var(--white);outline:none;transition:border-color 0.2s;appearance:none;}
-.ob-field input:focus,.ob-field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
-.ob-field textarea{resize:vertical;min-height:80px;}
-.ob-field .hint{font-size:11px;color:var(--gray-400);margin-top:0.3rem;}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;}
-.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-400);margin:1.1rem 0 0.55rem;padding-bottom:0.35rem;border-bottom:1px solid var(--gray-100);}
-.btn-go{width:100%;padding:0.9rem;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-family:var(--font-d);font-size:1.05rem;font-weight:800;cursor:pointer;transition:all 0.2s;margin-top:1.25rem;}
-.btn-go:hover{background:var(--blue);transform:translateY(-1px);}
-.btn-go:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.btn-row-ob{display:flex;gap:0.5rem;margin-top:1.25rem;}
-.btn-back-ob{flex:0 0 auto;padding:0.9rem 1.1rem;background:var(--gray-100);border:none;border-radius:var(--radius-sm);color:var(--gray-600);font-family:var(--font-d);font-weight:700;font-size:0.95rem;cursor:pointer;}
-.btn-back-ob:hover{background:var(--gray-200);}
-.plan-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.5rem;}
-.plan-type-card{border:2px solid var(--gray-200);border-radius:var(--radius);padding:1.35rem 1rem;cursor:pointer;transition:all 0.15s;background:var(--white);text-align:center;}
-.plan-type-card:hover{border-color:var(--blue);transform:translateY(-1px);}
+.ob-field{margin-bottom:0.85rem;}
+.ob-field label{display:block;font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.04em;}
+.ob-field input,.ob-field textarea{width:100%;padding:0.65rem 0.9rem;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:16px;color:var(--navy);background:var(--white);outline:none;transition:border-color 0.2s;appearance:none;}
+.ob-field input:focus,.ob-field textarea:focus{border-color:var(--blue);}
+.ob-field textarea{resize:vertical;min-height:70px;font-size:14px;}
+.ob-field .hint{font-size:11px;color:var(--gray-400);margin-top:0.25rem;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-400);margin:0.85rem 0 0.5rem;padding-bottom:0.3rem;border-bottom:1px solid var(--gray-100);}
+.btn-go{width:100%;padding:0.85rem;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-family:var(--font-d);font-size:1rem;font-weight:800;cursor:pointer;transition:all 0.2s;margin-top:1rem;}
+.btn-go:hover{background:var(--blue);}
+.btn-go:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-row-ob{display:flex;gap:0.5rem;margin-top:1rem;}
+.btn-back-ob{flex:0 0 auto;padding:0.85rem 1rem;background:var(--gray-100);border:none;border-radius:var(--radius-sm);color:var(--gray-600);font-family:var(--font-d);font-weight:700;font-size:0.95rem;cursor:pointer;}
+.plan-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:0.5rem;}
+.plan-type-card{border:2px solid var(--gray-200);border-radius:var(--radius);padding:1.1rem 0.85rem;cursor:pointer;transition:all 0.15s;background:var(--white);text-align:center;}
+.plan-type-card:hover,.plan-type-card:active{border-color:var(--blue);}
 .plan-type-card.sel{border-color:var(--blue);background:var(--blue-light);}
 .plan-type-card.sel.own{border-color:var(--purple);background:var(--purple-light);}
-.plan-type-emoji{font-size:2.5rem;margin-bottom:0.5rem;display:block;}
-.plan-type-name{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:0.3rem;font-family:var(--font-d);}
-.plan-type-desc{font-size:12px;color:var(--gray-500);line-height:1.4;}
+.plan-type-emoji{font-size:2rem;margin-bottom:0.4rem;display:block;}
+.plan-type-name{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:0.2rem;font-family:var(--font-d);}
+.plan-type-desc{font-size:11px;color:var(--gray-500);line-height:1.4;}
+
+/* GENERATING */
 #screen-generating{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;}
-.gen-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:2.5rem 3rem;text-align:center;max-width:400px;width:90%;}
+.gen-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:2.5rem 2rem;text-align:center;max-width:380px;width:90%;}
 .gen-spinner{width:44px;height:44px;border-radius:50%;border:3px solid var(--gray-200);border-top-color:var(--blue);animation:spin 0.8s linear infinite;margin:0 auto 1.1rem;}
 .gen-title{font-family:var(--font-d);font-size:1.3rem;font-weight:800;color:var(--navy);margin-bottom:0.25rem;}
-.gen-sub{font-size:13px;color:var(--gray-500);margin-bottom:1.25rem;}
+.gen-sub{font-size:13px;color:var(--gray-500);margin-bottom:1.1rem;}
 .gen-steps{list-style:none;text-align:left;}
 .gen-steps li{font-size:13px;padding:5px 0;color:var(--gray-400);display:flex;align-items:center;gap:9px;transition:color 0.3s;}
 .gen-steps li.done{color:var(--teal);font-weight:600;}.gen-steps li.cur{color:var(--navy);font-weight:700;}
-.gen-steps li::before{content:'o';flex-shrink:0;font-size:12px;}
+.gen-steps li::before{content:'o';flex-shrink:0;font-size:11px;}
 .gen-steps li.done::before{content:'v';color:var(--teal);}
 .gen-steps li.cur::before{content:'*';color:var(--blue);}
-#screen-app{flex-direction:row;}
-.sidebar{width:225px;min-width:225px;background:var(--navy);display:flex;flex-direction:column;padding:1.4rem 0;}
+
+/* APP LAYOUT */
+#screen-app{flex-direction:row;height:100vh;}
+
+/* DESKTOP SIDEBAR */
+.sidebar{width:225px;min-width:225px;background:var(--navy);display:flex;flex-direction:column;padding:1.4rem 0;flex-shrink:0;}
 .sb-brand{display:flex;align-items:center;gap:8px;padding:0 1.2rem;margin-bottom:1.4rem;}
 .sb-brand-icon{width:30px;height:30px;background:var(--blue);border-radius:7px;display:flex;align-items:center;justify-content:center;}
 .sb-brand-icon svg{width:16px;height:16px;fill:white;}
 .sb-brand-name{font-family:var(--font-d);font-size:1.15rem;font-weight:800;color:white;}
-.athlete-card{margin:0 0.9rem 1.1rem;background:rgba(255,255,255,0.07);border-radius:11px;padding:0.75rem 0.9rem;}
+.athlete-card{margin:0 0.9rem 1rem;background:rgba(255,255,255,0.07);border-radius:11px;padding:0.7rem 0.9rem;}
 .athlete-name{font-size:13px;font-weight:700;color:white;}.athlete-meta{font-size:10px;color:rgba(255,255,255,0.45);margin-top:1px;}
-.race-card{margin:0 0.9rem 1.4rem;background:var(--blue);border-radius:11px;padding:0.75rem 0.9rem;}
+.race-card{margin:0 0.9rem 1.3rem;background:var(--blue);border-radius:11px;padding:0.7rem 0.9rem;}
 .race-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:2px;}
 .race-days{font-family:var(--font-d);font-size:2rem;font-weight:800;color:white;line-height:1;}
 .race-name{font-size:10px;color:rgba(255,255,255,0.75);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -130,118 +145,170 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .wk-text{font-size:10px;color:rgba(255,255,255,0.35);}
 .btn-signout{margin:0.75rem 0.9rem 0;padding:0.5rem 0.75rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:rgba(255,255,255,0.45);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);width:calc(100% - 1.8rem);}
 .btn-signout:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
+
+/* MOBILE BOTTOM BAR */
+.mobile-top-bar{display:none;background:var(--navy);padding:0.75rem 1rem;align-items:center;justify-content:space-between;flex-shrink:0;}
+.mobile-brand{display:flex;align-items:center;gap:8px;}
+.mobile-brand-icon{width:28px;height:28px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;}
+.mobile-brand-icon svg{width:14px;height:14px;fill:white;}
+.mobile-brand-name{font-family:var(--font-d);font-size:1.1rem;font-weight:800;color:white;}
+.mobile-brand-name span{color:#93c5fd;}
+.mobile-race-pill{background:rgba(255,255,255,0.12);border-radius:100px;padding:0.3rem 0.8rem;font-size:11px;font-weight:700;color:white;}
+.mobile-race-pill span{color:#93c5fd;}
+.bottom-bar{display:none;background:var(--white);border-top:1px solid var(--gray-200);padding:0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));flex-shrink:0;z-index:100;}
+.bottom-nav{display:flex;justify-content:space-around;}
+.bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0.4rem 0.5rem;cursor:pointer;border-radius:10px;transition:all 0.15s;flex:1;border:none;background:none;font-family:var(--font);}
+.bottom-nav-item:active{background:var(--gray-100);}
+.bottom-nav-icon{font-size:20px;line-height:1;}
+.bottom-nav-label{font-size:10px;font-weight:600;color:var(--gray-400);}
+.bottom-nav-item.active .bottom-nav-label{color:var(--blue);}
+.bottom-nav-item.active .bottom-nav-icon{transform:scale(1.1);}
+
+/* MAIN CONTENT */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
 .tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden;}.tab-panel.active{display:flex;}
-.chat-top{padding:0.85rem 1.4rem;border-bottom:1px solid var(--gray-200);background:var(--white);display:flex;align-items:center;gap:0.9rem;flex-shrink:0;box-shadow:var(--shadow-sm);}
+
+/* CHAT */
+.chat-top{padding:0.85rem 1.1rem;border-bottom:1px solid var(--gray-200);background:var(--white);display:flex;align-items:center;gap:0.9rem;flex-shrink:0;box-shadow:var(--shadow-sm);}
 .coach-av{width:36px;height:36px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:13px;font-weight:800;color:white;flex-shrink:0;}
 .cn{font-size:14px;font-weight:700;color:var(--navy);}.cs{font-size:11px;color:var(--teal);font-weight:600;display:flex;align-items:center;gap:4px;}
 .cs::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--teal);display:inline-block;}
-.today-badge{margin-left:auto;background:var(--navy);color:white;border-radius:100px;padding:0.25rem 0.8rem;font-size:11px;font-weight:600;white-space:nowrap;}
+.today-badge{margin-left:auto;background:var(--navy);color:white;border-radius:100px;padding:0.25rem 0.75rem;font-size:11px;font-weight:600;white-space:nowrap;}
 .today-badge span{color:#93c5fd;}
-.messages{flex:1;overflow-y:auto;padding:1.1rem 1.4rem;display:flex;flex-direction:column;gap:0.8rem;scroll-behavior:smooth;}
+.messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.8rem;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;}
 .messages::-webkit-scrollbar{width:3px;}.messages::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:2px;}
-.msg{display:flex;gap:0.6rem;max-width:82%;animation:fadeUp 0.2s ease;}.msg.user{align-self:flex-end;flex-direction:row-reverse;}
+.msg{display:flex;gap:0.6rem;max-width:85%;animation:fadeUp 0.2s ease;}.msg.user{align-self:flex-end;flex-direction:row-reverse;}
 .msg-av{width:27px;height:27px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:10px;font-weight:800;}
 .msg.coach .msg-av{background:var(--navy);color:white;}.msg.user .msg-av{background:var(--blue);color:white;}
-.msg-bubble{padding:0.65rem 0.9rem;border-radius:14px;font-size:13.5px;line-height:1.65;}
+.msg-bubble{padding:0.65rem 0.9rem;border-radius:14px;font-size:14px;line-height:1.65;}
 .msg.coach .msg-bubble{background:var(--white);border:1px solid var(--gray-200);border-bottom-left-radius:4px;color:var(--gray-800);box-shadow:var(--shadow-sm);}
 .msg.user .msg-bubble{background:var(--navy);border-bottom-right-radius:4px;color:white;}
 .msg-time{font-size:10px;color:var(--gray-400);margin-top:3px;}.msg.user .msg-time{text-align:right;}
 .msg-bubble strong{color:var(--blue);font-weight:700;}.msg-bubble ul{padding-left:1.1rem;margin:0.3rem 0;}.msg-bubble li{margin-bottom:0.15rem;}
-.typing{display:none;align-items:center;gap:0.6rem;padding:0 1.4rem 0.4rem;}.typing.on{display:flex;}
+.typing{display:none;align-items:center;gap:0.6rem;padding:0 1rem 0.4rem;}.typing.on{display:flex;}
 .typing-av{width:27px;height:27px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:10px;font-weight:800;color:white;flex-shrink:0;}
 .typing-bubble{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;border-bottom-left-radius:4px;padding:0.65rem 0.9rem;display:flex;gap:4px;align-items:center;box-shadow:var(--shadow-sm);}
 .typing-dot{width:5px;height:5px;border-radius:50%;background:var(--gray-300);animation:bounce 1.2s ease infinite;}
 .typing-dot:nth-child(2){animation-delay:0.2s;}.typing-dot:nth-child(3){animation-delay:0.4s;}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
-.qr{display:flex;gap:0.4rem;flex-wrap:wrap;padding:0.5rem 1.4rem 0;flex-shrink:0;}
-.qr-chip{padding:0.3rem 0.8rem;border-radius:100px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-700);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
-.qr-chip:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue);}
-.chat-input-row{padding:0.85rem 1.4rem;border-top:1px solid var(--gray-200);background:var(--white);display:flex;gap:0.6rem;align-items:flex-end;flex-shrink:0;}
-.chat-ta{flex:1;background:var(--gray-100);border:1.5px solid var(--gray-200);color:var(--navy);font-family:var(--font);font-size:13.5px;padding:0.65rem 0.9rem;border-radius:11px;outline:none;resize:none;min-height:40px;max-height:100px;transition:border-color 0.2s;line-height:1.5;}
+.qr{display:flex;gap:0.4rem;flex-wrap:wrap;padding:0.5rem 1rem 0;flex-shrink:0;overflow-x:auto;}
+.qr-chip{padding:0.3rem 0.8rem;border-radius:100px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-700);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+.qr-chip:active{border-color:var(--blue);background:var(--blue-light);color:var(--blue);}
+.chat-input-row{padding:0.75rem 1rem;border-top:1px solid var(--gray-200);background:var(--white);display:flex;gap:0.6rem;align-items:flex-end;flex-shrink:0;}
+.chat-ta{flex:1;background:var(--gray-100);border:1.5px solid var(--gray-200);color:var(--navy);font-family:var(--font);font-size:16px;padding:0.6rem 0.85rem;border-radius:11px;outline:none;resize:none;min-height:40px;max-height:100px;transition:border-color 0.2s;line-height:1.5;}
 .chat-ta:focus{border-color:var(--blue);background:var(--white);}
 .send-btn{width:40px;height:40px;border-radius:11px;background:var(--navy);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;font-size:16px;}
-.send-btn:hover{background:var(--blue);}.send-btn:disabled{opacity:0.35;cursor:not-allowed;}
-.scroll-wrap{flex:1;overflow-y:auto;padding:1.4rem;}
+.send-btn:active{background:var(--blue);}.send-btn:disabled{opacity:0.35;cursor:not-allowed;}
+
+/* PLAN & SCROLL AREAS */
+.scroll-wrap{flex:1;overflow-y:auto;padding:1rem;-webkit-overflow-scrolling:touch;}
 .scroll-wrap::-webkit-scrollbar{width:3px;}.scroll-wrap::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:2px;}
-.page-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;gap:1rem;}
-.page-title{font-family:var(--font-d);font-size:1.6rem;font-weight:800;color:var(--navy);}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;gap:0.75rem;}
+.page-title{font-family:var(--font-d);font-size:1.4rem;font-weight:800;color:var(--navy);}
 .page-sub{font-size:12px;color:var(--gray-500);margin-top:2px;}
-.btn-gen{padding:0.55rem 1.1rem;background:var(--blue);border:none;border-radius:var(--radius-sm);color:white;font-family:var(--font-d);font-weight:700;font-size:0.9rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
-.btn-gen:hover{background:#2563eb;}.btn-gen:disabled{opacity:0.4;cursor:not-allowed;}
-.btn-gen.own{background:var(--purple);}.btn-gen.own:hover{background:#6d28d9;}
-.info-banner{border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:1rem;}
+.btn-gen{padding:0.5rem 1rem;background:var(--blue);border:none;border-radius:var(--radius-sm);color:white;font-family:var(--font-d);font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+.btn-gen:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-gen.own{background:var(--purple);}
+.info-banner{border-radius:var(--radius);padding:0.9rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.85rem;}
 .info-banner.ai{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);}
 .info-banner.own-plan{background:linear-gradient(135deg,#4c1d95 0%,#6d28d9 100%);}
-.info-icon{font-size:1.6rem;flex-shrink:0;}.info-title{font-size:13px;font-weight:700;color:white;margin-bottom:2px;}.info-sub{font-size:11px;color:rgba(255,255,255,0.55);line-height:1.4;}
-.phase-tabs{display:flex;gap:0.35rem;margin-bottom:1.1rem;overflow-x:auto;padding-bottom:2px;}
-.phase-tab{padding:0.3rem 0.85rem;border-radius:100px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-500);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.info-icon{font-size:1.4rem;flex-shrink:0;}.info-title{font-size:13px;font-weight:700;color:white;margin-bottom:2px;}.info-sub{font-size:11px;color:rgba(255,255,255,0.55);line-height:1.4;}
+.phase-tabs{display:flex;gap:0.3rem;margin-bottom:1rem;overflow-x:auto;padding-bottom:2px;}
+.phase-tab{padding:0.3rem 0.8rem;border-radius:100px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-500);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .plan-content{display:none;}.plan-content.show{display:block;}
-.week-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--gray-200);margin-bottom:0.75rem;overflow:hidden;box-shadow:var(--shadow-sm);}
+.week-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--gray-200);margin-bottom:0.65rem;overflow:hidden;box-shadow:var(--shadow-sm);}
 .week-card.recovery{border-color:#d1fae5;background:#f0fdf4;}
 .week-card.current-week{border-color:var(--blue);border-width:2px;}
-.week-card.upcoming{opacity:0.7;}
-.week-head{padding:0.8rem 1rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.15s;}
-.week-head:hover{background:var(--gray-100);}
-.wh-left{display:flex;align-items:center;gap:0.7rem;}
-.wh-num{font-family:var(--font-d);font-size:0.95rem;font-weight:800;color:var(--navy);}
+.week-head{padding:0.75rem 1rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.wh-left{display:flex;align-items:center;gap:0.65rem;}
+.wh-num{font-family:var(--font-d);font-size:0.9rem;font-weight:800;color:var(--navy);}
 .wh-focus{font-size:11px;color:var(--gray-500);}
-.wh-badges{display:flex;gap:0.3rem;flex-wrap:wrap;}
-.badge{padding:0.12rem 0.5rem;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;}
+.wh-badges{display:flex;gap:0.25rem;flex-wrap:wrap;}
+.badge{padding:0.1rem 0.45rem;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;}
 .b-base{background:var(--blue-mid);color:#1d4ed8;}.b-build{background:#ffedd5;color:#c2410c;}.b-peak{background:#fee2e2;color:#b91c1c;}.b-taper{background:var(--teal-light);color:#0f766e;}.b-rec{background:#d1fae5;color:#065f46;}.b-hrs{background:var(--gray-100);color:var(--gray-500);}.b-now{background:var(--blue-mid);color:var(--blue);}
-.week-days{padding:0.35rem 0.5rem 0.5rem;}
-.day-row{display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0.5rem;border-radius:7px;transition:background 0.15s;}
-.day-row:hover{background:var(--gray-100);}
+.week-days{padding:0.25rem 0.5rem 0.5rem;}
+.day-row{display:flex;align-items:center;gap:0.65rem;padding:0.45rem 0.5rem;border-radius:7px;}
 .day-name{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-400);min-width:26px;}
-.day-sport-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.day-sport-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 .si-swim{background:#dbeafe;}.si-bike{background:#ffedd5;}.si-run{background:var(--teal-light);}.si-brick{background:#f3e8ff;}.si-rest{background:var(--gray-100);}.si-strength{background:#fef3c7;}.si-test{background:#fce7f3;}.si-walk{background:#f0fdf4;}.si-other{background:var(--gray-100);}
 .day-info{flex:1;}.day-title{font-size:12px;font-weight:600;color:var(--navy);}.day-detail{font-size:11px;color:var(--gray-500);margin-top:1px;}.day-dur{font-size:11px;color:var(--gray-400);font-weight:600;white-space:nowrap;}
-.week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
-.wnav-btn{width:32px;height:32px;border-radius:7px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-600);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all 0.15s;}
-.wnav-btn:hover{border-color:var(--blue);color:var(--blue);}
-.wnav-title h2{font-family:var(--font-d);font-size:1.4rem;font-weight:800;color:var(--navy);}.wnav-title p{font-size:11px;color:var(--gray-400);}
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.65rem;margin-bottom:1.1rem;}
-.stat-box{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:0.85rem;box-shadow:var(--shadow-sm);}
-.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-400);margin-bottom:0.15rem;}
-.stat-value{font-family:var(--font-d);font-size:1.6rem;font-weight:800;color:var(--navy);line-height:1;}.stat-sub{font-size:10px;color:var(--gray-400);margin-top:2px;}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0.4rem;margin-bottom:1.1rem;}
-.cal-cell{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:0.6rem 0.35rem;min-height:110px;cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;gap:0.25rem;box-shadow:var(--shadow-sm);}
-.cal-cell:hover{border-color:var(--blue);}.cal-cell.today{border-color:var(--blue);background:var(--blue-light);}.cal-cell.past{opacity:0.4;}.cal-cell.before-start{opacity:0.3;background:var(--gray-100);}
-.cal-day-name{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gray-400);}.cal-day-num{font-family:var(--font-d);font-size:1.15rem;font-weight:800;color:var(--navy);line-height:1;}.cal-cell.today .cal-day-num{color:var(--blue);}
-.cal-sport{font-size:14px;margin-top:auto;}.cal-title{font-size:9px;color:var(--gray-500);line-height:1.3;}.cal-dur{font-size:9px;font-weight:700;color:var(--blue);}
-.ddc{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow-sm);}
-.ddc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
-.ddc-title{font-family:var(--font-d);font-size:1.2rem;font-weight:800;color:var(--navy);}.ddc-badge{padding:0.25rem 0.7rem;background:var(--blue-light);color:var(--blue);border-radius:5px;font-size:11px;font-weight:700;}
-.ddc-sub{font-size:12px;color:var(--gray-500);margin-bottom:0.9rem;}
-.session-blocks{display:flex;flex-direction:column;gap:0.55rem;}
-.sb{background:var(--gray-100);border-radius:8px;padding:0.75rem 0.9rem;display:flex;align-items:flex-start;gap:0.75rem;border-left:3px solid transparent;}
+
+/* WEEK VIEW */
+.week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.wnav-btn{width:34px;height:34px;border-radius:8px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-600);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.wnav-title h2{font-family:var(--font-d);font-size:1.3rem;font-weight:800;color:var(--navy);}.wnav-title p{font-size:11px;color:var(--gray-400);}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;}
+.stat-box{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:0.75rem;box-shadow:var(--shadow-sm);}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-400);margin-bottom:0.1rem;}
+.stat-value{font-family:var(--font-d);font-size:1.4rem;font-weight:800;color:var(--navy);line-height:1;}.stat-sub{font-size:10px;color:var(--gray-400);margin-top:2px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0.3rem;margin-bottom:1rem;}
+.cal-cell{background:var(--white);border:1.5px solid var(--gray-200);border-radius:10px;padding:0.5rem 0.25rem;min-height:90px;cursor:pointer;display:flex;flex-direction:column;gap:0.2rem;box-shadow:var(--shadow-sm);}
+.cal-cell.today{border-color:var(--blue);background:var(--blue-light);}
+.cal-cell.past{opacity:0.4;}.cal-cell.before-start{opacity:0.3;background:var(--gray-100);}
+.cal-day-name{font-size:8px;font-weight:700;text-transform:uppercase;color:var(--gray-400);}
+.cal-day-num{font-family:var(--font-d);font-size:1rem;font-weight:800;color:var(--navy);line-height:1;}
+.cal-cell.today .cal-day-num{color:var(--blue);}
+.cal-sport{font-size:13px;margin-top:auto;}.cal-title{font-size:8px;color:var(--gray-500);line-height:1.3;}.cal-dur{font-size:8px;font-weight:700;color:var(--blue);}
+.ddc{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:1rem;box-shadow:var(--shadow-sm);}
+.ddc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.65rem;}
+.ddc-title{font-family:var(--font-d);font-size:1.1rem;font-weight:800;color:var(--navy);}
+.ddc-badge{padding:0.2rem 0.65rem;background:var(--blue-light);color:var(--blue);border-radius:5px;font-size:11px;font-weight:700;}
+.ddc-sub{font-size:12px;color:var(--gray-500);margin-bottom:0.75rem;}
+.session-blocks{display:flex;flex-direction:column;gap:0.5rem;}
+.sb{background:var(--gray-100);border-radius:8px;padding:0.7rem 0.85rem;display:flex;align-items:flex-start;gap:0.65rem;border-left:3px solid transparent;}
 .sb-swim{border-left-color:var(--blue);}.sb-bike{border-left-color:var(--orange);}.sb-run{border-left-color:var(--teal);}.sb-rest{border-left-color:var(--gray-300);}
-.sb-icon{font-size:17px;flex-shrink:0;}.sb-name{font-size:12px;font-weight:700;color:var(--navy);}.sb-desc{font-size:11px;color:var(--gray-500);margin-top:1px;}
-.sb-meta{margin-left:auto;text-align:right;}.sb-meta strong{display:block;font-size:12px;font-weight:700;color:var(--navy);}.sb-meta span{font-size:10px;color:var(--gray-400);}
-.done-btn{margin-top:0.9rem;padding:0.55rem 1.1rem;background:var(--teal);border:none;border-radius:7px;color:white;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;}
-.done-btn:hover{background:#0f766e;}
-.profile-scroll{flex:1;overflow-y:auto;padding:1.4rem;}
-.profile-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--gray-200);padding:1.25rem;margin-bottom:0.85rem;box-shadow:var(--shadow-sm);}
-.profile-card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:0.9rem;}
-.pf{margin-bottom:0.8rem;}.pf:last-child{margin-bottom:0;}
-.pf label{display:block;font-size:11px;font-weight:700;color:var(--gray-500);margin-bottom:0.3rem;text-transform:uppercase;}
-.pf input,.pf select,.pf textarea{width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:13px;color:var(--navy);background:var(--white);outline:none;transition:all 0.2s;appearance:none;}
+.sb-icon{font-size:16px;flex-shrink:0;}.sb-name{font-size:12px;font-weight:700;color:var(--navy);}.sb-desc{font-size:11px;color:var(--gray-500);margin-top:1px;}
+.sb-meta{margin-left:auto;text-align:right;flex-shrink:0;}.sb-meta strong{display:block;font-size:12px;font-weight:700;color:var(--navy);}.sb-meta span{font-size:10px;color:var(--gray-400);}
+.done-btn{margin-top:0.85rem;padding:0.55rem 1.1rem;background:var(--teal);border:none;border-radius:7px;color:white;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;width:100%;}
+
+/* PROFILE */
+.profile-scroll{flex:1;overflow-y:auto;padding:1rem;-webkit-overflow-scrolling:touch;}
+.profile-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--gray-200);padding:1.1rem;margin-bottom:0.75rem;box-shadow:var(--shadow-sm);}
+.profile-card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:0.85rem;}
+.pf{margin-bottom:0.75rem;}.pf:last-child{margin-bottom:0;}
+.pf label{display:block;font-size:11px;font-weight:700;color:var(--gray-500);margin-bottom:0.25rem;text-transform:uppercase;}
+.pf input,.pf select,.pf textarea{width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:16px;color:var(--navy);background:var(--white);outline:none;appearance:none;}
 .pf input:focus,.pf select:focus,.pf textarea:focus{border-color:var(--blue);}
-.pf textarea{resize:vertical;min-height:60px;}.pf-hint{font-size:11px;color:var(--gray-400);margin-top:0.25rem;}
-.btn-save{padding:0.6rem 1.4rem;background:var(--navy);border:none;border-radius:var(--radius-sm);color:white;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;}
-.btn-save:hover{background:var(--blue);}
-.save-ok{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--teal);font-weight:600;margin-left:0.65rem;opacity:0;transition:opacity 0.3s;}
+.pf textarea{resize:vertical;min-height:60px;font-size:14px;}.pf-hint{font-size:11px;color:var(--gray-400);margin-top:0.2rem;}
+.btn-save{padding:0.7rem 1.4rem;background:var(--navy);border:none;border-radius:var(--radius-sm);color:white;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;width:100%;}
+.save-ok{display:flex;align-items:center;justify-content:center;gap:5px;font-size:12px;color:var(--teal);font-weight:600;margin-top:0.5rem;opacity:0;transition:opacity 0.3s;}
 .save-ok.show{opacity:1;}
-.account-info{background:var(--blue-light);border-radius:var(--radius-sm);padding:0.75rem 1rem;margin-bottom:0.85rem;font-size:13px;color:var(--navy);}
+.account-info{background:var(--blue-light);border-radius:var(--radius-sm);padding:0.7rem 0.9rem;margin-bottom:0.75rem;font-size:13px;color:var(--navy);}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sidebar { display: none !important; }
+  .mobile-top-bar { display: flex !important; }
+  .bottom-bar { display: block !important; }
+  .main { height: calc(100vh - 52px - var(--bottom-bar)); }
+  .tab-panel { height: 100%; }
+  .chat-top { padding: 0.7rem 1rem; }
+  .messages { padding: 0.85rem; }
+  .scroll-wrap { padding: 0.85rem; }
+  .profile-scroll { padding: 0.85rem; }
+  .cal-grid { gap: 0.2rem; }
+  .cal-cell { min-height: 75px; padding: 0.4rem 0.2rem; }
+  .stats-row { gap: 0.4rem; }
+  .ob-card { padding: 1.25rem; border-radius: var(--radius); }
+  .auth-card { padding: 1.75rem; }
+  .field-row { grid-template-columns: 1fr; }
+  .plan-type-grid { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sidebar { width: 200px; min-width: 200px; }
+  .cal-cell { min-height: 95px; }
+}
 </style>
 </head>
 <body>
+
 <script>
   const SUPABASE_URL = 'https://myguepayxnbdydcftgxa.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15Z3VlcGF5eG5iZHlkY2Z0Z3hhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NTc2NzgsImV4cCI6MjA5MDEzMzY3OH0.WMcTUvV-GW-F6ru7jAv1RUA2KZr6vYd1rGIzdasrU8U';
   const RAILWAY_URL = 'https://tricoach-server.up.railway.app';
 </script>
 
+<!-- LOADING -->
 <div id="screen-loading" class="screen active">
   <div style="text-align:center">
     <div class="loading-brand">
@@ -252,6 +319,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
   </div>
 </div>
 
+<!-- AUTH -->
 <div id="screen-auth" class="screen">
 <div class="auth-card">
   <div class="auth-brand">
@@ -266,20 +334,21 @@ nav.nav{flex:1;padding:0 0.65rem;}
   <div class="auth-error" id="auth-error"></div>
   <div class="auth-success" id="auth-success"></div>
   <div class="auth-form active" id="form-signin">
-    <div class="auth-field"><label>Email</label><input type="email" id="si-email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')signIn()"/></div>
-    <div class="auth-field"><label>Password</label><input type="password" id="si-pass" placeholder="Your password" onkeydown="if(event.key==='Enter')signIn()"/></div>
+    <div class="auth-field"><label>Email</label><input type="email" id="si-email" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')signIn()"/></div>
+    <div class="auth-field"><label>Password</label><input type="password" id="si-pass" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()"/></div>
     <button class="btn-auth" onclick="signIn()" id="btn-signin">Sign in</button>
     <div class="auth-footer">No account? <a onclick="switchTab('signup')">Create one free</a></div>
   </div>
   <div class="auth-form" id="form-signup">
-    <div class="auth-field"><label>Email</label><input type="email" id="su-email" placeholder="you@example.com"/></div>
-    <div class="auth-field"><label>Password</label><input type="password" id="su-pass" placeholder="At least 8 characters" onkeydown="if(event.key==='Enter')signUp()"/></div>
+    <div class="auth-field"><label>Email</label><input type="email" id="su-email" placeholder="you@example.com" autocomplete="email"/></div>
+    <div class="auth-field"><label>Password</label><input type="password" id="su-pass" placeholder="At least 8 characters" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUp()"/></div>
     <button class="btn-auth" onclick="signUp()" id="btn-signup">Create my account</button>
     <div class="auth-footer">Already have an account? <a onclick="switchTab('signin')">Sign in</a></div>
   </div>
 </div>
 </div>
 
+<!-- ONBOARDING -->
 <div id="screen-onboard" class="screen">
 <div class="ob-card">
   <div class="ob-logo">
@@ -290,8 +359,8 @@ nav.nav{flex:1;padding:0 0.65rem;}
 
   <div class="ob-step active" id="ob0">
     <div class="step-label">Step 1 of 4</div>
-    <h2>What are you training for? </h2>
-    <p class="step-sub">Pick your event - you can always change it later!</p>
+    <h2>What are you training for?</h2>
+    <p class="step-sub">Pick your event - you can change it later!</p>
     <div class="big-grid">
       <div class="big-card" data-v="Sprint triathlon" onclick="selEvent(this)"><span class="big-card-emoji">&#x1F3CA;&#x1F6B4;&#x1F3C3;</span><div class="big-card-name">Sprint Tri</div><div class="big-card-detail">750m 20km 5km</div></div>
       <div class="big-card" data-v="Olympic triathlon" onclick="selEvent(this)"><span class="big-card-emoji">&#x1F3CA;&#x1F6B4;&#x1F3C3;</span><div class="big-card-name">Olympic Tri</div><div class="big-card-detail">1.5km 40km 10km</div></div>
@@ -314,13 +383,13 @@ nav.nav{flex:1;padding:0 0.65rem;}
     <div class="step-label">Step 2 of 4</div>
     <h2>Tell us about you!</h2>
     <p class="step-sub">Just the basics - your coach needs to know who they are talking to!</p>
-    <div class="ob-field"><label>Your first name</label><input type="text" id="f-name" placeholder="e.g. Erica"/></div>
+    <div class="ob-field"><label>Your first name</label><input type="text" id="f-name" placeholder="e.g. Erica" autocomplete="given-name"/></div>
     <div class="ob-field">
       <label>WhatsApp (optional)</label>
-      <input type="tel" id="f-phone" placeholder="+13125551234"/>
-      <div class="hint">Include country code (+1 for US). Get your daily workout here every morning!</div>
+      <input type="tel" id="f-phone" placeholder="+13125551234" autocomplete="tel"/>
+      <div class="hint">Include country code. Get your daily workout here every morning!</div>
     </div>
-    <div class="section-label">How fit are you right now? Be honest!</div>
+    <div class="section-label">How fit are you right now?</div>
     <div class="chip-row" id="cg-level">
       <div class="chip" data-v="complete-beginner" onclick="pick('cg-level',this)">Total beginner</div>
       <div class="chip" data-v="beginner" onclick="pick('cg-level',this)">Some experience</div>
@@ -370,7 +439,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
   <div class="ob-step" id="ob3">
     <div class="step-label">Step 4 of 4</div>
     <h2>Almost there!</h2>
-    <p class="step-sub">Do you want us to build your training plan, or do you already have one?</p>
+    <p class="step-sub">Do you want us to build your plan, or do you have your own?</p>
     <div class="plan-type-grid">
       <div class="plan-type-card" id="choice-ai" onclick="selPlanType('ai')">
         <span class="plan-type-emoji">&#x1F916;</span>
@@ -385,13 +454,14 @@ nav.nav{flex:1;padding:0 0.65rem;}
     </div>
     <div id="own-plan-input" style="display:none">
       <div class="section-label">Paste or describe your plan</div>
-      <div class="ob-field"><textarea id="plan-text-input" style="min-height:120px" placeholder="Paste your plan here - e.g. Week 1: Mon rest, Tue 20min easy run, Wed 30min bike ride..."></textarea></div>
+      <div class="ob-field"><textarea id="plan-text-input" style="min-height:100px" placeholder="Paste your plan here..."></textarea></div>
     </div>
     <div class="btn-row-ob"><button class="btn-back-ob" onclick="ob(2)">Back</button><button class="btn-go" style="flex:1" id="btn-launch" onclick="launch()" disabled>Let's go!</button></div>
   </div>
 </div>
 </div>
 
+<!-- GENERATING -->
 <div id="screen-generating" class="screen">
 <div class="gen-card">
   <div class="gen-spinner"></div>
@@ -401,7 +471,19 @@ nav.nav{flex:1;padding:0 0.65rem;}
 </div>
 </div>
 
+<!-- APP -->
 <div id="screen-app" class="screen">
+
+  <!-- Mobile top bar -->
+  <div class="mobile-top-bar">
+    <div class="mobile-brand">
+      <div class="mobile-brand-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <div class="mobile-brand-name">Tri<span>Coach</span></div>
+    </div>
+    <div class="mobile-race-pill" id="mobile-race-pill">&#x1F3C1; <span id="mobile-days">-</span> days</div>
+  </div>
+
+  <!-- Desktop sidebar -->
   <div class="sidebar">
     <div class="sb-brand"><div class="sb-brand-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="sb-brand-name">TriCoach</div></div>
     <div class="athlete-card"><div class="athlete-name" id="s-name">Athlete</div><div class="athlete-meta" id="s-meta">Loading...</div></div>
@@ -415,6 +497,8 @@ nav.nav{flex:1;padding:0 0.65rem;}
     <div class="sb-footer"><div class="wk-label">This week</div><div class="wk-bars" id="s-bars"></div><div class="wk-text" id="s-wk-text">- sessions</div></div>
     <button class="btn-signout" onclick="signOut()">Sign out</button>
   </div>
+
+  <!-- Main content -->
   <div class="main">
     <div class="tab-panel active" id="tab-chat">
       <div class="chat-top"><div class="coach-av">TC</div><div><div class="cn">TriCoach AI</div><div class="cs">Active now</div></div><div class="today-badge" id="today-badge">Today: <span>-</span></div></div>
@@ -426,6 +510,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
         <button class="send-btn" id="send-btn" onclick="sendMsg()">&#x2191;</button>
       </div>
     </div>
+
     <div class="tab-panel" id="tab-plan">
       <div class="scroll-wrap">
         <div class="page-head"><div><div class="page-title">Training Plan</div><div class="page-sub" id="plan-sub">Loading...</div></div><button class="btn-gen" id="gen-btn" onclick="regenPlan()">Regenerate</button></div>
@@ -434,6 +519,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
         <div class="plan-content" id="plan-content"></div>
       </div>
     </div>
+
     <div class="tab-panel" id="tab-week">
       <div class="scroll-wrap">
         <div class="week-nav"><button class="wnav-btn" onclick="wkOff(-1)">&#x2039;</button><div class="wnav-title"><h2 id="wk-title">This week</h2><p id="wk-sub">Loading...</p></div><button class="wnav-btn" onclick="wkOff(1)">&#x203A;</button></div>
@@ -442,18 +528,19 @@ nav.nav{flex:1;padding:0 0.65rem;}
         <div class="ddc" id="ddc"></div>
       </div>
     </div>
+
     <div class="tab-panel" id="tab-profile">
       <div class="profile-scroll">
-        <div class="page-head"><div><div class="page-title">My Profile</div><div class="page-sub">Changes save to your account</div></div></div>
+        <div class="page-head"><div><div class="page-title">My Profile</div><div class="page-sub">Tap Save after making changes</div></div></div>
         <div class="account-info">Signed in as <strong id="account-email">-</strong></div>
         <div class="profile-card">
           <div class="profile-card-title">About you</div>
-          <div class="pf"><label>Name</label><input type="text" id="p-name"/></div>
+          <div class="pf"><label>Name</label><input type="text" id="p-name" autocomplete="given-name"/></div>
           <div class="pf"><label>Event</label><input type="text" id="p-event" readonly style="background:var(--gray-100);color:var(--gray-500)"/></div>
           <div class="pf"><label>Race name</label><input type="text" id="p-race"/></div>
           <div class="pf"><label>Race date</label><input type="date" id="p-date"/></div>
           <div class="pf"><label>Training start date</label><input type="date" id="p-start"/></div>
-          <div class="pf"><label>WhatsApp number</label><input type="tel" id="p-phone" placeholder="+13125551234"/><div class="pf-hint">Your coach sends morning workouts here!</div></div>
+          <div class="pf"><label>WhatsApp number</label><input type="tel" id="p-phone" placeholder="+13125551234" autocomplete="tel"/><div class="pf-hint">Your coach sends morning workouts here!</div></div>
         </div>
         <div class="profile-card">
           <div class="profile-card-title">Training</div>
@@ -467,8 +554,31 @@ nav.nav{flex:1;padding:0 0.65rem;}
           <div class="pf"><label>Injuries or limitations</label><textarea id="p-injuries"></textarea></div>
           <div class="pf"><label>Anything else</label><textarea id="p-other"></textarea></div>
         </div>
-        <div style="display:flex;align-items:center;gap:0.65rem"><button class="btn-save" onclick="saveProfile()">Save changes</button><div class="save-ok" id="save-ok">Saved!</div></div>
+        <button class="btn-save" onclick="saveProfile()">Save changes</button>
+        <div class="save-ok" id="save-ok">Saved!</div>
       </div>
+    </div>
+  </div>
+
+  <!-- Mobile bottom bar -->
+  <div class="bottom-bar">
+    <div class="bottom-nav">
+      <button class="bottom-nav-item active" id="bnav-chat" onclick="showTab('chat')">
+        <div class="bottom-nav-icon">&#x1F4AC;</div>
+        <div class="bottom-nav-label">Coach</div>
+      </button>
+      <button class="bottom-nav-item" id="bnav-week" onclick="showTab('week')">
+        <div class="bottom-nav-icon">&#x1F4C5;</div>
+        <div class="bottom-nav-label">This Week</div>
+      </button>
+      <button class="bottom-nav-item" id="bnav-plan" onclick="showTab('plan')">
+        <div class="bottom-nav-icon">&#x1F4CB;</div>
+        <div class="bottom-nav-label">Plan</div>
+      </button>
+      <button class="bottom-nav-item" id="bnav-profile" onclick="showTab('profile')">
+        <div class="bottom-nav-icon">&#x1F464;</div>
+        <div class="bottom-nav-label">Profile</div>
+      </button>
     </div>
   </div>
 </div>
@@ -592,61 +702,60 @@ async function launch(){
   const isOwn=planType==='own';
   const steps=isOwn?['Saving your profile','Reading your plan','Setting up AI coaching','Almost ready...','Done!']:['Saving your profile','Calculating your weeks','Building your plan','Scheduling sessions','Almost ready...'];
   document.getElementById('gen-title').textContent=isOwn?'Setting up your coaching':'Building your plan';
-  document.getElementById('gen-steps-list').innerHTML=steps.map((s,i)=>'<li id="gs'+i+'">'+s+'</li>').join('');
+  document.getElementById('gen-steps-list').innerHTML=steps.map(function(s,i){return '<li id="gs'+i+'">'+s+'</li>';}).join('');
   showScreen('generating');
-  let si=0;document.getElementById('gs0').classList.add('cur');
-  const iv=setInterval(function(){if(si<steps.length-1){document.getElementById('gs'+si).classList.remove('cur');document.getElementById('gs'+si).classList.add('done');si++;document.getElementById('gs'+si).classList.add('cur');}},1200);
+  var si=0;document.getElementById('gs0').classList.add('cur');
+  var iv=setInterval(function(){if(si<steps.length-1){document.getElementById('gs'+si).classList.remove('cur');document.getElementById('gs'+si).classList.add('done');si++;document.getElementById('gs'+si).classList.add('cur');}},1200);
   try{
     await apiPost('/api/profile',P);
-    if(!isOwn){const r=await apiPost('/api/generate-plan',{profile:P});if(r&&r.plan)P.plan=r.plan;}
-    else if(planText.length>10){try{const r=await apiPost('/api/parse-plan',{planText:planText,profile:P});if(r&&r.plan)P.plan=r.plan;}catch(e){}}
+    if(!isOwn){var r=await apiPost('/api/generate-plan',{profile:P});if(r&&r.plan)P.plan=r.plan;}
+    else if(planText.length>10){try{var r=await apiPost('/api/parse-plan',{planText:planText,profile:P});if(r&&r.plan)P.plan=r.plan;}catch(e){}}
   }catch(e){console.error('Launch error:',e);}
   clearInterval(iv);
   steps.forEach(function(_,i){var el=document.getElementById('gs'+i);if(el){el.classList.add('done');el.classList.remove('cur');}});
   await delay(500);showScreen('app');initApp();btn.disabled=false;
 }
 
-// APP
 function showScreen(name){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById('screen-'+name).classList.add('active');}
 
-// Get current week number based on start date
 function getCurrentWeek(){
   if(!P.start_date)return 1;
-  const startDate=new Date(P.start_date);
-  const daysSinceStart=Math.floor((TODAY-startDate)/86400000);
-  if(daysSinceStart<0)return 0; // not started yet
+  var startDate=new Date(P.start_date);
+  var daysSinceStart=Math.floor((TODAY-startDate)/86400000);
+  if(daysSinceStart<0)return 0;
   return Math.floor(daysSinceStart/7)+1;
 }
 
 function initApp(){
-  const isOwn=P.plan_type==='own';
+  var isOwn=P.plan_type==='own';
   document.getElementById('s-name').textContent=P.name||'Athlete';
   document.getElementById('s-meta').textContent=(P.event||'Training')+' - '+(P.training_days||4)+' days/wk';
   document.getElementById('account-email').textContent=currentUser&&currentUser.email?currentUser.email:'';
-  const diff=P.race_date?Math.ceil((new Date(P.race_date)-TODAY)/86400000):0;
+  var diff=P.race_date?Math.ceil((new Date(P.race_date)-TODAY)/86400000):0;
   document.getElementById('s-days').textContent=diff>0?diff:'-';
   document.getElementById('s-race').textContent=P.race_name||'Race day';
-  const badge=document.getElementById('plan-badge');badge.textContent=isOwn?'Own':'AI';badge.className='plan-type-badge '+(isOwn?'badge-own':'badge-ai');
-  const banner=document.getElementById('plan-banner');banner.className='info-banner '+(isOwn?'own-plan':'ai');
+  document.getElementById('mobile-days').textContent=diff>0?diff:'-';
+  var badge=document.getElementById('plan-badge');badge.textContent=isOwn?'Own':'AI';badge.className='plan-type-badge '+(isOwn?'badge-own':'badge-ai');
+  var banner=document.getElementById('plan-banner');banner.className='info-banner '+(isOwn?'own-plan':'ai');
   document.getElementById('banner-title').textContent=isOwn?'Your plan - AI coaching':'Evidence-based periodization';
-  document.getElementById('banner-sub').textContent=isOwn?'TriCoach coaches you through your existing plan':"Friel's Training Bible - Progressive overload - Recovery weeks - Beginner-friendly volumes";
-  const gb=document.getElementById('gen-btn');gb.textContent=isOwn?'Edit plan':'Regenerate';gb.className='btn-gen '+(isOwn?'own':'');
+  document.getElementById('banner-sub').textContent=isOwn?'TriCoach coaches you through your existing plan':"Friel's Training Bible - Progressive overload - Recovery weeks";
+  var gb=document.getElementById('gen-btn');gb.textContent=isOwn?'Edit plan':'Regenerate';gb.className='btn-gen '+(isOwn?'own':'');
   renderBars();renderPlan();renderWeek();loadProfileForm();sendBrief();
 }
 
-function renderBars(){const c=document.getElementById('s-bars');c.innerHTML='';const d=P.training_days||4;for(let i=0;i<d;i++){const el=document.createElement('div');el.className='wk-bar '+(i<1?'done':i===1?'today':'');c.appendChild(el);}document.getElementById('s-wk-text').textContent='1 of '+(P.training_days||4)+' sessions';}
+function renderBars(){var c=document.getElementById('s-bars');c.innerHTML='';var d=P.training_days||4;for(var i=0;i<d;i++){var el=document.createElement('div');el.className='wk-bar '+(i<1?'done':i===1?'today':'');c.appendChild(el);}document.getElementById('s-wk-text').textContent='1 of '+(P.training_days||4)+' sessions';}
 
 function loadProfileForm(){document.getElementById('p-name').value=P.name||'';document.getElementById('p-event').value=P.event||'';document.getElementById('p-race').value=P.race_name||'';document.getElementById('p-date').value=P.race_date||'';document.getElementById('p-start').value=P.start_date||'';document.getElementById('p-phone').value=P.phone||'';document.getElementById('p-plan-type').value=P.plan_type==='own'?'My own plan (AI coached)':'AI generated plan';document.getElementById('p-level').value=P.level||'beginner';document.getElementById('p-days').value=String(P.training_days||4);document.getElementById('p-goal').value=P.goal||'';document.getElementById('p-injuries').value=P.injuries||'';document.getElementById('p-other').value=P.notes||'';}
 
-async function saveProfile(){P.name=document.getElementById('p-name').value.trim();P.race_name=document.getElementById('p-race').value.trim();P.race_date=document.getElementById('p-date').value;P.start_date=document.getElementById('p-start').value;P.phone=document.getElementById('p-phone').value.trim();P.level=document.getElementById('p-level').value;P.training_days=parseInt(document.getElementById('p-days').value);P.goal=document.getElementById('p-goal').value.trim();P.injuries=document.getElementById('p-injuries').value.trim();P.notes=document.getElementById('p-other').value.trim();document.getElementById('s-name').textContent=P.name;try{await apiPost('/api/profile',P);const ok=document.getElementById('save-ok');ok.classList.add('show');setTimeout(function(){ok.classList.remove('show');},2500);}catch(e){alert('Save failed');}}
+async function saveProfile(){P.name=document.getElementById('p-name').value.trim();P.race_name=document.getElementById('p-race').value.trim();P.race_date=document.getElementById('p-date').value;P.start_date=document.getElementById('p-start').value;P.phone=document.getElementById('p-phone').value.trim();P.level=document.getElementById('p-level').value;P.training_days=parseInt(document.getElementById('p-days').value);P.goal=document.getElementById('p-goal').value.trim();P.injuries=document.getElementById('p-injuries').value.trim();P.notes=document.getElementById('p-other').value.trim();document.getElementById('s-name').textContent=P.name;try{await apiPost('/api/profile',P);var ok=document.getElementById('save-ok');ok.classList.add('show');setTimeout(function(){ok.classList.remove('show');},2500);}catch(e){alert('Save failed');}}
 
 // CHAT
-function addMsg(role,text){const c=document.getElementById('messages');const div=document.createElement('div');div.className='msg '+role;const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});const av=role==='coach'?'TC':(P.name?P.name[0].toUpperCase():'U');div.innerHTML='<div class="msg-av">'+av+'</div><div><div class="msg-bubble">'+fmt(text)+'</div><div class="msg-time">'+t+'</div></div>';c.appendChild(div);c.scrollTop=c.scrollHeight;}
+function addMsg(role,text){var c=document.getElementById('messages');var div=document.createElement('div');div.className='msg '+role;var t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});var av=role==='coach'?'TC':(P.name?P.name[0].toUpperCase():'U');div.innerHTML='<div class="msg-av">'+av+'</div><div><div class="msg-bubble">'+fmt(text)+'</div><div class="msg-time">'+t+'</div></div>';c.appendChild(div);c.scrollTop=c.scrollHeight;}
 function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/(<li>.*<\/li>\n?)+/g,function(m){return '<ul>'+m+'</ul>';}).replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');}
 function showTyping(on){document.getElementById('typing').classList.toggle('on',on);document.getElementById('send-btn').disabled=on;document.getElementById('messages').scrollTop=9999;}
 function setQR(arr){document.getElementById('qr').innerHTML=arr.map(function(r){return '<div class="qr-chip" onclick="quickSend(\''+r.replace(/'/g,"\\'")+'\')">'+r+'</div>';}).join('');}
 function quickSend(t){document.getElementById('qr').innerHTML='';document.getElementById('chat-in').value=t;sendMsg();}
-async function callCoach(message){const data=await apiPost('/api/chat',{message:message,history:chatHistory.slice(-20),profile:P,planPhase:P.plan&&P.plan.phase?P.plan.phase:'Base 1'});chatHistory.push({role:'user',content:message});chatHistory.push({role:'assistant',content:data.reply});return data.reply;}
+async function callCoach(message){var data=await apiPost('/api/chat',{message:message,history:chatHistory.slice(-20),profile:P,planPhase:P.plan&&P.plan.phase?P.plan.phase:'Base 1'});chatHistory.push({role:'user',content:message});chatHistory.push({role:'assistant',content:data.reply});return data.reply;}
 
 async function sendBrief(){
   var hour=TODAY.getHours();
@@ -657,134 +766,44 @@ async function sendBrief(){
   var daysToStart=Math.ceil((startDate-TODAY)/86400000);
   var notStarted=daysToStart>0;
   var weekNum=getCurrentWeek();
-  var context=notStarted?'Training has NOT started yet - starts in '+daysToStart+' day'+(daysToStart===1?'':'s')+'. Do not give any workout for today. Instead send an encouraging pre-training message.':'Currently in week '+weekNum+' of training.';
-  var prompt=greeting+' '+( P.name||'there')+'! It is '+dow+' '+( hour<12?'morning':hour<17?'afternoon':'evening')+'. '+wo+' weeks to '+(P.race_name||'race day')+'. Event: '+P.event+'. Level: '+P.level+'. '+context+' Fitness: '+(P.current_fitness||'not specified')+'. Injuries: '+(P.injuries||'none')+'.\n\nSend a warm '+( hour<12?'morning':hour<17?'afternoon':'evening')+' message matching the time of day. '+( notStarted?'Get them excited about starting tomorrow - no workout today.':'Give today\'s session with exact duration for a '+P.level+' and one quick tip.')+' Short, warm, use a couple of emojis!';
+  var context=notStarted?'Training has NOT started yet - starts in '+daysToStart+' day'+(daysToStart===1?'':'s')+'. Do not give any workout for today. Send an encouraging pre-training message.':'Currently in week '+weekNum+' of training.';
+  var prompt=greeting+' '+( P.name||'there')+'! It is '+dow+' '+( hour<12?'morning':hour<17?'afternoon':'evening')+'. '+wo+' weeks to '+(P.race_name||'race day')+'. Event: '+P.event+'. Level: '+P.level+'. '+context+' Fitness: '+(P.current_fitness||'not specified')+'. Injuries: '+(P.injuries||'none')+'.\n\nSend a warm '+( hour<12?'morning':hour<17?'afternoon':'evening')+' message. '+(notStarted?'Get them excited about starting - no workout today.':'Give today\'s session with exact duration for a '+P.level+' and one quick tip.')+' Short, warm, use a couple of emojis!';
   showTyping(true);await delay(400);
-  try{
-    var r=await callCoach(prompt);
-    showTyping(false);addMsg('coach',r);
-    document.getElementById('today-badge').innerHTML='Today: <span>'+getTodaySport()+'</span>';
-    setQR(["Done! Log it","Feeling tired","What's this session for?","Explain my plan"]);
-  }catch(e){
-    showTyping(false);
-    addMsg('coach','Hey '+(P.name||'')+'!\n\nI am having trouble connecting. Check that your Railway server is running.\n\nOnce it is up, send me a message!');
-    setQR(["Today's workout?","How does my plan work?"]);
-  }
+  try{var r=await callCoach(prompt);showTyping(false);addMsg('coach',r);document.getElementById('today-badge').innerHTML='Today: <span>'+getTodaySport()+'</span>';setQR(["Done! Log it","Feeling tired","What's this for?","Explain my plan"]);}
+  catch(e){showTyping(false);addMsg('coach','Hey '+(P.name||'')+'!\n\nHaving trouble connecting. Check Railway is running!\n\nSend me a message once it is up.');}
 }
 
-function getTodaySport(){
-  if(!P.plan||!P.plan.weeks)return '-';
-  var wk=getCurrentWeek();
-  if(wk<=0)return 'not started';
-  var week=P.plan.weeks.find(function(w){return w.week===Math.min(P.plan.weeks.length,wk);});
-  if(!week)return '-';
-  var day=week.days&&week.days.find(function(d){return d.day===DAYS[TODAY.getDay()];});
-  return day&&day.sport?day.sport:'rest';
-}
+function getTodaySport(){if(!P.plan||!P.plan.weeks)return '-';var wk=getCurrentWeek();if(wk<=0)return 'soon';var week=P.plan.weeks.find(function(w){return w.week===Math.min(P.plan.weeks.length,wk);});if(!week)return '-';var day=week.days&&week.days.find(function(d){return d.day===DAYS[TODAY.getDay()];});return day&&day.sport?day.sport:'rest';}
 
-async function sendMsg(){
-  var inp=document.getElementById('chat-in');var text=inp.value.trim();if(!text)return;
-  inp.value='';resizeTA(inp);document.getElementById('qr').innerHTML='';
-  addMsg('user',text);showTyping(true);
-  try{
-    var r=await callCoach(text);showTyping(false);addMsg('coach',r);
-    var l=text.toLowerCase();
-    if(l.includes('done')||l.includes('finished'))setQR(["How was that?","What's tomorrow?","Log my stats"]);
-    else if(l.includes('tired')||l.includes('sore'))setQR(["Should I rest?","Recovery tips","Adjust this week"]);
-    else setQR(["Tell me more","Adjust my plan","Motivate me!"]);
-  }catch(e){showTyping(false);addMsg('coach','Could not reach the server. Is Railway running?');}
-}
+async function sendMsg(){var inp=document.getElementById('chat-in');var text=inp.value.trim();if(!text)return;inp.value='';resizeTA(inp);document.getElementById('qr').innerHTML='';addMsg('user',text);showTyping(true);try{var r=await callCoach(text);showTyping(false);addMsg('coach',r);var l=text.toLowerCase();if(l.includes('done')||l.includes('finished'))setQR(["How was that?","What's tomorrow?","Log my stats"]);else if(l.includes('tired')||l.includes('sore'))setQR(["Should I rest?","Recovery tips","Adjust this week"]);else setQR(["Tell me more","Adjust my plan","Motivate me!"]);}catch(e){showTyping(false);addMsg('coach','Could not reach the server. Is Railway running?');}}
 function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 function resizeTA(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
 
 // PLAN
-async function regenPlan(){
-  document.getElementById('gen-btn').disabled=true;
-  try{
-    var isOwn=P.plan_type==='own';
-    if(isOwn){var t=prompt('Update your plan:',P.own_plan_text||'');if(t!==null&&t.trim())P.own_plan_text=t.trim();var r=await apiPost('/api/parse-plan',{planText:P.own_plan_text,profile:P});if(r&&r.plan){P.plan=r.plan;renderPlan();renderWeek();}}
-    else{var r=await apiPost('/api/generate-plan',{profile:P});if(r&&r.plan){P.plan=r.plan;renderPlan();renderWeek();}}
-  }catch(e){alert('Could not regenerate - try again!');}
-  document.getElementById('gen-btn').disabled=false;
-}
+async function regenPlan(){document.getElementById('gen-btn').disabled=true;try{var isOwn=P.plan_type==='own';if(isOwn){var t=prompt('Update your plan:',P.own_plan_text||'');if(t!==null&&t.trim())P.own_plan_text=t.trim();var r=await apiPost('/api/parse-plan',{planText:P.own_plan_text,profile:P});if(r&&r.plan){P.plan=r.plan;renderPlan();renderWeek();}}else{var r=await apiPost('/api/generate-plan',{profile:P});if(r&&r.plan){P.plan=r.plan;renderPlan();renderWeek();}}}catch(e){alert('Could not regenerate - try again!');}document.getElementById('gen-btn').disabled=false;}
 
 function si(s){var m={swim:'&#x1F3CA;',bike:'&#x1F6B4;',run:'&#x1F3C3;',brick:'&#x26A1;',rest:'&#x1F634;',strength:'&#x1F4AA;',test:'&#x1F52C;',walk:'&#x1F6B6;',other:'&#x1F3AF;'};return m[s]||'&#x1F3AF;';}
 function bc(ph){var p=(ph||'').toLowerCase();return p.includes('base')?'b-base':p.includes('build')?'b-build':p.includes('peak')?'b-peak':p.includes('taper')?'b-taper':'b-base';}
 
-function renderPlan(){
-  if(!P.plan){document.getElementById('plan-content').innerHTML='<div style="padding:2rem;text-align:center;color:var(--gray-500);font-size:13px">Your plan is loading... chat with your coach in the meantime!</div>';document.getElementById('plan-content').classList.add('show');return;}
-  var tw=P.plan.weeks?P.plan.weeks.length:0;
-  document.getElementById('plan-sub').textContent=(P.event||'Training')+' - '+P.name+' - '+tw+'-week plan';
-  document.getElementById('phase-tabs').innerHTML=(P.plan.phases||[]).map(function(p){return '<div class="phase-tab">'+p.name+': Wk '+p.weeks+'</div>';}).join('');
-  var c=document.getElementById('plan-content');c.innerHTML='';
-  var curWk=getCurrentWeek();
-  (P.plan.weeks||[]).forEach(function(w){
-    var isCur=w.week===curWk;
-    var isUpcoming=w.week===1&&curWk<=0;
-    var div=document.createElement('div');
-    div.className='week-card '+(w.isRecovery?'recovery':'')+(isCur?' current-week':'')+(isUpcoming?' upcoming':'');
-    var extra=[isCur?'<span class="badge b-now">Now</span>':'',isUpcoming?'<span class="badge b-now">Starts tomorrow</span>':'',w.isRecovery?'<span class="badge b-rec">Recovery</span>':'',w.isTestWeek?'<span class="badge b-rec">Test</span>':''].filter(Boolean).join('');
-    div.innerHTML='<div class="week-head" onclick="toggleWk('+w.week+')"><div class="wh-left"><div class="wh-num">Week '+w.week+'</div><div class="wh-focus">'+(w.focus||w.phase)+'</div></div><div class="wh-badges"><span class="badge '+bc(w.phase)+'">'+w.phase+'</span>'+extra+'<span class="badge b-hrs">'+(w.totalHours||'?')+'h</span></div></div><div class="week-days" id="wd-'+w.week+'" style="'+(w.week<=2||isCur||isUpcoming?'':'display:none')+'">'+(w.days||[]).map(function(d){return '<div class="day-row"><div class="day-name">'+d.day+'</div><div class="day-sport-icon si-'+(d.sport||'other')+'">'+si(d.sport)+'</div><div class="day-info"><div class="day-title">'+d.title+'</div><div class="day-detail">'+d.detail+'</div></div><div class="day-dur">'+d.duration+'</div></div>';}).join('')+'</div>';
-    c.appendChild(div);
-  });
-  document.getElementById('plan-content').classList.add('show');
-}
+function renderPlan(){if(!P.plan){document.getElementById('plan-content').innerHTML='<div style="padding:2rem;text-align:center;color:var(--gray-500);font-size:13px">Your plan is loading... chat with your coach in the meantime!</div>';document.getElementById('plan-content').classList.add('show');return;}var tw=P.plan.weeks?P.plan.weeks.length:0;document.getElementById('plan-sub').textContent=(P.event||'Training')+' - '+P.name+' - '+tw+'-week plan';document.getElementById('phase-tabs').innerHTML=(P.plan.phases||[]).map(function(p){return '<div class="phase-tab">'+p.name+': Wk '+p.weeks+'</div>';}).join('');var c=document.getElementById('plan-content');c.innerHTML='';var curWk=getCurrentWeek();(P.plan.weeks||[]).forEach(function(w){var isCur=w.week===curWk;var isUpcoming=w.week===1&&curWk<=0;var div=document.createElement('div');div.className='week-card '+(w.isRecovery?'recovery':'')+(isCur?' current-week':'');var extra=[isCur?'<span class="badge b-now">Now</span>':'',isUpcoming?'<span class="badge b-now">Starts soon</span>':'',w.isRecovery?'<span class="badge b-rec">Recovery</span>':'',w.isTestWeek?'<span class="badge b-rec">Test</span>':''].filter(Boolean).join('');div.innerHTML='<div class="week-head" onclick="toggleWk('+w.week+')"><div class="wh-left"><div class="wh-num">Week '+w.week+'</div><div class="wh-focus">'+(w.focus||w.phase)+'</div></div><div class="wh-badges"><span class="badge '+bc(w.phase)+'">'+w.phase+'</span>'+extra+'<span class="badge b-hrs">'+(w.totalHours||'?')+'h</span></div></div><div class="week-days" id="wd-'+w.week+'" style="'+(w.week<=2||isCur||isUpcoming?'':'display:none')+'">'+(w.days||[]).map(function(d){return '<div class="day-row"><div class="day-name">'+d.day+'</div><div class="day-sport-icon si-'+(d.sport||'other')+'">'+si(d.sport)+'</div><div class="day-info"><div class="day-title">'+d.title+'</div><div class="day-detail">'+d.detail+'</div></div><div class="day-dur">'+d.duration+'</div></div>';}).join('')+'</div>';c.appendChild(div);});document.getElementById('plan-content').classList.add('show');}
 function toggleWk(n){var el=document.getElementById('wd-'+n);if(el)el.style.display=el.style.display==='none'?'':'none';}
 
 // WEEK VIEW
 function wkOff(d){weekOffset+=d;renderWeek();}
-function renderWeek(){
-  var off=weekOffset;
-  var ws=new Date(TODAY);ws.setDate(TODAY.getDate()-TODAY.getDay()+(off*7));
-  var we=new Date(ws);we.setDate(ws.getDate()+6);
-  document.getElementById('wk-title').textContent=off===0?'This week':off===-1?'Last week':off===1?'Next week':'Week of '+ws.getDate()+' '+MONTHS[ws.getMonth()];
-  document.getElementById('wk-sub').textContent=DAYS[ws.getDay()]+' '+ws.getDate()+' '+MONTHS[ws.getMonth()]+' - '+DAYS[we.getDay()]+' '+we.getDate()+' '+MONTHS[we.getMonth()];
-  var wd=getWkWorkouts(ws);
-  var total=wd.reduce(function(s,d){return s+(d.mins||0);},0);
-  var sess=wd.filter(function(d){return d.sport!=='rest';}).length;
-  document.getElementById('stats-row').innerHTML='<div class="stat-box"><div class="stat-label">Sessions</div><div class="stat-value">'+sess+'</div><div class="stat-sub">planned</div></div><div class="stat-box"><div class="stat-label">Volume</div><div class="stat-value">'+Math.floor(total/60)+'<span style="font-size:1rem">h</span>'+(total%60?total%60+'m':'')+'</div><div class="stat-sub">this week</div></div><div class="stat-box"><div class="stat-label">Phase</div><div class="stat-value" style="font-size:0.9rem;padding-top:10px">'+(wd[1]&&wd[1].phase?wd[1].phase:'Training')+'</div><div class="stat-sub">'+(wd[0]&&wd[0].isRecovery?'rest week':'training block')+'</div></div>';
-  var grid=document.getElementById('cal-grid');grid.innerHTML='';
-  var startDate=P.start_date?new Date(P.start_date):null;
-  wd.forEach(function(d,i){
-    var date=new Date(ws);date.setDate(ws.getDate()+i);
-    var isToday=date.toDateString()===TODAY.toDateString();
-    var isPast=date<TODAY&&!isToday;
-    var isBeforeStart=startDate&&date<startDate&&!isToday;
-    var cell=document.createElement('div');
-    cell.className='cal-cell '+(isToday?'today':'')+(isBeforeStart?' before-start':isPast&&d.sport!=='rest'?' past':'');
-    cell.onclick=function(){showDay(d,date);};
-    cell.innerHTML='<div class="cal-day-name">'+DAYS[date.getDay()]+'</div><div class="cal-day-num">'+date.getDate()+'</div><div class="cal-sport">'+si(isBeforeStart?'rest':d.sport)+'</div><div class="cal-title">'+(isBeforeStart?'Pre-training':d.title)+'</div>'+(d.sport!=='rest'&&!isBeforeStart?'<div class="cal-dur">'+d.duration+'</div>':'');
-    grid.appendChild(cell);
+function renderWeek(){var off=weekOffset;var ws=new Date(TODAY);ws.setDate(TODAY.getDate()-TODAY.getDay()+(off*7));var we=new Date(ws);we.setDate(ws.getDate()+6);document.getElementById('wk-title').textContent=off===0?'This week':off===-1?'Last week':off===1?'Next week':'Week of '+ws.getDate()+' '+MONTHS[ws.getMonth()];document.getElementById('wk-sub').textContent=DAYS[ws.getDay()]+' '+ws.getDate()+' '+MONTHS[ws.getMonth()]+' - '+DAYS[we.getDay()]+' '+we.getDate()+' '+MONTHS[we.getMonth()];var wd=getWkWorkouts(ws);var total=wd.reduce(function(s,d){return s+(d.mins||0);},0);var sess=wd.filter(function(d){return d.sport!=='rest';}).length;document.getElementById('stats-row').innerHTML='<div class="stat-box"><div class="stat-label">Sessions</div><div class="stat-value">'+sess+'</div><div class="stat-sub">planned</div></div><div class="stat-box"><div class="stat-label">Volume</div><div class="stat-value">'+Math.floor(total/60)+'<span style="font-size:1rem">h</span>'+(total%60?total%60+'m':'')+'</div><div class="stat-sub">this week</div></div><div class="stat-box"><div class="stat-label">Phase</div><div class="stat-value" style="font-size:0.85rem;padding-top:8px">'+(wd[1]&&wd[1].phase?wd[1].phase:'Base')+'</div><div class="stat-sub">'+(wd[0]&&wd[0].isRecovery?'rest week':'training')+'</div></div>';var grid=document.getElementById('cal-grid');grid.innerHTML='';var startDate=P.start_date?new Date(P.start_date):null;wd.forEach(function(d,i){var date=new Date(ws);date.setDate(ws.getDate()+i);var isToday=date.toDateString()===TODAY.toDateString();var isPast=date<TODAY&&!isToday;var isBeforeStart=startDate&&date<startDate&&!isToday;var cell=document.createElement('div');cell.className='cal-cell '+(isToday?'today':'')+(isBeforeStart?' before-start':isPast&&d.sport!=='rest'?' past':'');cell.onclick=function(){showDay(d,date);};cell.innerHTML='<div class="cal-day-name">'+DAYS[date.getDay()]+'</div><div class="cal-day-num">'+date.getDate()+'</div><div class="cal-sport">'+si(isBeforeStart?'rest':d.sport)+'</div><div class="cal-title">'+(isBeforeStart?'Pre-training':d.title)+'</div>'+(d.sport!=='rest'&&!isBeforeStart?'<div class="cal-dur">'+d.duration+'</div>':'');grid.appendChild(cell);});showDay(wd[TODAY.getDay()]||wd[1],new Date(ws.getTime()+TODAY.getDay()*86400000));}
+
+function getWkWorkouts(ws){var fallback=DAYS.map(function(day,i){return {sport:i===0||i===3||i===6?'rest':'run',title:i===0||i===3||i===6?'Rest':'Session',detail:'',duration:i===0||i===3||i===6?'-':'20 min',mins:i===0||i===3||i===6?0:20,phase:'Base'};});if(!P.plan||!P.plan.weeks)return fallback;var startDate=P.start_date?new Date(P.start_date):TODAY;var daysSinceStart=Math.floor((ws-startDate)/86400000);var wn=daysSinceStart<0?1:Math.floor(daysSinceStart/7)+1;var pw=P.plan.weeks.find(function(w){return w.week===Math.min(P.plan.weeks.length,wn);});if(!pw)return fallback;return DAYS.map(function(day){var d=pw.days&&pw.days.find(function(x){return x.day===day;})||{sport:'rest',title:'Rest',detail:'',duration:'-'};return Object.assign({},d,{mins:parseInt(d.duration)||0,phase:pw.phase,isRecovery:pw.isRecovery});});}
+
+function showDay(d,date){if(!d)return;var isToday=date&&date.toDateString()===TODAY.toDateString();var startDate=P.start_date?new Date(P.start_date):null;var isBeforeStart=startDate&&date<startDate&&!isToday;if(isBeforeStart){document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">Pre-training</div></div><div class="ddc-sub">Training starts on '+startDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'. Rest up and get excited!</div>';return;}var blocks={swim:[{icon:'&#x1F3CA;',name:'Warm-up',desc:'Easy laps to wake up',meta:'5 min',cls:'sb-swim'},{icon:'&#x1F3CA;',name:'Main set',desc:d.detail||'Focus on smooth technique',meta:d.duration||'-',cls:'sb-swim'},{icon:'&#x1F3CA;',name:'Cool-down',desc:'Easy laps to finish',meta:'3 min',cls:'sb-swim'}],bike:[{icon:'&#x1F6B4;',name:'Warm-up',desc:'Easy spin, let legs loosen up',meta:'5-10 min',cls:'sb-bike'},{icon:'&#x1F6B4;',name:'Main ride',desc:d.detail||'Comfortable steady effort',meta:d.duration||'-',cls:'sb-bike'},{icon:'&#x1F6B4;',name:'Cool-down',desc:'Easy spin, bring HR down',meta:'5 min',cls:'sb-bike'}],run:[{icon:'&#x1F3C3;',name:'Warm-up',desc:'5 min walk then easy jog',meta:'5 min',cls:'sb-run'},{icon:'&#x1F3C3;',name:'Main run',desc:d.detail||'Comfortable pace - walk breaks fine!',meta:d.duration||'-',cls:'sb-run'},{icon:'&#x1F3C3;',name:'Cool-down',desc:'3 min walk + stretch',meta:'5 min',cls:'sb-run'}],brick:[{icon:'&#x1F6B4;',name:'Bike',desc:'Steady effort, practice T2',meta:'per plan',cls:'sb-bike'},{icon:'&#x1F3C3;',name:'Run off bike',desc:'First few min feel heavy - normal! Go easy.',meta:'per plan',cls:'sb-run'}],rest:[{icon:'&#x1F634;',name:'Rest day!',desc:'This is where your fitness gets built. Sleep, eat well, relax.',meta:'-',cls:'sb-rest'}]};var bl=blocks[d.sport]||[{icon:'&#x1F3AF;',name:'Session',desc:d.detail||d.title,meta:d.duration||'-',cls:'sb-run'}];document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">'+(isToday?'Today - ':'')+d.title+'</div>'+(d.sport!=='rest'?'<div class="ddc-badge">'+d.duration+'</div>':'')+'</div><div class="ddc-sub">'+(d.detail||'Rest up! Recovery is when you get fitter.')+'</div><div class="session-blocks">'+bl.map(function(b){return '<div class="sb '+b.cls+'"><div class="sb-icon">'+b.icon+'</div><div><div class="sb-name">'+b.name+'</div><div class="sb-desc">'+b.desc+'</div></div><div class="sb-meta"><strong>'+b.meta+'</strong></div></div>';}).join('')+'</div>'+(isToday&&d.sport!=='rest'?'<button class="done-btn" onclick="quickSend(\'Finished my '+d.title+'!\');showTab(\'chat\')">Tell my coach!</button>':'');}
+
+function showTab(name){
+  ['chat','plan','week','profile'].forEach(function(t){
+    document.getElementById('tab-'+t).classList.toggle('active',t===name);
+    var navEl=document.getElementById('nav-'+t);if(navEl)navEl.classList.toggle('active',t===name);
+    var bnavEl=document.getElementById('bnav-'+t);if(bnavEl)bnavEl.classList.toggle('active',t===name);
   });
-  showDay(wd[TODAY.getDay()]||wd[1],new Date(ws.getTime()+TODAY.getDay()*86400000));
+  if(name==='week')renderWeek();
 }
-
-function getWkWorkouts(ws){
-  var fallback=DAYS.map(function(day,i){return {sport:i===0||i===3||i===6?'rest':'run',title:i===0||i===3||i===6?'Rest':'Session',detail:'',duration:i===0||i===3||i===6?'-':'20 min',mins:i===0||i===3||i===6?0:20,phase:'Base'};});
-  if(!P.plan||!P.plan.weeks)return fallback;
-  var startDate=P.start_date?new Date(P.start_date):TODAY;
-  var daysSinceStart=Math.floor((ws-startDate)/86400000);
-  var wn=daysSinceStart<0?1:Math.floor(daysSinceStart/7)+1;
-  var pw=P.plan.weeks.find(function(w){return w.week===Math.min(P.plan.weeks.length,wn);});
-  if(!pw)return fallback;
-  return DAYS.map(function(day){var d=pw.days&&pw.days.find(function(x){return x.day===day;})||{sport:'rest',title:'Rest',detail:'',duration:'-'};return Object.assign({},d,{mins:parseInt(d.duration)||0,phase:pw.phase,isRecovery:pw.isRecovery});});
-}
-
-function showDay(d,date){
-  if(!d)return;
-  var isToday=date&&date.toDateString()===TODAY.toDateString();
-  var startDate=P.start_date?new Date(P.start_date):null;
-  var isBeforeStart=startDate&&date<startDate&&!isToday;
-  if(isBeforeStart){
-    document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">Pre-training</div></div><div class="ddc-sub">Training starts on '+startDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'. Rest up and get excited!</div>';
-    return;
-  }
-  var blocks={swim:[{icon:'&#x1F3CA;',name:'Warm-up',desc:'Easy laps to wake up',meta:'5 min',cls:'sb-swim'},{icon:'&#x1F3CA;',name:'Main set',desc:d.detail||'Focus on smooth technique',meta:d.duration||'-',cls:'sb-swim'},{icon:'&#x1F3CA;',name:'Cool-down',desc:'Easy laps to finish',meta:'3 min',cls:'sb-swim'}],bike:[{icon:'&#x1F6B4;',name:'Warm-up',desc:'Easy spin, let legs loosen up',meta:'5-10 min',cls:'sb-bike'},{icon:'&#x1F6B4;',name:'Main ride',desc:d.detail||'Comfortable steady effort',meta:d.duration||'-',cls:'sb-bike'},{icon:'&#x1F6B4;',name:'Cool-down',desc:'Easy spin, bring HR down',meta:'5 min',cls:'sb-bike'}],run:[{icon:'&#x1F3C3;',name:'Warm-up',desc:'5 min walk then easy jog',meta:'5 min',cls:'sb-run'},{icon:'&#x1F3C3;',name:'Main run',desc:d.detail||'Should feel comfortable - walk breaks are totally fine!',meta:d.duration||'-',cls:'sb-run'},{icon:'&#x1F3C3;',name:'Cool-down',desc:'3 min walk + stretch',meta:'5 min',cls:'sb-run'}],brick:[{icon:'&#x1F6B4;',name:'Bike',desc:'Steady effort, practice quick T2',meta:'per plan',cls:'sb-bike'},{icon:'&#x1F3C3;',name:'Run off bike',desc:'First few min feel heavy - that is normal! Go easy.',meta:'per plan',cls:'sb-run'}],rest:[{icon:'&#x1F634;',name:'Rest day!',desc:'This is where your fitness gets built. Sleep, eat well, relax.',meta:'-',cls:'sb-rest'}]};
-  var bl=blocks[d.sport]||[{icon:'&#x1F3AF;',name:'Session',desc:d.detail||d.title,meta:d.duration||'-',cls:'sb-run'}];
-  document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">'+(isToday?'Today - ':'')+d.title+'</div>'+(d.sport!=='rest'?'<div class="ddc-badge">'+d.duration+'</div>':'')+'</div><div class="ddc-sub">'+(d.detail||'Rest up! Recovery is when you get fitter.')+'</div><div class="session-blocks">'+bl.map(function(b){return '<div class="sb '+b.cls+'"><div class="sb-icon">'+b.icon+'</div><div><div class="sb-name">'+b.name+'</div><div class="sb-desc">'+b.desc+'</div></div><div class="sb-meta"><strong>'+b.meta+'</strong></div></div>';}).join('')+'</div>'+(isToday&&d.sport!=='rest'?'<button class="done-btn" onclick="quickSend(\'Finished my '+d.title+'! \');showTab(\'chat\')">Tell my coach!</button>':'');
-}
-
-function showTab(name){['chat','plan','week','profile'].forEach(function(t){document.getElementById('tab-'+t).classList.toggle('active',t===name);document.getElementById('nav-'+t).classList.toggle('active',t===name);});if(name==='week')renderWeek();}
 function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
 
 // Defaults
