@@ -1357,10 +1357,28 @@ function renderProgressStats(workouts) {
   var weekStart = new Date(todayNorm); weekStart.setDate(todayNorm.getDate() - todayNorm.getDay()); weekStart.setHours(0,0,0,0);
   var thisWeek = workouts.filter(function(w) { return w.completed_at && new Date(w.completed_at) >= weekStart; }).length;
 
-  // Completion rate: logged vs expected sessions since start
-  var weeksElapsed = Math.max(1, Math.floor((todayNorm - startDate) / 86400000 / 7));
-  var expected = weeksElapsed * (P.training_days || 4);
-  var rate = expected > 0 ? Math.min(100, Math.round(workouts.length / expected * 100)) : 0;
+  // Completion rate: logged vs planned non-rest sessions elapsed so far
+  // Count actual non-rest days from the plan up to today
+  var expected = 0;
+  if (P.plan && P.plan.weeks) {
+    var cursor = new Date(startDate);
+    while (cursor <= todayNorm) {
+      var daysFromStart = Math.floor((cursor - startDate) / 86400000);
+      var wn = Math.floor(daysFromStart / 7) + 1;
+      var planWk = P.plan.weeks.find(function(w) { return w.week === Math.min(P.plan.weeks.length, wn); });
+      if (planWk && planWk.days) {
+        var dayName = DAYS[cursor.getDay()];
+        var planDay = planWk.days.find(function(d) { return d.day === dayName; });
+        if (planDay && planDay.sport !== 'rest') expected++;
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+  } else {
+    // Fallback: days elapsed × fraction of training days in a week
+    var daysElapsed = Math.max(1, Math.floor((todayNorm - startDate) / 86400000) + 1);
+    expected = Math.round(daysElapsed * (P.training_days || 4) / 7);
+  }
+  var rate = expected > 0 ? Math.min(100, Math.round(workouts.length / Math.max(1, expected) * 100)) : 0;
 
   document.getElementById('prog-streak').textContent = streak;
   document.getElementById('prog-best').textContent = bestStreak;
