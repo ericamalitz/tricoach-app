@@ -599,6 +599,20 @@ let uploadedFile=null, uploadedFileBase64=null;
   }
 })();
 
+// Also handle new sign-ins via the auth state listener
+supa.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    currentUser = session.user;
+    authToken = session.access_token;
+    if (!P.name) await handleSignedIn();
+  } else if (event === 'TOKEN_REFRESHED' && session) {
+    authToken = session.access_token;
+  } else if (event === 'SIGNED_OUT') {
+    currentUser=null; authToken=null; P={}; chatHistory=[];
+    showScreen('auth');
+  }
+});
+
 // Keep session fresh if user is active
 supa.auth.onAuthStateChange(async (event, session) => {
   if (event === 'TOKEN_REFRESHED' && session) {
