@@ -309,6 +309,26 @@ nav.nav{flex:1;padding:0 0.65rem;}
   .sidebar { width: 200px; min-width: 200px; }
   .cal-cell { min-height: 95px; }
 }
+
+/* WORKOUT LOG MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-card{background:var(--white);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:1.5rem;width:100%;max-width:520px;animation:fadeUp 0.25s ease;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom));}
+.modal-handle{width:36px;height:4px;background:var(--gray-200);border-radius:2px;margin:0 auto 1.25rem;}
+.modal-title{font-family:var(--font-d);font-size:1.2rem;font-weight:800;color:var(--navy);margin-bottom:0.25rem;}
+.modal-sub{font-size:13px;color:var(--gray-500);margin-bottom:1.25rem;}
+.feeling-row{display:flex;gap:0.5rem;margin-bottom:1rem;}
+.feeling-btn{flex:1;padding:0.65rem 0.25rem;border:2px solid var(--gray-200);border-radius:var(--radius-sm);background:var(--white);cursor:pointer;text-align:center;font-size:1.4rem;transition:all 0.15s;}
+.feeling-btn:active,.feeling-btn.sel{border-color:var(--blue);background:var(--blue-light);transform:scale(1.05);}
+.feeling-label{font-size:10px;font-weight:600;color:var(--gray-500);display:block;margin-top:2px;}
+.modal-field{margin-bottom:0.85rem;}
+.modal-field label{display:block;font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:0.35rem;text-transform:uppercase;}
+.modal-field input,.modal-field textarea{width:100%;padding:0.65rem 0.9rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:16px;color:var(--navy);background:var(--white);outline:none;appearance:none;}
+.modal-field input:focus,.modal-field textarea:focus{border-color:var(--blue);}
+.modal-field textarea{resize:none;min-height:70px;font-size:14px;}
+.btn-log{width:100%;padding:0.9rem;background:var(--teal);color:white;border:none;border-radius:var(--radius-sm);font-family:var(--font-d);font-size:1rem;font-weight:800;cursor:pointer;margin-top:0.5rem;}
+.btn-log:disabled{opacity:0.5;}
+.btn-log-skip{width:100%;padding:0.6rem;background:none;border:none;color:var(--gray-400);font-size:13px;cursor:pointer;margin-top:0.35rem;font-family:var(--font);}
 </style>
 </head>
 <body>
@@ -776,7 +796,8 @@ function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace
 function showTyping(on){document.getElementById('typing').classList.toggle('on',on);document.getElementById('send-btn').disabled=on;document.getElementById('messages').scrollTop=9999;}
 function setQR(arr){document.getElementById('qr').innerHTML=arr.map(function(r){return '<div class="qr-chip" onclick="quickSend(\''+r.replace(/'/g,"\\'")+'\')">'+r+'</div>';}).join('');}
 function quickSend(t){document.getElementById('qr').innerHTML='';document.getElementById('chat-in').value=t;sendMsg();}
-async function callCoach(message){var data=await apiPost('/api/chat',{message:message,history:chatHistory.slice(-20),profile:P,planPhase:P.plan&&P.plan.phase?P.plan.phase:'Base 1'});chatHistory.push({role:'user',content:message});chatHistory.push({role:'assistant',content:data.reply});return data.reply;}
+async function callCoach(message){var data=await apiPost('/api/chat',{message:message,history:chatHistory.slice(-20),profile:P,planPhase:P.plan&&P.plan.phase?P.plan.phase:'Base 1',plan:P.plan||null});
+  if(data.updatedPlan){P.plan=data.updatedPlan;renderPlan();renderWeek();console.log('Plan updated from chat!');}chatHistory.push({role:'user',content:message});chatHistory.push({role:'assistant',content:data.reply});return data.reply;}
 
 var briefSent=false;
 async function sendBrief(){
@@ -834,7 +855,7 @@ function renderWeek(){var off=weekOffset;var ws=new Date(TODAY);ws.setDate(TODAY
 
 function getWkWorkouts(ws){var fallback=DAYS.map(function(day,i){return {sport:i===0||i===3||i===6?'rest':'run',title:i===0||i===3||i===6?'Rest':'Session',detail:'',duration:i===0||i===3||i===6?'-':'20 min',mins:i===0||i===3||i===6?0:20,phase:'Base'};});if(!P.plan||!P.plan.weeks)return fallback;var startDate=P.start_date?new Date(P.start_date):TODAY;var daysSinceStart=Math.floor((ws-startDate)/86400000);var wn=daysSinceStart<0?1:Math.floor(daysSinceStart/7)+1;var pw=P.plan.weeks.find(function(w){return w.week===Math.min(P.plan.weeks.length,wn);});if(!pw)return fallback;return DAYS.map(function(day){var d=pw.days&&pw.days.find(function(x){return x.day===day;})||{sport:'rest',title:'Rest',detail:'',duration:'-'};return Object.assign({},d,{mins:parseInt(d.duration)||0,phase:pw.phase,isRecovery:pw.isRecovery});});}
 
-function showDay(d,date){if(!d)return;var isToday=date&&date.toDateString()===TODAY.toDateString();var startDate=P.start_date?new Date(P.start_date):null;var isBeforeStart=startDate&&date<startDate&&!isToday;if(isBeforeStart){document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">Pre-training</div></div><div class="ddc-sub">Training starts on '+startDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'. Rest up and get excited!</div>';return;}var blocks={swim:[{icon:'&#x1F3CA;',name:'Warm-up',desc:'Easy laps to wake up',meta:'5 min',cls:'sb-swim'},{icon:'&#x1F3CA;',name:'Main set',desc:d.detail||'Focus on smooth technique',meta:d.duration||'-',cls:'sb-swim'},{icon:'&#x1F3CA;',name:'Cool-down',desc:'Easy laps to finish',meta:'3 min',cls:'sb-swim'}],bike:[{icon:'&#x1F6B4;',name:'Warm-up',desc:'Easy spin, let legs loosen up',meta:'5-10 min',cls:'sb-bike'},{icon:'&#x1F6B4;',name:'Main ride',desc:d.detail||'Comfortable steady effort',meta:d.duration||'-',cls:'sb-bike'},{icon:'&#x1F6B4;',name:'Cool-down',desc:'Easy spin, bring HR down',meta:'5 min',cls:'sb-bike'}],run:[{icon:'&#x1F3C3;',name:'Warm-up',desc:'5 min walk then easy jog',meta:'5 min',cls:'sb-run'},{icon:'&#x1F3C3;',name:'Main run',desc:d.detail||'Comfortable pace - walk breaks fine!',meta:d.duration||'-',cls:'sb-run'},{icon:'&#x1F3C3;',name:'Cool-down',desc:'3 min walk + stretch',meta:'5 min',cls:'sb-run'}],brick:[{icon:'&#x1F6B4;',name:'Bike',desc:'Steady effort, practice T2',meta:'per plan',cls:'sb-bike'},{icon:'&#x1F3C3;',name:'Run off bike',desc:'First few min feel heavy - normal! Go easy.',meta:'per plan',cls:'sb-run'}],rest:[{icon:'&#x1F634;',name:'Rest day!',desc:'This is where your fitness gets built. Sleep, eat well, relax.',meta:'-',cls:'sb-rest'}]};var bl=blocks[d.sport]||[{icon:'&#x1F3AF;',name:'Session',desc:d.detail||d.title,meta:d.duration||'-',cls:'sb-run'}];document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">'+(isToday?'Today - ':'')+d.title+'</div>'+(d.sport!=='rest'?'<div class="ddc-badge">'+d.duration+'</div>':'')+'</div><div class="ddc-sub">'+(d.detail||'Rest up! Recovery is when you get fitter.')+'</div><div class="session-blocks">'+bl.map(function(b){return '<div class="sb '+b.cls+'"><div class="sb-icon">'+b.icon+'</div><div><div class="sb-name">'+b.name+'</div><div class="sb-desc">'+b.desc+'</div></div><div class="sb-meta"><strong>'+b.meta+'</strong></div></div>';}).join('')+'</div>'+(isToday&&d.sport!=='rest'?'<button class="done-btn" onclick="quickSend(\'Finished my '+d.title+'!\');showTab(\'chat\')">Tell my coach!</button>':'');}
+function showDay(d,date){if(!d)return;var isToday=date&&date.toDateString()===TODAY.toDateString();var startDate=P.start_date?new Date(P.start_date):null;var isBeforeStart=startDate&&date<startDate&&!isToday;if(isBeforeStart){document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">Pre-training</div></div><div class="ddc-sub">Training starts on '+startDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+'. Rest up and get excited!</div>';return;}var blocks={swim:[{icon:'&#x1F3CA;',name:'Warm-up',desc:'Easy laps to wake up',meta:'5 min',cls:'sb-swim'},{icon:'&#x1F3CA;',name:'Main set',desc:d.detail||'Focus on smooth technique',meta:d.duration||'-',cls:'sb-swim'},{icon:'&#x1F3CA;',name:'Cool-down',desc:'Easy laps to finish',meta:'3 min',cls:'sb-swim'}],bike:[{icon:'&#x1F6B4;',name:'Warm-up',desc:'Easy spin, let legs loosen up',meta:'5-10 min',cls:'sb-bike'},{icon:'&#x1F6B4;',name:'Main ride',desc:d.detail||'Comfortable steady effort',meta:d.duration||'-',cls:'sb-bike'},{icon:'&#x1F6B4;',name:'Cool-down',desc:'Easy spin, bring HR down',meta:'5 min',cls:'sb-bike'}],run:[{icon:'&#x1F3C3;',name:'Warm-up',desc:'5 min walk then easy jog',meta:'5 min',cls:'sb-run'},{icon:'&#x1F3C3;',name:'Main run',desc:d.detail||'Comfortable pace - walk breaks fine!',meta:d.duration||'-',cls:'sb-run'},{icon:'&#x1F3C3;',name:'Cool-down',desc:'3 min walk + stretch',meta:'5 min',cls:'sb-run'}],brick:[{icon:'&#x1F6B4;',name:'Bike',desc:'Steady effort, practice T2',meta:'per plan',cls:'sb-bike'},{icon:'&#x1F3C3;',name:'Run off bike',desc:'First few min feel heavy - normal! Go easy.',meta:'per plan',cls:'sb-run'}],rest:[{icon:'&#x1F634;',name:'Rest day!',desc:'This is where your fitness gets built. Sleep, eat well, relax.',meta:'-',cls:'sb-rest'}]};var bl=blocks[d.sport]||[{icon:'&#x1F3AF;',name:'Session',desc:d.detail||d.title,meta:d.duration||'-',cls:'sb-run'}];document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">'+(isToday?'Today - ':'')+d.title+'</div>'+(d.sport!=='rest'?'<div class="ddc-badge">'+d.duration+'</div>':'')+'</div><div class="ddc-sub">'+(d.detail||'Rest up! Recovery is when you get fitter.')+'</div><div class="session-blocks">'+bl.map(function(b){return '<div class="sb '+b.cls+'"><div class="sb-icon">'+b.icon+'</div><div><div class="sb-name">'+b.name+'</div><div class="sb-desc">'+b.desc+'</div></div><div class="sb-meta"><strong>'+b.meta+'</strong></div></div>';}).join('')+'</div>'+(isToday&&d.sport!=='rest'?'<button class="done-btn" onclick="openLogModal('+JSON.stringify(d)+',new Date())">&#x2705; Log this session</button>':'');}
 
 function showTab(name){
   ['chat','plan','week','profile'].forEach(function(t){
@@ -844,6 +865,69 @@ function showTab(name){
   });
   if(name==='week')renderWeek();
 }
+
+
+// WORKOUT LOGGING
+var currentLogSession = null;
+var selectedFeeling = null;
+
+function openLogModal(session, date) {
+  currentLogSession = session;
+  selectedFeeling = null;
+  document.getElementById('log-modal-title').textContent = 'Log: ' + (session.title || 'Session');
+  document.getElementById('log-modal-sub').textContent = 'Planned: ' + (session.duration || '?') + ' — how did it actually go?';
+  document.getElementById('log-duration').value = session.duration || '';
+  document.getElementById('log-note').value = '';
+  document.querySelectorAll('.feeling-btn').forEach(function(b){ b.classList.remove('sel'); });
+  document.getElementById('log-modal').classList.add('open');
+}
+
+function closeLogModal(e) {
+  if (!e || e.target === document.getElementById('log-modal')) {
+    document.getElementById('log-modal').classList.remove('open');
+  }
+}
+
+function selFeeling(btn) {
+  document.querySelectorAll('.feeling-btn').forEach(function(b){ b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  selectedFeeling = btn.dataset.v;
+}
+
+async function submitLog() {
+  if (!currentLogSession) return;
+  var btn = document.getElementById('log-submit-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  var startDate = P.start_date ? new Date(P.start_date) : TODAY;
+  var daysSinceStart = Math.floor((TODAY - startDate) / 86400000);
+  var weekNum = daysSinceStart < 0 ? 1 : Math.floor(daysSinceStart / 7) + 1;
+  try {
+    await apiPost('/api/workout', {
+      week: weekNum,
+      day: DAYS[TODAY.getDay()],
+      sport: currentLogSession.sport,
+      planned_title: currentLogSession.title,
+      planned_duration: currentLogSession.duration,
+      actual_duration: document.getElementById('log-duration').value.trim(),
+      feeling: selectedFeeling,
+      note: document.getElementById('log-note').value.trim()
+    });
+    document.getElementById('log-modal').classList.remove('open');
+    btn.disabled = false; btn.textContent = 'Save workout ✅';
+    // Send to coach chat
+    var feelingText = selectedFeeling ? ' Felt: ' + selectedFeeling + '.' : '';
+    var durationText = document.getElementById('log-duration').value.trim();
+    var noteText = document.getElementById('log-note').value.trim();
+    var msg = 'Just completed: ' + currentLogSession.title + (durationText ? ' (' + durationText + ')' : '') + '.' + feelingText + (noteText ? ' ' + noteText : '');
+    showTab('chat');
+    document.getElementById('chat-in').value = msg;
+    sendMsg();
+  } catch(e) {
+    alert('Could not save — try again');
+    btn.disabled = false; btn.textContent = 'Save workout ✅';
+  }
+}
+
 function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
 
 // Defaults
@@ -852,5 +936,25 @@ document.getElementById('f-date').value=def6m.toISOString().split('T')[0];
 document.getElementById('f-start').value=TODAY.toISOString().split('T')[0];
 renderPills(0);
 </script>
+
+<!-- WORKOUT LOG MODAL -->
+<div class="modal-overlay" id="log-modal" onclick="closeLogModal(event)">
+  <div class="modal-card">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="log-modal-title">Log session</div>
+    <div class="modal-sub" id="log-modal-sub">How did it go?</div>
+    <div class="feeling-row">
+      <button class="feeling-btn" data-v="great" onclick="selFeeling(this)"><span>&#x1F929;</span><span class="feeling-label">Great!</span></button>
+      <button class="feeling-btn" data-v="good" onclick="selFeeling(this)"><span>&#x1F604;</span><span class="feeling-label">Good</span></button>
+      <button class="feeling-btn" data-v="ok" onclick="selFeeling(this)"><span>&#x1F610;</span><span class="feeling-label">OK</span></button>
+      <button class="feeling-btn" data-v="hard" onclick="selFeeling(this)"><span>&#x1F625;</span><span class="feeling-label">Hard</span></button>
+      <button class="feeling-btn" data-v="terrible" onclick="selFeeling(this)"><span>&#x1F915;</span><span class="feeling-label">Rough</span></button>
+    </div>
+    <div class="modal-field"><label>Actual duration</label><input type="text" id="log-duration" placeholder="e.g. 22 min, 1.5km swim"/></div>
+    <div class="modal-field"><label>Notes (optional)</label><textarea id="log-note" placeholder="How did it feel? Any aches? Proud moments?"></textarea></div>
+    <button class="btn-log" id="log-submit-btn" onclick="submitLog()">Save workout &#x2705;</button>
+    <button class="btn-log-skip" onclick="closeLogModal()">Skip logging</button>
+  </div>
+</div>
 </body>
 </html>
