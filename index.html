@@ -553,7 +553,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
 
     <div class="tab-panel" id="tab-week">
       <div class="scroll-wrap">
-        <div class="week-nav"><button class="wnav-btn" onclick="wkOff(-1)">&#x2039;</button><div class="wnav-title"><h2 id="wk-title">This week</h2><p id="wk-sub">Loading...</p></div><button class="wnav-btn" onclick="wkOff(1)">&#x203A;</button></div>
+        <div class="week-nav"><button class="wnav-btn" onclick="wkOff(-1)">&#x2039;</button><div class="wnav-title"><h2 id="wk-title">This week</h2><p id="wk-sub">Loading...</p></div><button class="wnav-btn" onclick="wkOff(1)">&#x203A;</button><button class="wnav-btn" onclick="syncPlan(this)" title="Sync plan" style="margin-left:4px;font-size:13px;">&#x1F504;</button></div>
         <div class="stats-row" id="stats-row"></div>
         <div class="cal-grid" id="cal-grid"></div>
         <div class="ddc" id="ddc"></div>
@@ -926,6 +926,22 @@ async function submitLog() {
     alert('Could not save — try again');
     btn.disabled = false; btn.textContent = 'Save workout ✅';
   }
+}
+
+async function syncPlan(btn) {
+  var orig = btn.textContent;
+  btn.textContent = '...';
+  btn.disabled = true;
+  try {
+    var planRes = await apiGet('/api/plan');
+    if (planRes && planRes.plan_json) {
+      P.plan = planRes.plan_json;
+      renderPlan();
+      renderWeek();
+    }
+  } catch(e) {}
+  btn.textContent = orig;
+  btn.disabled = false;
 }
 
 function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
