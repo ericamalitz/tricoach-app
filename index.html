@@ -19,9 +19,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);font-size:15
 .loading-icon svg{width:24px;height:24px;fill:white;}
 .loading-name{font-family:var(--font-d);font-size:1.8rem;font-weight:800;color:var(--navy);}
 .loading-name span{color:var(--blue);}
-.loading-spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--gray-200);border-top-color:var(--blue);animation:spin 0.8s linear infinite;margin-top:1.5rem;}
+.loading-spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--gray-200);border-top-color:var(--blue);animation:spin 0.8s linear infinite;margin:1.5rem auto 0;}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
 /* AUTH */
 #screen-auth{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;padding:1.5rem;}
@@ -52,84 +52,81 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);font-size:15
 
 /* ONBOARDING */
 #screen-onboard{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto;}
-.ob-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:2.25rem;width:100%;max-width:540px;margin:auto;animation:fadeUp 0.4s ease;}
-.brand{display:flex;align-items:center;gap:10px;margin-bottom:1.75rem;}
-.brand-icon{width:38px;height:38px;background:var(--navy);border-radius:10px;display:flex;align-items:center;justify-content:center;}
-.brand-icon svg{width:20px;height:20px;fill:white;}
-.brand-name{font-family:var(--font-d);font-size:1.4rem;font-weight:800;color:var(--navy);}
-.brand-name span{color:var(--blue);}
-.step-pills{display:flex;gap:4px;margin-bottom:1.5rem;}
-.step-pill{flex:1;height:3px;border-radius:2px;background:var(--gray-200);transition:background 0.3s;}
+.ob-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:2.25rem;width:100%;max-width:520px;margin:auto;animation:fadeUp 0.4s ease;}
+.ob-logo{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;}
+.ob-logo-icon{width:36px;height:36px;background:var(--navy);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.ob-logo-icon svg{width:18px;height:18px;fill:white;}
+.ob-logo-name{font-family:var(--font-d);font-size:1.3rem;font-weight:800;color:var(--navy);}
+.ob-logo-name span{color:var(--blue);}
+
+/* Step pills */
+.step-pills{display:flex;gap:6px;margin-bottom:1.75rem;}
+.step-pill{flex:1;height:4px;border-radius:2px;background:var(--gray-200);transition:background 0.3s;}
 .step-pill.active{background:var(--blue);}.step-pill.done{background:var(--teal);}
-.ob-step{display:none;}.ob-step.active{display:block;animation:fadeUp 0.25s ease;}
-.eyebrow{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:0.35rem;}
-.ob-step h2{font-family:var(--font-d);font-size:1.45rem;font-weight:800;color:var(--navy);margin-bottom:0.25rem;}
-.ob-step p.sub{font-size:13px;color:var(--gray-500);margin-bottom:1.25rem;line-height:1.5;}
-.field{margin-bottom:0.9rem;}
-.field label{display:block;font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:0.35rem;text-transform:uppercase;}
-.field input,.field select,.field textarea{width:100%;padding:0.65rem 0.85rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;color:var(--navy);background:var(--white);outline:none;transition:border-color 0.2s;appearance:none;}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
-.field textarea{resize:vertical;min-height:70px;}
-.field-hint{font-size:11px;color:var(--gray-400);margin-top:0.25rem;}
+
+.ob-step{display:none;}.ob-step.active{display:block;animation:fadeUp 0.2s ease;}
+.step-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:0.4rem;}
+.ob-step h2{font-family:var(--font-d);font-size:1.6rem;font-weight:800;color:var(--navy);margin-bottom:0.3rem;line-height:1.2;}
+.ob-step .step-sub{font-size:14px;color:var(--gray-500);margin-bottom:1.4rem;line-height:1.5;}
+
+/* Big option cards */
+.big-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1rem;}
+.big-card{border:2px solid var(--gray-200);border-radius:var(--radius);padding:1rem;cursor:pointer;transition:all 0.15s;background:var(--white);text-align:center;}
+.big-card:hover{border-color:var(--blue);background:var(--blue-light);transform:translateY(-1px);}
+.big-card.sel{border-color:var(--blue);background:var(--blue-light);}
+.big-card.sel.purple{border-color:var(--purple);background:var(--purple-light);}
+.big-card-emoji{font-size:2rem;margin-bottom:0.4rem;display:block;}
+.big-card-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:0.15rem;}
+.big-card-detail{font-size:11px;color:var(--gray-500);}
+
+/* Simple chips */
+.chip-row{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.9rem;}
+.chip{padding:0.45rem 1rem;border-radius:100px;border:2px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--font);}
+.chip:hover{border-color:var(--blue);background:var(--blue-light);color:var(--navy);}
+.chip.sel{border-color:var(--blue);background:var(--blue-light);color:var(--blue);}
+
+/* Simple fields */
+.ob-field{margin-bottom:1rem;}
+.ob-field label{display:block;font-size:12px;font-weight:700;color:var(--gray-600);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.04em;}
+.ob-field input,.ob-field textarea{width:100%;padding:0.7rem 1rem;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;color:var(--navy);background:var(--white);outline:none;transition:border-color 0.2s;appearance:none;}
+.ob-field input:focus,.ob-field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
+.ob-field textarea{resize:vertical;min-height:80px;}
+.ob-field .hint{font-size:11px;color:var(--gray-400);margin-top:0.3rem;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;}
-.chip-group{display:flex;gap:0.4rem;flex-wrap:wrap;}
-.chip{padding:0.4rem 0.9rem;border-radius:100px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font);}
-.chip:hover{border-color:var(--blue);color:var(--navy);background:var(--blue-light);}
-.chip.sel{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:700;}
-.sdivider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-400);margin:1rem 0 0.6rem;padding-bottom:0.35rem;border-bottom:1px solid var(--gray-100);}
-.btn-next{width:100%;padding:0.8rem;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-family:var(--font-d);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:1.25rem;}
-.btn-next:hover{background:var(--blue);transform:translateY(-1px);}
-.btn-next:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.btn-row{display:flex;gap:0.5rem;margin-top:1.25rem;}
-.btn-back{flex:0 0 auto;padding:0.8rem 1.1rem;background:var(--gray-100);border:none;border-radius:var(--radius-sm);color:var(--gray-600);font-family:var(--font-d);font-weight:700;font-size:0.95rem;cursor:pointer;}
-.btn-back:hover{background:var(--gray-200);}
-.event-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;}
-.event-card{border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);padding:0.75rem 1rem;cursor:pointer;transition:all 0.15s;background:var(--white);}
-.event-card:hover{border-color:var(--blue);background:var(--blue-light);}
-.event-card.sel{border-color:var(--blue);background:var(--blue-light);}
-.event-card-icon{font-size:1.3rem;margin-bottom:0.15rem;}
-.event-card-name{font-size:13px;font-weight:700;color:var(--navy);}
-.event-card-detail{font-size:11px;color:var(--gray-500);margin-top:1px;}
-.plan-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.5rem;}
-.plan-choice-card{border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:1.25rem;cursor:pointer;transition:all 0.15s;background:var(--white);text-align:center;}
-.plan-choice-card:hover{border-color:var(--blue);}
-.plan-choice-card.sel{border-color:var(--blue);background:var(--blue-light);}
-.plan-choice-card.sel.own{border-color:var(--purple);background:var(--purple-light);}
-.plan-choice-icon{font-size:2rem;margin-bottom:0.5rem;}
-.plan-choice-name{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:0.2rem;}
-.plan-choice-desc{font-size:12px;color:var(--gray-500);line-height:1.4;}
-.upload-methods{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem;}
-.upload-method{border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);padding:0.75rem;cursor:pointer;transition:all 0.15s;background:var(--white);display:flex;align-items:center;gap:0.65rem;}
-.upload-method:hover{border-color:var(--purple);background:var(--purple-light);}
-.upload-method.sel{border-color:var(--purple);background:var(--purple-light);}
-.upload-method-icon{font-size:1.3rem;flex-shrink:0;}
-.upload-method-name{font-size:12px;font-weight:700;color:var(--navy);}
-.upload-method-desc{font-size:11px;color:var(--gray-500);}
-.upload-area{border:2px dashed var(--gray-200);border-radius:var(--radius-sm);padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--gray-100);margin:0.75rem 0;}
-.upload-area:hover,.upload-area.dragover{border-color:var(--purple);background:var(--purple-light);}
-.upload-area input[type=file]{display:none;}
-.upload-area-icon{font-size:2rem;margin-bottom:0.5rem;}
-.upload-area-text{font-size:13px;color:var(--gray-600);font-weight:500;}
-.upload-area-hint{font-size:11px;color:var(--gray-400);margin-top:0.25rem;}
-.upload-preview{background:var(--teal-light);border:1px solid #99f6e4;border-radius:var(--radius-sm);padding:0.75rem 1rem;font-size:13px;color:var(--teal);margin-top:0.5rem;display:flex;align-items:center;gap:0.5rem;}
-.ai-role-grid{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.5rem;}
-.ai-role-card{border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);padding:0.9rem 1rem;cursor:pointer;transition:all 0.15s;background:var(--white);display:flex;align-items:flex-start;gap:0.85rem;}
-.ai-role-card:hover{border-color:var(--blue);}
-.ai-role-card.sel{border-color:var(--blue);background:var(--blue-light);}
-.ai-role-icon{font-size:1.4rem;flex-shrink:0;margin-top:1px;}
-.ai-role-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px;}
-.ai-role-desc{font-size:12px;color:var(--gray-500);line-height:1.4;}
+
+/* Buttons */
+.btn-go{width:100%;padding:0.9rem;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-family:var(--font-d);font-size:1.05rem;font-weight:800;cursor:pointer;transition:all 0.2s;margin-top:1.25rem;letter-spacing:0.01em;}
+.btn-go:hover{background:var(--blue);transform:translateY(-1px);}
+.btn-go:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-row-ob{display:flex;gap:0.5rem;margin-top:1.25rem;}
+.btn-back-ob{flex:0 0 auto;padding:0.9rem 1.1rem;background:var(--gray-100);border:none;border-radius:var(--radius-sm);color:var(--gray-600);font-family:var(--font-d);font-weight:700;font-size:0.95rem;cursor:pointer;transition:background 0.15s;}
+.btn-back-ob:hover{background:var(--gray-200);}
+
+/* Plan type cards */
+.plan-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.5rem;}
+.plan-type-card{border:2px solid var(--gray-200);border-radius:var(--radius);padding:1.35rem 1rem;cursor:pointer;transition:all 0.15s;background:var(--white);text-align:center;}
+.plan-type-card:hover{border-color:var(--blue);transform:translateY(-1px);}
+.plan-type-card.sel{border-color:var(--blue);background:var(--blue-light);}
+.plan-type-card.sel.own{border-color:var(--purple);background:var(--purple-light);}
+.plan-type-emoji{font-size:2.5rem;margin-bottom:0.5rem;display:block;}
+.plan-type-name{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:0.3rem;font-family:var(--font-d);}
+.plan-type-desc{font-size:12px;color:var(--gray-500);line-height:1.4;}
+
+/* Section label */
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-400);margin:1.1rem 0 0.55rem;padding-bottom:0.35rem;border-bottom:1px solid var(--gray-100);}
 
 /* GENERATING */
 #screen-generating{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;}
 .gen-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:2.5rem 3rem;text-align:center;max-width:400px;width:90%;}
 .gen-spinner{width:44px;height:44px;border-radius:50%;border:3px solid var(--gray-200);border-top-color:var(--blue);animation:spin 0.8s linear infinite;margin:0 auto 1.1rem;}
 .gen-title{font-family:var(--font-d);font-size:1.3rem;font-weight:800;color:var(--navy);margin-bottom:0.25rem;}
-.gen-status{font-size:12px;color:var(--gray-500);margin-bottom:1.1rem;}
+.gen-sub{font-size:13px;color:var(--gray-500);margin-bottom:1.25rem;}
 .gen-steps{list-style:none;text-align:left;}
-.gen-steps li{font-size:12px;padding:4px 0;color:var(--gray-400);display:flex;align-items:center;gap:8px;transition:color 0.3s;}
-.gen-steps li.done{color:var(--teal);font-weight:600;}.gen-steps li.cur{color:var(--navy);font-weight:600;}
-.gen-steps li::before{content:'○';flex-shrink:0;}.gen-steps li.done::before{content:'✓';}.gen-steps li.cur::before{content:'●';color:var(--blue);}
+.gen-steps li{font-size:13px;padding:5px 0;color:var(--gray-400);display:flex;align-items:center;gap:9px;transition:color 0.3s;}
+.gen-steps li.done{color:var(--teal);font-weight:600;}.gen-steps li.cur{color:var(--navy);font-weight:700;}
+.gen-steps li::before{content:'○';flex-shrink:0;font-size:12px;}
+.gen-steps li.done::before{content:'✓';color:var(--teal);}
+.gen-steps li.cur::before{content:'●';color:var(--blue);}
 
 /* APP */
 #screen-app{flex-direction:row;}
@@ -161,8 +158,6 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .btn-signout:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
 .tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden;}.tab-panel.active{display:flex;}
-
-/* CHAT */
 .chat-top{padding:0.85rem 1.4rem;border-bottom:1px solid var(--gray-200);background:var(--white);display:flex;align-items:center;gap:0.9rem;flex-shrink:0;box-shadow:var(--shadow-sm);}
 .coach-av{width:36px;height:36px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:13px;font-weight:800;color:white;flex-shrink:0;}
 .cn{font-size:14px;font-weight:700;color:var(--navy);}.cs{font-size:11px;color:var(--teal);font-weight:600;display:flex;align-items:center;gap:4px;}
@@ -193,8 +188,6 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .chat-ta:focus{border-color:var(--blue);background:var(--white);}
 .send-btn{width:40px;height:40px;border-radius:11px;background:var(--navy);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;font-size:16px;}
 .send-btn:hover{background:var(--blue);}.send-btn:disabled{opacity:0.35;cursor:not-allowed;}
-
-/* PLAN */
 .scroll-wrap{flex:1;overflow-y:auto;padding:1.4rem;}
 .scroll-wrap::-webkit-scrollbar{width:3px;}.scroll-wrap::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:2px;}
 .page-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;gap:1rem;}
@@ -228,8 +221,6 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .day-sport-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 .si-swim{background:#dbeafe;}.si-bike{background:#ffedd5;}.si-run{background:var(--teal-light);}.si-brick{background:#f3e8ff;}.si-rest{background:var(--gray-100);}.si-strength{background:#fef3c7;}.si-test{background:#fce7f3;}.si-walk{background:#f0fdf4;}.si-other{background:var(--gray-100);}
 .day-info{flex:1;}.day-title{font-size:12px;font-weight:600;color:var(--navy);}.day-detail{font-size:11px;color:var(--gray-500);margin-top:1px;}.day-dur{font-size:11px;color:var(--gray-400);font-weight:600;white-space:nowrap;}
-
-/* WEEK VIEW */
 .week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
 .wnav-btn{width:32px;height:32px;border-radius:7px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-600);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all 0.15s;}
 .wnav-btn:hover{border-color:var(--blue);color:var(--blue);}
@@ -254,8 +245,6 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .sb-meta{margin-left:auto;text-align:right;}.sb-meta strong{display:block;font-size:12px;font-weight:700;color:var(--navy);}.sb-meta span{font-size:10px;color:var(--gray-400);}
 .done-btn{margin-top:0.9rem;padding:0.55rem 1.1rem;background:var(--teal);border:none;border-radius:7px;color:white;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;}
 .done-btn:hover{background:#0f766e;}
-
-/* PROFILE */
 .profile-scroll{flex:1;overflow-y:auto;padding:1.4rem;}
 .profile-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--gray-200);padding:1.25rem;margin-bottom:0.85rem;box-shadow:var(--shadow-sm);}
 .profile-card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:0.9rem;}
@@ -273,21 +262,21 @@ nav.nav{flex:1;padding:0 0.65rem;}
 </head>
 <body>
 
-<!-- !! REPLACE THESE THREE VALUES BEFORE DEPLOYING !! -->
+<!-- REPLACE THESE THREE VALUES -->
 <script>
   const SUPABASE_URL = 'https://myguepayxnbdydcftgxa.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15Z3VlcGF5eG5iZHlkY2Z0Z3hhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NTc2NzgsImV4cCI6MjA5MDEzMzY3OH0.WMcTUvV-GW-F6ru7jAv1RUA2KZr6vYd1rGIzdasrU8U';
   const RAILWAY_URL = 'https://tricoach-server.up.railway.app';
 </script>
 
-<!-- LOADING (shown on every page load while session is checked) -->
+<!-- LOADING -->
 <div id="screen-loading" class="screen active">
   <div style="text-align:center">
     <div class="loading-brand">
       <div class="loading-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
       <div class="loading-name">Tri<span>Coach</span></div>
     </div>
-    <div class="loading-spinner" style="margin:1.5rem auto 0"></div>
+    <div class="loading-spinner"></div>
   </div>
 </div>
 
@@ -298,7 +287,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
     <div class="auth-brand-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
     <div class="auth-brand-name">Tri<span>Coach</span></div>
   </div>
-  <div class="auth-tagline">Your personalised AI endurance coach</div>
+  <div class="auth-tagline">Your personal AI endurance coach 🏃‍♀️🚴‍♂️🏊</div>
   <div class="auth-tabs">
     <div class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign in</div>
     <div class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create account</div>
@@ -308,187 +297,131 @@ nav.nav{flex:1;padding:0 0.65rem;}
   <div class="auth-form active" id="form-signin">
     <div class="auth-field"><label>Email</label><input type="email" id="si-email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')signIn()"/></div>
     <div class="auth-field"><label>Password</label><input type="password" id="si-pass" placeholder="Your password" onkeydown="if(event.key==='Enter')signIn()"/></div>
-    <button class="btn-auth" onclick="signIn()" id="btn-signin">Sign in</button>
-    <div class="auth-footer">No account? <a onclick="switchTab('signup')">Create one free →</a></div>
+    <button class="btn-auth" onclick="signIn()" id="btn-signin">Sign in →</button>
+    <div class="auth-footer">No account yet? <a onclick="switchTab('signup')">Create one — it's free →</a></div>
   </div>
   <div class="auth-form" id="form-signup">
     <div class="auth-field"><label>Email</label><input type="email" id="su-email" placeholder="you@example.com"/></div>
     <div class="auth-field"><label>Password</label><input type="password" id="su-pass" placeholder="At least 8 characters" onkeydown="if(event.key==='Enter')signUp()"/></div>
-    <button class="btn-auth" onclick="signUp()" id="btn-signup">Create account</button>
-    <div class="auth-footer">Have an account? <a onclick="switchTab('signin')">Sign in →</a></div>
+    <button class="btn-auth" onclick="signUp()" id="btn-signup">Create my account →</button>
+    <div class="auth-footer">Already have an account? <a onclick="switchTab('signin')">Sign in →</a></div>
   </div>
 </div>
 </div>
 
-<!-- ONBOARDING -->
+<!-- ONBOARDING — 4 steps, fun and casual -->
 <div id="screen-onboard" class="screen">
 <div class="ob-card">
-  <div class="brand">
-    <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-    <div class="brand-name">Tri<span>Coach</span></div>
+  <div class="ob-logo">
+    <div class="ob-logo-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+    <div class="ob-logo-name">Tri<span>Coach</span></div>
   </div>
   <div class="step-pills" id="step-pills"></div>
 
-  <!-- Step 0: Event -->
+  <!-- STEP 1: What's the race? -->
   <div class="ob-step active" id="ob0">
-    <div class="eyebrow">Step 1</div>
-    <h2>What are you training for?</h2>
-    <p class="sub">Choose your event — everything is built around this.</p>
-    <div class="event-grid">
-      <div class="event-card" data-v="Sprint triathlon" onclick="selEvent(this)"><div class="event-card-icon">🏊🚴🏃</div><div class="event-card-name">Sprint triathlon</div><div class="event-card-detail">750m · 20km · 5km</div></div>
-      <div class="event-card" data-v="Olympic triathlon" onclick="selEvent(this)"><div class="event-card-icon">🏊🚴🏃</div><div class="event-card-name">Olympic triathlon</div><div class="event-card-detail">1.5km · 40km · 10km</div></div>
-      <div class="event-card" data-v="70.3 Half Ironman" onclick="selEvent(this)"><div class="event-card-icon">🏊🚴🏃</div><div class="event-card-name">70.3 Half Ironman</div><div class="event-card-detail">1.9km · 90km · 21km</div></div>
-      <div class="event-card" data-v="Full Ironman" onclick="selEvent(this)"><div class="event-card-icon">🏊🚴🏃</div><div class="event-card-name">Full Ironman</div><div class="event-card-detail">3.8km · 180km · 42.2km</div></div>
-      <div class="event-card" data-v="5K run" onclick="selEvent(this)"><div class="event-card-icon">🏃</div><div class="event-card-name">5K run</div><div class="event-card-detail">5 kilometres</div></div>
-      <div class="event-card" data-v="10K run" onclick="selEvent(this)"><div class="event-card-icon">🏃</div><div class="event-card-name">10K run</div><div class="event-card-detail">10 kilometres</div></div>
-      <div class="event-card" data-v="Half marathon" onclick="selEvent(this)"><div class="event-card-icon">🏃</div><div class="event-card-name">Half marathon</div><div class="event-card-detail">21.1 kilometres</div></div>
-      <div class="event-card" data-v="Marathon" onclick="selEvent(this)"><div class="event-card-icon">🏃</div><div class="event-card-name">Marathon</div><div class="event-card-detail">42.2 kilometres</div></div>
+    <div class="step-label">Step 1 of 4</div>
+    <h2>What's the race? 🏁</h2>
+    <p class="step-sub">Pick what you're training for. Don't worry — you can change this later!</p>
+    <div class="big-grid">
+      <div class="big-card" data-v="Sprint triathlon" onclick="selEvent(this)"><span class="big-card-emoji">🏊🚴🏃</span><div class="big-card-name">Sprint Tri</div><div class="big-card-detail">750m · 20km · 5km</div></div>
+      <div class="big-card" data-v="Olympic triathlon" onclick="selEvent(this)"><span class="big-card-emoji">🏊🚴🏃</span><div class="big-card-name">Olympic Tri</div><div class="big-card-detail">1.5km · 40km · 10km</div></div>
+      <div class="big-card" data-v="70.3 Half Ironman" onclick="selEvent(this)"><span class="big-card-emoji">🏊🚴🏃</span><div class="big-card-name">70.3 Half Ironman</div><div class="big-card-detail">1.9km · 90km · 21km</div></div>
+      <div class="big-card" data-v="Full Ironman" onclick="selEvent(this)"><span class="big-card-emoji">🏊🚴🏃</span><div class="big-card-name">Full Ironman</div><div class="big-card-detail">3.8km · 180km · 42km</div></div>
+      <div class="big-card" data-v="5K run" onclick="selEvent(this)"><span class="big-card-emoji">🏃</span><div class="big-card-name">5K Run</div><div class="big-card-detail">5 kilometres</div></div>
+      <div class="big-card" data-v="10K run" onclick="selEvent(this)"><span class="big-card-emoji">🏃</span><div class="big-card-name">10K Run</div><div class="big-card-detail">10 kilometres</div></div>
+      <div class="big-card" data-v="Half marathon" onclick="selEvent(this)"><span class="big-card-emoji">🏃</span><div class="big-card-name">Half Marathon</div><div class="big-card-detail">21.1 kilometres</div></div>
+      <div class="big-card" data-v="Marathon" onclick="selEvent(this)"><span class="big-card-emoji">🏃</span><div class="big-card-name">Marathon</div><div class="big-card-detail">42.2 kilometres</div></div>
     </div>
-    <div class="field"><label>Race name (optional)</label><input type="text" id="f-race" placeholder="e.g. Chicago Triathlon, Boston Marathon"/></div>
+    <div class="ob-field"><label>Race name (optional)</label><input type="text" id="f-race" placeholder="e.g. Chicago Tri, Boston Marathon"/></div>
     <div class="field-row">
-      <div class="field"><label>Race date</label><input type="date" id="f-date"/></div>
-      <div class="field"><label>Training starts</label><input type="date" id="f-start"/></div>
+      <div class="ob-field"><label>📅 Race date</label><input type="date" id="f-date"/></div>
+      <div class="ob-field"><label>🏃 Training starts</label><input type="date" id="f-start"/></div>
     </div>
-    <button class="btn-next" onclick="ob(1)">Continue →</button>
+    <button class="btn-go" onclick="ob(1)">Next →</button>
   </div>
 
-  <!-- Step 1: Plan type -->
+  <!-- STEP 2: About you -->
   <div class="ob-step" id="ob1">
-    <div class="eyebrow">Step 2</div>
-    <h2>How do you want to train?</h2>
-    <p class="sub">TriCoach can build your plan, or coach you through one you already have.</p>
-    <div class="plan-choice-grid">
-      <div class="plan-choice-card" id="choice-ai" onclick="selPlanType('ai')">
-        <div class="plan-choice-icon">🤖</div>
-        <div class="plan-choice-name">Build me a plan</div>
-        <div class="plan-choice-desc">AI creates a personalised plan based on your fitness, schedule, and goals</div>
-      </div>
-      <div class="plan-choice-card own" id="choice-own" onclick="selPlanType('own')">
-        <div class="plan-choice-icon">📋</div>
-        <div class="plan-choice-name">I have my own plan</div>
-        <div class="plan-choice-desc">Upload or enter your plan — AI coaches you through it</div>
-      </div>
+    <div class="step-label">Step 2 of 4</div>
+    <h2>Tell us about you! 👋</h2>
+    <p class="step-sub">Just the basics. Your coach needs to know who they're talking to!</p>
+    <div class="ob-field"><label>Your first name</label><input type="text" id="f-name" placeholder="e.g. Erica"/></div>
+    <div class="ob-field">
+      <label>📱 WhatsApp number (optional)</label>
+      <input type="tel" id="f-phone" placeholder="+13125551234"/>
+      <div class="hint">Include country code (US is +1). We'll send your daily workout here every morning! 🌅</div>
     </div>
-    <div class="btn-row"><button class="btn-back" onclick="ob(0)">← Back</button><button class="btn-next" style="flex:1" id="btn-plan-next" onclick="ob(2)" disabled>Continue →</button></div>
+    <div class="section-label">How fit are you right now? Be honest! 😅</div>
+    <div class="chip-row" id="cg-level">
+      <div class="chip" data-v="complete-beginner" onclick="pick('cg-level',this)">🐣 Total beginner</div>
+      <div class="chip" data-v="beginner" onclick="pick('cg-level',this)">🌱 Some experience</div>
+      <div class="chip sel" data-v="intermediate" onclick="pick('cg-level',this)">💪 Intermediate</div>
+      <div class="chip" data-v="advanced" onclick="pick('cg-level',this)">🔥 Advanced</div>
+    </div>
+    <div class="ob-field">
+      <label>What can you do comfortably right now?</label>
+      <textarea id="f-current" placeholder="e.g. I can run for 20 minutes, swim 200m, haven't been on a bike in ages... whatever fits!"></textarea>
+    </div>
+    <div class="btn-row-ob"><button class="btn-back-ob" onclick="ob(0)">← Back</button><button class="btn-go" style="flex:1" onclick="ob(2)">Next →</button></div>
   </div>
 
-  <!-- Step 2a: Own plan upload -->
-  <div class="ob-step" id="ob2-own">
-    <div class="eyebrow">Step 3</div>
-    <h2>Add your training plan</h2>
-    <p class="sub">Choose how you'd like to add it.</p>
-    <div class="upload-methods">
-      <div class="upload-method sel" id="um-pdf" onclick="selUploadMethod('pdf')"><div class="upload-method-icon">📄</div><div><div class="upload-method-name">PDF or image</div><div class="upload-method-desc">Upload a file</div></div></div>
-      <div class="upload-method" id="um-text" onclick="selUploadMethod('text')"><div class="upload-method-icon">✏️</div><div><div class="upload-method-name">Type or paste</div><div class="upload-method-desc">Enter as text</div></div></div>
-      <div class="upload-method" id="um-manual" onclick="selUploadMethod('manual')"><div class="upload-method-icon">📅</div><div><div class="upload-method-name">Week by week</div><div class="upload-method-desc">Enter manually</div></div></div>
-      <div class="upload-method" id="um-strava" onclick="selUploadMethod('strava')"><div class="upload-method-icon">🔗</div><div><div class="upload-method-name">Strava / TP</div><div class="upload-method-desc">Connect later</div></div></div>
+  <!-- STEP 3: Schedule -->
+  <div class="ob-step" id="ob2">
+    <div class="step-label">Step 3 of 4</div>
+    <h2>How much can you train? 📅</h2>
+    <p class="step-sub">Be realistic! A plan you can actually do beats a perfect plan you can't.</p>
+    <div class="section-label">How many days per week?</div>
+    <div class="chip-row" id="cg-days">
+      <div class="chip" data-v="3" onclick="pick('cg-days',this)">3 days</div>
+      <div class="chip sel" data-v="4" onclick="pick('cg-days',this)">4 days</div>
+      <div class="chip" data-v="5" onclick="pick('cg-days',this)">5 days</div>
+      <div class="chip" data-v="6" onclick="pick('cg-days',this)">6 days</div>
     </div>
-    <div id="upload-pdf">
-      <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
-        <input type="file" id="file-input" accept=".pdf,.png,.jpg,.jpeg,.webp" onchange="handleFile(event)"/>
-        <div class="upload-area-icon">📎</div>
-        <div class="upload-area-text">Click to upload or drag and drop</div>
-        <div class="upload-area-hint">PDF, PNG, JPG · Max 10MB</div>
-      </div>
-      <div class="upload-preview" id="file-preview" style="display:none"><span>📄</span><span id="file-name">No file</span></div>
+    <div class="section-label">How many hours per week are you training now?</div>
+    <div class="chip-row" id="cg-hours">
+      <div class="chip" data-v="0-2" onclick="pick('cg-hours',this)">0–2 hrs 😴</div>
+      <div class="chip" data-v="2-4" onclick="pick('cg-hours',this)">2–4 hrs</div>
+      <div class="chip sel" data-v="4-6" onclick="pick('cg-hours',this)">4–6 hrs</div>
+      <div class="chip" data-v="6-10" onclick="pick('cg-hours',this)">6–10 hrs</div>
+      <div class="chip" data-v="10+" onclick="pick('cg-hours',this)">10+ hrs 🔥</div>
     </div>
-    <div id="upload-text" style="display:none"><div class="field" style="margin-top:0.5rem"><label>Paste your plan here</label><textarea id="plan-text-input" style="min-height:180px" placeholder="Paste your training plan — include weeks, days, sessions, distances and paces."></textarea></div></div>
-    <div id="upload-manual" style="display:none"><div class="field" style="margin-top:0.5rem"><label>Describe your Week 1 sessions</label><textarea id="manual-w1" style="min-height:120px" placeholder="Mon: Rest&#10;Tue: 30 min easy run&#10;Wed: 45 min bike&#10;Thu: Rest&#10;Fri: Swim 500m&#10;Sat: Long ride 90 min&#10;Sun: Rest"></textarea><div class="field-hint">You can add more weeks after setup.</div></div></div>
-    <div id="upload-strava" style="display:none"><div style="background:var(--gray-100);border-radius:var(--radius-sm);padding:1rem;margin-top:0.5rem;font-size:13px;color:var(--gray-600);"><strong style="color:var(--navy);display:block;margin-bottom:0.4rem">Strava / TrainingPeaks sync</strong>Set this up after onboarding — your workouts sync automatically each week.</div></div>
-    <div class="btn-row" style="margin-top:1rem"><button class="btn-back" onclick="ob(1)">← Back</button><button class="btn-next" style="flex:1" onclick="ob(3)">Continue →</button></div>
+    <div class="section-label">What's your main goal?</div>
+    <div class="chip-row" id="cg-goal">
+      <div class="chip sel" data-v="finish" onclick="pick('cg-goal',this)">🏅 Just finish!</div>
+      <div class="chip" data-v="finish-strong" onclick="pick('cg-goal',this)">💪 Finish strong</div>
+      <div class="chip" data-v="time-goal" onclick="pick('cg-goal',this)">⏱ Hit a time</div>
+      <div class="chip" data-v="podium" onclick="pick('cg-goal',this)">🏆 Podium</div>
+    </div>
+    <div class="ob-field" id="time-goal-field" style="display:none">
+      <label>What time are you going for?</label>
+      <input type="text" id="f-time-goal" placeholder="e.g. Sub 2:30, under 4 hours"/>
+    </div>
+    <div class="btn-row-ob"><button class="btn-back-ob" onclick="ob(1)">← Back</button><button class="btn-go" style="flex:1" onclick="ob(3)">Next →</button></div>
   </div>
 
-  <!-- Step 2b: About you (AI plan) -->
-  <div class="ob-step" id="ob2-ai">
-    <div class="eyebrow">Step 3</div>
-    <h2>About you</h2>
-    <p class="sub">Basic info to personalise your coaching.</p>
-    <div class="field"><label>Your first name</label><input type="text" id="f-name-ai" placeholder="e.g. Erica"/></div>
-    <div class="field"><label>WhatsApp (optional — for daily coaching)</label><input type="tel" id="f-phone-ai" placeholder="+13125551234"/><div class="field-hint">Include country code. We send your morning workout brief here.</div></div>
-    <div class="field"><label>Primary goal</label>
-      <div class="chip-group" id="cg-goal">
-        <div class="chip sel" data-v="finish" onclick="pick('cg-goal',this)">Just finish</div>
-        <div class="chip" data-v="finish-strong" onclick="pick('cg-goal',this)">Finish strong</div>
-        <div class="chip" data-v="time-goal" onclick="pick('cg-goal',this)">Hit a time goal</div>
-        <div class="chip" data-v="podium" onclick="pick('cg-goal',this)">Podium / AG</div>
-      </div>
-    </div>
-    <div class="field" id="time-goal-field" style="display:none"><label>Target time</label><input type="text" id="f-time-goal" placeholder="e.g. Sub 2:30, under 4 hours"/></div>
-    <div class="sdivider">Your current fitness</div>
-    <div class="field"><label>Experience level</label>
-      <div class="chip-group" id="cg-level">
-        <div class="chip" data-v="complete-beginner" onclick="pick('cg-level',this)">Complete beginner</div>
-        <div class="chip" data-v="beginner" onclick="pick('cg-level',this)">Some experience</div>
-        <div class="chip sel" data-v="intermediate" onclick="pick('cg-level',this)">Intermediate</div>
-        <div class="chip" data-v="advanced" onclick="pick('cg-level',this)">Advanced</div>
-      </div>
-    </div>
-    <div class="field"><label>Hours training per week right now</label>
-      <div class="chip-group" id="cg-hours">
-        <div class="chip" data-v="0-2" onclick="pick('cg-hours',this)">0–2 hrs</div>
-        <div class="chip" data-v="2-4" onclick="pick('cg-hours',this)">2–4 hrs</div>
-        <div class="chip sel" data-v="4-6" onclick="pick('cg-hours',this)">4–6 hrs</div>
-        <div class="chip" data-v="6-10" onclick="pick('cg-hours',this)">6–10 hrs</div>
-        <div class="chip" data-v="10+" onclick="pick('cg-hours',this)">10+ hrs</div>
-      </div>
-    </div>
-    <div class="field"><label>Training days available</label>
-      <div class="chip-group" id="cg-days">
-        <div class="chip" data-v="3" onclick="pick('cg-days',this)">3 days</div>
-        <div class="chip sel" data-v="4" onclick="pick('cg-days',this)">4 days</div>
-        <div class="chip" data-v="5" onclick="pick('cg-days',this)">5 days</div>
-        <div class="chip" data-v="6" onclick="pick('cg-days',this)">6 days</div>
-      </div>
-    </div>
-    <div class="field"><label>Describe your current fitness honestly</label><textarea id="f-current" placeholder="e.g. I can run 20 min without stopping, swim 200m, haven't biked in a year..."></textarea></div>
-    <div class="btn-row"><button class="btn-back" onclick="ob(1)">← Back</button><button class="btn-next" style="flex:1" onclick="ob(3)">Continue →</button></div>
-  </div>
-
-  <!-- Step 3: Role (own) or Disciplines (AI) -->
+  <!-- STEP 4: Plan type -->
   <div class="ob-step" id="ob3">
-    <div class="eyebrow">Step 4</div>
-    <h2 id="ob3-title">Your disciplines</h2>
-    <p class="sub" id="ob3-sub">Rate yourself honestly — this shapes your first weeks of training.</p>
-    <div id="ob3-role" style="display:none">
-      <div class="ai-role-grid">
-        <div class="ai-role-card sel" id="role-card-follow" onclick="selRole('follow')"><div class="ai-role-icon">📋</div><div><div class="ai-role-name">Follow the plan exactly</div><div class="ai-role-desc">AI keeps you accountable and gives context — no changes to your plan</div></div></div>
-        <div class="ai-role-card" id="role-card-suggest" onclick="selRole('suggest')"><div class="ai-role-icon">💡</div><div><div class="ai-role-name">Suggest adjustments</div><div class="ai-role-desc">AI follows your plan but flags potential improvements for you to decide</div></div></div>
-        <div class="ai-role-card" id="role-card-full" onclick="selRole('full')"><div class="ai-role-icon">🧠</div><div><div class="ai-role-name">Full coaching authority</div><div class="ai-role-desc">AI can modify sessions based on fatigue, HRV, and progress</div></div></div>
+    <div class="step-label">Step 4 of 4</div>
+    <h2>One last thing! 🎉</h2>
+    <p class="step-sub">Do you want us to build your training plan, or do you already have one?</p>
+    <div class="plan-type-grid">
+      <div class="plan-type-card" id="choice-ai" onclick="selPlanType('ai')">
+        <span class="plan-type-emoji">🤖</span>
+        <div class="plan-type-name">Build me a plan!</div>
+        <div class="plan-type-desc">AI creates a custom plan based on your race, fitness, and schedule</div>
       </div>
-      <div class="field" style="margin-top:1rem"><label>Plan name (optional)</label><input type="text" id="f-plan-name" placeholder="e.g. 80/20 Triathlon plan, Joe Friel Base plan"/></div>
-    </div>
-    <div id="ob3-disciplines">
-      <div id="ob3-tri-fields">
-        <div class="sdivider">Swim</div>
-        <div class="field"><label>Swim ability</label><div class="chip-group" id="cg-swim"><div class="chip" data-v="cant-swim" onclick="pick('cg-swim',this)">Can't swim yet</div><div class="chip" data-v="beginner" onclick="pick('cg-swim',this)">A length or two</div><div class="chip sel" data-v="intermediate" onclick="pick('cg-swim',this)">Can complete the distance</div><div class="chip" data-v="strong" onclick="pick('cg-swim',this)">Strong swimmer</div></div></div>
-        <div class="field"><label>CSS / 100m pace (optional)</label><input type="text" id="f-css" placeholder="e.g. 2:00/100m or unknown"/></div>
-        <div class="sdivider">Bike</div>
-        <div class="field"><label>Bike ability</label><div class="chip-group" id="cg-bike"><div class="chip" data-v="beginner" onclick="pick('cg-bike',this)">Rarely ride</div><div class="chip sel" data-v="intermediate" onclick="pick('cg-bike',this)">Ride occasionally</div><div class="chip" data-v="strong" onclick="pick('cg-bike',this)">Regular cyclist</div></div></div>
-        <div class="field"><label>FTP or avg speed (optional)</label><input type="text" id="f-ftp" placeholder="e.g. 180w, 25kph, or unknown"/></div>
-        <div class="sdivider">Run</div>
-        <div class="field"><label>Run ability</label><div class="chip-group" id="cg-run"><div class="chip" data-v="beginner" onclick="pick('cg-run',this)">Walk/run</div><div class="chip sel" data-v="intermediate" onclick="pick('cg-run',this)">Can run continuously</div><div class="chip" data-v="strong" onclick="pick('cg-run',this)">Confident runner</div></div></div>
-      </div>
-      <div id="ob3-run-fields" style="display:none">
-        <div class="field"><label>Longest recent run</label><div class="chip-group" id="cg-longest-run"><div class="chip" data-v="cant-run" onclick="pick('cg-longest-run',this)">Haven't started</div><div class="chip" data-v="1-2km" onclick="pick('cg-longest-run',this)">1–2 km</div><div class="chip sel" data-v="3-5km" onclick="pick('cg-longest-run',this)">3–5 km</div><div class="chip" data-v="5-10km" onclick="pick('cg-longest-run',this)">5–10 km</div><div class="chip" data-v="10km+" onclick="pick('cg-longest-run',this)">10 km+</div></div></div>
+      <div class="plan-type-card own" id="choice-own" onclick="selPlanType('own')">
+        <span class="plan-type-emoji">📋</span>
+        <div class="plan-type-name">I have my own plan</div>
+        <div class="plan-type-desc">Upload or paste your plan — AI coaches you through it</div>
       </div>
     </div>
-    <div class="btn-row"><button class="btn-back" onclick="ob(2)">← Back</button><button class="btn-next" style="flex:1" onclick="ob(4)">Continue →</button></div>
-  </div>
-
-  <!-- Step 4: Life context -->
-  <div class="ob-step" id="ob4">
-    <div class="eyebrow">Step 5</div>
-    <h2>Life and context</h2>
-    <p class="sub">The more your coach knows, the better the guidance. All optional.</p>
-    <div id="name-field-own" style="display:none">
-      <div class="field"><label>Your first name</label><input type="text" id="f-name-own" placeholder="e.g. Erica"/></div>
-      <div class="field"><label>WhatsApp (optional)</label><input type="tel" id="f-phone-own" placeholder="+13125551234"/><div class="field-hint">Your coach checks in here every morning.</div></div>
+    <div id="own-plan-input" style="display:none">
+      <div class="section-label">Paste or describe your plan</div>
+      <div class="ob-field"><textarea id="plan-text-input" style="min-height:130px" placeholder="Paste your training plan here — weeks, sessions, distances, whatever you have! e.g. Week 1: Mon rest, Tue 20min run, Wed 30min bike..."></textarea></div>
     </div>
-    <div class="field"><label>Injuries or physical limitations</label><textarea id="f-injuries" placeholder="e.g. Left knee flares on long runs, shoulder surgery 2 years ago..."></textarea></div>
-    <div class="field"><label>Busy or travel periods during training</label><input type="text" id="f-travel" placeholder="e.g. Work trip 2 weeks in May, family holiday July"/></div>
-    <div class="field"><label>Previous race or fitness history</label><input type="text" id="f-history" placeholder="e.g. Sprint tri 1:45, 10K in 58 min, no race experience yet"/></div>
-    <div class="field"><label>Anything else your coach should know?</label><textarea id="f-other" placeholder="e.g. I work night shifts. I've read the Triathlete's Training Bible. I tend to overtrain..."></textarea></div>
-    <div class="btn-row"><button class="btn-back" onclick="ob(3)">← Back</button><button class="btn-next" style="flex:1" id="btn-launch" onclick="launch()">Build my plan →</button></div>
+    <div class="btn-row-ob"><button class="btn-back-ob" onclick="ob(2)">← Back</button><button class="btn-go" style="flex:1" id="btn-launch" onclick="launch()" disabled>Let's go! 🚀</button></div>
   </div>
 </div>
 </div>
@@ -497,8 +430,8 @@ nav.nav{flex:1;padding:0 0.65rem;}
 <div id="screen-generating" class="screen">
 <div class="gen-card">
   <div class="gen-spinner"></div>
-  <div class="gen-title" id="gen-title">Building your plan</div>
-  <div class="gen-status" id="gen-status">Saving your profile…</div>
+  <div class="gen-title" id="gen-title">Building your plan 🏗️</div>
+  <div class="gen-sub" id="gen-sub">This takes about 30 seconds…</div>
   <ul class="gen-steps" id="gen-steps-list"></ul>
 </div>
 </div>
@@ -547,7 +480,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
     </div>
     <div class="tab-panel" id="tab-profile">
       <div class="profile-scroll">
-        <div class="page-head"><div><div class="page-title">My Profile</div><div class="page-sub">Changes save to your account</div></div></div>
+        <div class="page-head"><div><div class="page-title">My Profile</div><div class="page-sub">Changes save to your account automatically</div></div></div>
         <div class="account-info">Signed in as <strong id="account-email">—</strong></div>
         <div class="profile-card">
           <div class="profile-card-title">👤 About you</div>
@@ -556,20 +489,19 @@ nav.nav{flex:1;padding:0 0.65rem;}
           <div class="pf"><label>Race name</label><input type="text" id="p-race"/></div>
           <div class="pf"><label>Race date</label><input type="date" id="p-date"/></div>
           <div class="pf"><label>Training start date</label><input type="date" id="p-start"/></div>
-          <div class="pf"><label>WhatsApp number</label><input type="tel" id="p-phone" placeholder="+13125551234"/><div class="pf-hint">Your coach messages you here every morning.</div></div>
+          <div class="pf"><label>WhatsApp number</label><input type="tel" id="p-phone" placeholder="+13125551234"/><div class="pf-hint">Your coach sends morning workouts here!</div></div>
         </div>
         <div class="profile-card">
           <div class="profile-card-title">🎯 Training</div>
           <div class="pf"><label>Plan type</label><input type="text" id="p-plan-type" readonly style="background:var(--gray-100);color:var(--gray-500)"/></div>
-          <div class="pf"><label>AI coach role</label><select id="p-ai-role"><option value="follow">Follow plan exactly</option><option value="suggest">Suggest adjustments</option><option value="full">Full coaching authority</option></select></div>
-          <div class="pf"><label>Experience level</label><select id="p-level"><option value="complete-beginner">Complete beginner</option><option value="beginner">Some experience</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></div>
+          <div class="pf"><label>Experience level</label><select id="p-level"><option value="complete-beginner">Total beginner</option><option value="beginner">Some experience</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></div>
           <div class="pf"><label>Training days per week</label><select id="p-days"><option value="3">3 days</option><option value="4">4 days</option><option value="5">5 days</option><option value="6">6 days</option></select></div>
           <div class="pf"><label>Goal</label><input type="text" id="p-goal"/></div>
         </div>
         <div class="profile-card">
-          <div class="profile-card-title">📝 Coach notes</div>
-          <div class="pf"><label>Injuries</label><textarea id="p-injuries"></textarea></div>
-          <div class="pf"><label>Other notes</label><textarea id="p-other"></textarea></div>
+          <div class="profile-card-title">📝 Notes for your coach</div>
+          <div class="pf"><label>Injuries or limitations</label><textarea id="p-injuries"></textarea></div>
+          <div class="pf"><label>Anything else</label><textarea id="p-other"></textarea></div>
         </div>
         <div style="display:flex;align-items:center;gap:0.65rem"><button class="btn-save" onclick="saveProfile()">Save changes</button><div class="save-ok" id="save-ok">✓ Saved!</div></div>
       </div>
@@ -583,39 +515,35 @@ const TODAY = new Date();
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 let currentUser=null, authToken=null, P={}, chatHistory=[], weekOffset=0;
-let planType='', aiRoleSelected='follow';
-let uploadedFile=null, uploadedFileBase64=null;
+let planType='', selectedEvent='';
 
-// ── SESSION RESTORE (THE FIX) ─────────────────────────────────────────────────
-// On every page load: silently check for existing session before showing anything
+// ── SESSION RESTORE ───────────────────────────────────────────────────────────
 (async () => {
-  const { data: { session } } = await supa.auth.getSession();
-  if (session?.user) {
-    currentUser = session.user;
-    authToken = session.access_token;
-    await handleSignedIn();
-  } else {
+  try {
+    const { data: { session } } = await supa.auth.getSession();
+    if (session?.user && session?.access_token) {
+      currentUser = session.user;
+      authToken = session.access_token;
+      console.log('Session restored, loading profile...');
+      await handleSignedIn();
+    } else {
+      console.log('No session found, showing auth');
+      showScreen('auth');
+    }
+  } catch(e) {
+    console.error('Session restore failed:', e);
     showScreen('auth');
   }
 })();
 
-// Also handle new sign-ins via the auth state listener
+// Single auth state listener — handles sign in, token refresh, sign out
 supa.auth.onAuthStateChange(async (event, session) => {
+  console.log('Auth event:', event);
   if (event === 'SIGNED_IN' && session) {
     currentUser = session.user;
     authToken = session.access_token;
     if (!P.name) await handleSignedIn();
   } else if (event === 'TOKEN_REFRESHED' && session) {
-    authToken = session.access_token;
-  } else if (event === 'SIGNED_OUT') {
-    currentUser=null; authToken=null; P={}; chatHistory=[];
-    showScreen('auth');
-  }
-});
-
-// Keep session fresh if user is active
-supa.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'TOKEN_REFRESHED' && session) {
     authToken = session.access_token;
   } else if (event === 'SIGNED_OUT') {
     currentUser=null; authToken=null; P={}; chatHistory=[];
@@ -630,10 +558,10 @@ function showAuthOk(m){const e=document.getElementById('auth-success');e.textCon
 
 async function signIn(){
   const email=document.getElementById('si-email').value.trim(),pass=document.getElementById('si-pass').value;
-  if(!email||!pass){showAuthErr('Please enter email and password');return;}
+  if(!email||!pass){showAuthErr('Please enter your email and password');return;}
   const btn=document.getElementById('btn-signin');btn.disabled=true;btn.textContent='Signing in…';
   const {data,error}=await supa.auth.signInWithPassword({email,password:pass});
-  btn.disabled=false;btn.textContent='Sign in';
+  btn.disabled=false;btn.textContent='Sign in →';
   if(error){showAuthErr(error.message);return;}
   currentUser=data.user;authToken=data.session.access_token;
   await handleSignedIn();
@@ -642,111 +570,138 @@ async function signIn(){
 async function signUp(){
   const email=document.getElementById('su-email').value.trim(),pass=document.getElementById('su-pass').value;
   if(!email||!pass){showAuthErr('Please fill in both fields');return;}
-  if(pass.length<8){showAuthErr('Password must be at least 8 characters');return;}
+  if(pass.length<8){showAuthErr('Password needs at least 8 characters');return;}
   const btn=document.getElementById('btn-signup');btn.disabled=true;btn.textContent='Creating…';
   const {error}=await supa.auth.signUp({email,password:pass});
-  btn.disabled=false;btn.textContent='Create account';
+  btn.disabled=false;btn.textContent='Create my account →';
   if(error){showAuthErr(error.message);return;}
-  showAuthOk('Account created! Check your email to confirm, then sign in.');
+  showAuthOk('Account created! ✅ Check your email to confirm, then sign in.');
 }
 
 async function signOut(){await supa.auth.signOut();}
 
 async function handleSignedIn(){
+  if(!authToken){console.log('handleSignedIn: no token, showing auth');showScreen('auth');return;}
+  console.log('handleSignedIn: fetching profile...');
   try{
     const res=await apiGet('/api/profile');
+    console.log('Profile response:', res);
     if(res&&res.name){
       P=res;
       const planRes=await apiGet('/api/plan');
       if(planRes?.plan_json)P.plan=planRes.plan_json;
       const hist=await apiGet('/api/chat-history');
       if(hist)chatHistory=hist;
+      console.log('Profile loaded, showing app');
       showScreen('app');initApp();return;
     }
-  }catch(e){}
-  renderPills(0);
-  showScreen('onboard');
+  }catch(e){console.error('Profile load error:',e);}
+  console.log('No profile found, showing onboarding');
+  renderPills(0);showScreen('onboard');
 }
 
 // ── API ───────────────────────────────────────────────────────────────────────
-async function apiPost(path,body){const res=await fetch(RAILWAY_URL+path,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify(body)});if(!res.ok)throw new Error(await res.text());return res.json();}
-async function apiGet(path){const res=await fetch(RAILWAY_URL+path,{headers:{'Authorization':'Bearer '+authToken}});if(!res.ok)return null;return res.json();}
+async function apiPost(path,body){
+  console.log('POST',path);
+  const res=await fetch(RAILWAY_URL+path,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify(body)});
+  if(!res.ok){const t=await res.text();console.error('POST',path,'failed:',res.status,t);throw new Error(t);}
+  return res.json();
+}
+async function apiGet(path){
+  try{
+    const res=await fetch(RAILWAY_URL+path,{headers:{'Authorization':'Bearer '+authToken}});
+    console.log('GET',path,'→',res.status);
+    if(!res.ok)return null;
+    return res.json();
+  }catch(e){console.error('GET',path,'error:',e);return null;}
+}
 
 // ── ONBOARDING ────────────────────────────────────────────────────────────────
-let selectedEvent='';
-function renderPills(active){const c=document.getElementById('step-pills');c.innerHTML='';for(let i=0;i<5;i++){const d=document.createElement('div');d.className='step-pill '+(i<active?'done':i===active?'active':'');c.appendChild(d);}}
-function selEvent(el){document.querySelectorAll('.event-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');selectedEvent=el.dataset.v;}
-function selPlanType(t){planType=t;document.getElementById('choice-ai').classList.toggle('sel',t==='ai');document.getElementById('choice-own').classList.toggle('sel',t==='own');document.getElementById('btn-plan-next').disabled=false;}
-function selUploadMethod(m){document.querySelectorAll('.upload-method').forEach(e=>e.classList.remove('sel'));document.getElementById('um-'+m).classList.add('sel');['pdf','text','manual','strava'].forEach(k=>document.getElementById('upload-'+k).style.display=k===m?'':'none');}
-function selRole(r){aiRoleSelected=r;document.querySelectorAll('.ai-role-card').forEach(e=>e.classList.remove('sel'));document.getElementById('role-card-'+r).classList.add('sel');}
-function pick(gid,el){document.querySelectorAll('#'+gid+' .chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');if(gid==='cg-goal')document.getElementById('time-goal-field').style.display=el.dataset.v==='time-goal'?'':'none';}
+function renderPills(active){const c=document.getElementById('step-pills');c.innerHTML='';for(let i=0;i<4;i++){const d=document.createElement('div');d.className='step-pill '+(i<active?'done':i===active?'active':'');c.appendChild(d);}}
+function selEvent(el){document.querySelectorAll('.big-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');selectedEvent=el.dataset.v;}
+function selPlanType(t){
+  planType=t;
+  document.getElementById('choice-ai').classList.toggle('sel',t==='ai');
+  document.getElementById('choice-own').classList.toggle('sel',t==='own');
+  document.getElementById('own-plan-input').style.display=t==='own'?'':'none';
+  document.getElementById('btn-launch').disabled=false;
+}
+function pick(gid,el){
+  document.querySelectorAll('#'+gid+' .chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');
+  if(gid==='cg-goal')document.getElementById('time-goal-field').style.display=el.dataset.v==='time-goal'?'':'none';
+}
 function getChip(gid){return document.querySelector('#'+gid+' .sel')?.dataset.v||'';}
 
 function ob(n){
-  if(n===1){if(!selectedEvent){alert('Please select your event');return;}if(!document.getElementById('f-date').value){alert('Please enter your race date');return;}if(!document.getElementById('f-start').value){alert('Please enter your training start date');return;}}
+  if(n===1){
+    if(!selectedEvent){alert('👆 Pick your event first!');return;}
+    if(!document.getElementById('f-date').value){alert('📅 What\'s your race date?');return;}
+    if(!document.getElementById('f-start').value){alert('📅 When do you want to start training?');return;}
+  }
+  if(n===2){
+    if(!document.getElementById('f-name').value.trim()){alert('👋 What\'s your name?');return;}
+  }
   renderPills(n);
   document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));
-  if(n===0){document.getElementById('ob0').classList.add('active');return;}
-  if(n===1){document.getElementById('ob1').classList.add('active');return;}
-  if(n===2){
-    if(planType==='own'){document.getElementById('ob2-own').classList.add('active');}
-    else{document.getElementById('ob2-ai').classList.add('active');}
-    return;
-  }
-  if(n===3){
-    document.getElementById('ob3').classList.add('active');
-    const isTri=selectedEvent.includes('triathlon')||selectedEvent.includes('Ironman')||selectedEvent.includes('70.3');
-    if(planType==='own'){
-      document.getElementById('ob3-title').textContent='Your AI coach role';
-      document.getElementById('ob3-sub').textContent='Choose how you\'d like TriCoach to work with your existing plan.';
-      document.getElementById('ob3-role').style.display='';document.getElementById('ob3-disciplines').style.display='none';
-    }else{
-      document.getElementById('ob3-title').textContent=isTri?'Your three disciplines':'Your running fitness';
-      document.getElementById('ob3-sub').textContent='Rate yourself honestly — this shapes your first weeks.';
-      document.getElementById('ob3-role').style.display='none';document.getElementById('ob3-disciplines').style.display='';
-      document.getElementById('ob3-tri-fields').style.display=isTri?'':'none';
-      document.getElementById('ob3-run-fields').style.display=isTri?'none':'';
-    }
-    return;
-  }
-  if(n===4){document.getElementById('ob4').classList.add('active');document.getElementById('name-field-own').style.display=planType==='own'?'':'none';return;}
+  document.getElementById('ob'+n).classList.add('active');
 }
-
-// File upload
-function dragOver(e){e.preventDefault();document.getElementById('drop-zone').classList.add('dragover');}
-function dragLeave(){document.getElementById('drop-zone').classList.remove('dragover');}
-function dropFile(e){e.preventDefault();document.getElementById('drop-zone').classList.remove('dragover');const f=e.dataTransfer.files[0];if(f)processFile(f);}
-function handleFile(e){const f=e.target.files[0];if(f)processFile(f);}
-function processFile(file){if(file.size>10*1024*1024){alert('File too large — max 10MB');return;}uploadedFile=file;const r=new FileReader();r.onload=e=>{uploadedFileBase64=e.target.result.split(',')[1];};r.readAsDataURL(file);document.getElementById('file-name').textContent=file.name;document.getElementById('file-preview').style.display='flex';}
 
 async function launch(){
   const btn=document.getElementById('btn-launch');btn.disabled=true;
-  const name=planType==='own'?document.getElementById('f-name-own').value.trim():document.getElementById('f-name-ai').value.trim();
-  if(!name){alert('Please enter your name');btn.disabled=false;return;}
-  const isTri=selectedEvent.includes('triathlon')||selectedEvent.includes('Ironman')||selectedEvent.includes('70.3');
-  const activeMethod=document.querySelector('.upload-method.sel')?.id?.replace('um-','');
-  let planText='';
-  if(planType==='own'){
-    if(activeMethod==='text')planText=document.getElementById('plan-text-input').value.trim();
-    if(activeMethod==='manual')planText=document.getElementById('manual-w1').value.trim();
-    if(activeMethod==='pdf'&&uploadedFile)planText='[File: '+uploadedFile.name+']';
-    if(activeMethod==='strava')planText='[Strava sync — configure post-setup]';
-  }
-  P={name,event:selectedEvent,race_name:document.getElementById('f-race').value.trim()||selectedEvent,race_date:document.getElementById('f-date').value,start_date:document.getElementById('f-start').value,phone:planType==='own'?document.getElementById('f-phone-own').value.trim():document.getElementById('f-phone-ai').value.trim(),plan_type:planType,ai_role:aiRoleSelected,goal:planType==='own'?'Race well':(getChip('cg-goal')+(document.getElementById('f-time-goal')?.value?' — '+document.getElementById('f-time-goal').value:'')),level:planType==='own'?'intermediate':(getChip('cg-level')||'beginner'),current_hours:planType==='own'?'4-6':(getChip('cg-hours')||'4-6'),training_days:parseInt(planType==='own'?'4':(getChip('cg-days')||'4')),current_fitness:document.getElementById('f-current')?.value?.trim()||'',swim_level:isTri?(getChip('cg-swim')||'intermediate'):null,bike_level:isTri?(getChip('cg-bike')||'intermediate'):null,run_level:isTri?(getChip('cg-run')||'intermediate'):(getChip('cg-longest-run')||'3-5km'),css_pace:isTri?(document.getElementById('f-css')?.value?.trim()||''):'',ftp:isTri?(document.getElementById('f-ftp')?.value?.trim()||''):'',injuries:document.getElementById('f-injuries').value.trim(),travel:document.getElementById('f-travel').value.trim(),history:document.getElementById('f-history').value.trim(),notes:document.getElementById('f-other').value.trim(),own_plan_text:planText,own_plan_file:uploadedFile?.name||null,plan_name:document.getElementById('f-plan-name')?.value?.trim()||''};
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('What\'s your name?');btn.disabled=false;return;}
+
+  const planText=planType==='own'?document.getElementById('plan-text-input').value.trim():'';
+
+  P={
+    name,
+    event:selectedEvent,
+    race_name:document.getElementById('f-race').value.trim()||selectedEvent,
+    race_date:document.getElementById('f-date').value,
+    start_date:document.getElementById('f-start').value,
+    phone:document.getElementById('f-phone').value.trim(),
+    plan_type:planType,
+    ai_role:'follow',
+    goal:getChip('cg-goal')+(document.getElementById('f-time-goal')?.value?' — '+document.getElementById('f-time-goal').value:''),
+    level:getChip('cg-level')||'beginner',
+    current_hours:getChip('cg-hours')||'4-6',
+    training_days:parseInt(getChip('cg-days')||'4'),
+    current_fitness:document.getElementById('f-current').value.trim(),
+    injuries:'',notes:'',travel:'',history:'',
+    own_plan_text:planText,plan_name:'',
+    swim_level:'intermediate',bike_level:'intermediate',run_level:'intermediate',
+    css_pace:'',ftp:''
+  };
+
   const isOwn=planType==='own';
-  document.getElementById('gen-title').textContent=isOwn?'Setting up your coaching':'Building your plan';
-  const steps=isOwn?['Saving your profile','Reading your training plan','Understanding your schedule','Setting up AI coaching','Preparing your morning brief','Ready to go!']:['Saving your profile','Calculating weeks to race','Designing periodization','Setting appropriate volumes','Scheduling your sessions','Preparing your morning brief'];
+  const steps=isOwn
+    ?['Saving your profile 💾','Reading your plan 📋','Setting up AI coaching 🤖','Almost ready…','Let\'s go! 🎉']
+    :['Saving your profile 💾','Calculating your training weeks 📅','Building your Friel plan 🏗️','Scheduling sessions ⚡','Almost ready… 🎉'];
+  document.getElementById('gen-title').textContent=isOwn?'Setting up your coaching 🤖':'Building your plan 🏗️';
   document.getElementById('gen-steps-list').innerHTML=steps.map((s,i)=>`<li id="gs${i}">${s}</li>`).join('');
   showScreen('generating');
+
   let si=0;document.getElementById('gs0').classList.add('cur');
   const iv=setInterval(()=>{if(si<steps.length-1){document.getElementById('gs'+si).classList.remove('cur');document.getElementById('gs'+si).classList.add('done');si++;document.getElementById('gs'+si).classList.add('cur');}},1200);
+
   try{
+    console.log('Saving profile...');
     await apiPost('/api/profile',P);
-    if(!isOwn){const r=await apiPost('/api/generate-plan',{profile:P});if(r?.plan)P.plan=r.plan;}
-    else if(planText&&planText.length>10){try{const r=await apiPost('/api/parse-plan',{planText:P.own_plan_text,profile:P,fileBase64:uploadedFileBase64,fileName:uploadedFile?.name});if(r?.plan)P.plan=r.plan;}catch(e){console.log('Plan parse skipped');}}
-  }catch(e){console.error('Launch error:',e);}
-  clearInterval(iv);steps.forEach((_,i)=>{document.getElementById('gs'+i)?.classList.add('done');document.getElementById('gs'+i)?.classList.remove('cur');});
-  await delay(400);showScreen('app');initApp();btn.disabled=false;
+    console.log('Profile saved!');
+    if(!isOwn){
+      console.log('Generating plan...');
+      const r=await apiPost('/api/generate-plan',{profile:P});
+      if(r?.plan){P.plan=r.plan;console.log('Plan generated!');}
+    } else if(planText.length>10){
+      try{const r=await apiPost('/api/parse-plan',{planText,profile:P});if(r?.plan)P.plan=r.plan;}catch(e){console.log('Plan parse skipped');}
+    }
+  }catch(e){console.error('Launch failed:',e);}
+
+  clearInterval(iv);
+  steps.forEach((_,i)=>{document.getElementById('gs'+i)?.classList.add('done');document.getElementById('gs'+i)?.classList.remove('cur');});
+  await delay(500);
+  showScreen('app');initApp();
+  btn.disabled=false;
 }
 
 // ── APP ───────────────────────────────────────────────────────────────────────
@@ -762,17 +717,35 @@ function initApp(){
   document.getElementById('s-race').textContent=P.race_name||'Race day';
   const badge=document.getElementById('plan-badge');badge.textContent=isOwn?'Own':'AI';badge.className='plan-type-badge '+(isOwn?'badge-own':'badge-ai');
   const banner=document.getElementById('plan-banner');banner.className='info-banner '+(isOwn?'own-plan':'ai');
-  document.getElementById('banner-title').textContent=isOwn?'Your plan · AI coaching: '+({follow:'Follow exactly',suggest:'Suggest adjustments',full:'Full authority'}[P.ai_role]||'Follow exactly'):'Evidence-based periodization';
-  document.getElementById('banner-sub').textContent=isOwn?(P.plan_name?'"'+P.plan_name+'" — ':'')+'TriCoach coaches you through your existing plan':'Friel\'s Training Bible · Progressive overload · Recovery weeks · Volume appropriate to your level';
+  document.getElementById('banner-title').textContent=isOwn?'Your plan — AI coaching mode':'Evidence-based periodization';
+  document.getElementById('banner-sub').textContent=isOwn?'TriCoach coaches you through your existing plan':'Friel\'s Training Bible · Progressive overload · Recovery weeks · Beginner-appropriate volumes';
   const gb=document.getElementById('gen-btn');gb.textContent=isOwn?'✏️ Edit plan':'↺ Regenerate';gb.className='btn-gen '+(isOwn?'own':'');
   renderBars();renderPlan();renderWeek();loadProfileForm();sendBrief();
 }
 
 function renderBars(){const c=document.getElementById('s-bars');c.innerHTML='';const d=P.training_days||4;for(let i=0;i<d;i++){const el=document.createElement('div');el.className='wk-bar '+(i<1?'done':i===1?'today':'');c.appendChild(el);}document.getElementById('s-wk-text').textContent='1 of '+(P.training_days||4)+' sessions';}
 
-function loadProfileForm(){document.getElementById('p-name').value=P.name||'';document.getElementById('p-event').value=P.event||'';document.getElementById('p-race').value=P.race_name||'';document.getElementById('p-date').value=P.race_date||'';document.getElementById('p-start').value=P.start_date||'';document.getElementById('p-phone').value=P.phone||'';document.getElementById('p-plan-type').value=P.plan_type==='own'?'My own plan (AI coached)':'AI generated plan';document.getElementById('p-ai-role').value=P.ai_role||'follow';document.getElementById('p-level').value=P.level||'beginner';document.getElementById('p-days').value=String(P.training_days||4);document.getElementById('p-goal').value=P.goal||'';document.getElementById('p-injuries').value=P.injuries||'';document.getElementById('p-other').value=P.notes||'';}
+function loadProfileForm(){
+  document.getElementById('p-name').value=P.name||'';
+  document.getElementById('p-event').value=P.event||'';
+  document.getElementById('p-race').value=P.race_name||'';
+  document.getElementById('p-date').value=P.race_date||'';
+  document.getElementById('p-start').value=P.start_date||'';
+  document.getElementById('p-phone').value=P.phone||'';
+  document.getElementById('p-plan-type').value=P.plan_type==='own'?'My own plan (AI coached)':'AI generated plan';
+  document.getElementById('p-level').value=P.level||'beginner';
+  document.getElementById('p-days').value=String(P.training_days||4);
+  document.getElementById('p-goal').value=P.goal||'';
+  document.getElementById('p-injuries').value=P.injuries||'';
+  document.getElementById('p-other').value=P.notes||'';
+}
 
-async function saveProfile(){P.name=document.getElementById('p-name').value.trim();P.race_name=document.getElementById('p-race').value.trim();P.race_date=document.getElementById('p-date').value;P.start_date=document.getElementById('p-start').value;P.phone=document.getElementById('p-phone').value.trim();P.ai_role=document.getElementById('p-ai-role').value;P.level=document.getElementById('p-level').value;P.training_days=parseInt(document.getElementById('p-days').value);P.goal=document.getElementById('p-goal').value.trim();P.injuries=document.getElementById('p-injuries').value.trim();P.notes=document.getElementById('p-other').value.trim();document.getElementById('s-name').textContent=P.name;try{await apiPost('/api/profile',P);const ok=document.getElementById('save-ok');ok.classList.add('show');setTimeout(()=>ok.classList.remove('show'),2500);}catch(e){alert('Save failed');}}
+async function saveProfile(){
+  P.name=document.getElementById('p-name').value.trim();P.race_name=document.getElementById('p-race').value.trim();P.race_date=document.getElementById('p-date').value;P.start_date=document.getElementById('p-start').value;P.phone=document.getElementById('p-phone').value.trim();P.level=document.getElementById('p-level').value;P.training_days=parseInt(document.getElementById('p-days').value);P.goal=document.getElementById('p-goal').value.trim();P.injuries=document.getElementById('p-injuries').value.trim();P.notes=document.getElementById('p-other').value.trim();
+  document.getElementById('s-name').textContent=P.name;
+  try{await apiPost('/api/profile',P);const ok=document.getElementById('save-ok');ok.classList.add('show');setTimeout(()=>ok.classList.remove('show'),2500);}
+  catch(e){alert('Save failed — check your connection');}
+}
 
 // ── CHAT ──────────────────────────────────────────────────────────────────────
 function addMsg(role,text){const c=document.getElementById('messages');const div=document.createElement('div');div.className='msg '+role;const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});const av=role==='coach'?'TC':(P.name?P.name[0].toUpperCase():'U');div.innerHTML='<div class="msg-av">'+av+'</div><div><div class="msg-bubble">'+fmt(text)+'</div><div class="msg-time">'+t+'</div></div>';c.appendChild(div);c.scrollTop=c.scrollHeight;}
@@ -781,36 +754,65 @@ function showTyping(on){document.getElementById('typing').classList.toggle('on',
 function setQR(arr){document.getElementById('qr').innerHTML=arr.map(r=>'<div class="qr-chip" onclick="quickSend(\''+r.replace(/'/g,"\\'")+'\')">'+r+'</div>').join('');}
 function quickSend(t){document.getElementById('qr').innerHTML='';document.getElementById('chat-in').value=t;sendMsg();}
 
-async function callCoach(message){const data=await apiPost('/api/chat',{message,history:chatHistory.slice(-20),profile:P,planPhase:P.plan?.phase||'Base 1'});chatHistory.push({role:'user',content:message});chatHistory.push({role:'assistant',content:data.reply});return data.reply;}
+async function callCoach(message){
+  const data=await apiPost('/api/chat',{message,history:chatHistory.slice(-20),profile:P,planPhase:P.plan?.phase||'Base 1'});
+  chatHistory.push({role:'user',content:message});
+  chatHistory.push({role:'assistant',content:data.reply});
+  return data.reply;
+}
 
 async function sendBrief(){
   const dow=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][TODAY.getDay()];
   const wo=P.race_date?Math.max(0,Math.ceil((new Date(P.race_date)-TODAY)/604800000)):'?';
-  const isOwn=P.plan_type==='own';
-  const msg=`Good morning ${P.name||'there'}! It's ${dow}. ${wo} weeks to ${P.race_name||'race day'}. Training for: ${P.event}. Level: ${P.level}. ${isOwn?`Own plan, AI role: ${P.ai_role}. Plan: ${P.plan_name||'their plan'}. Plan details: ${P.own_plan_text||'see profile'}.`:'AI-generated Friel plan.'} Current fitness: ${P.current_fitness||'see profile'}. Injuries: ${P.injuries||'none'}.
-
-Send a warm specific morning brief: (1) today's recommended session with exact duration, effort level, and structure appropriate for a ${P.level}, (2) one coaching insight for their ${P.event} prep, (3) short encouraging close. Be specific — a complete beginner needs short sessions and reassurance that this is correct.`;
+  const msg=`Good morning ${P.name||'there'}! It's ${dow}. ${wo} weeks to ${P.race_name||'race day'}. Event: ${P.event}. Level: ${P.level}. Plan type: ${P.plan_type==='own'?'own plan':'AI Friel plan'}. Current fitness: ${P.current_fitness||'see profile'}. Injuries: ${P.injuries||'none'}.\n\nSend a warm, fun morning brief: (1) today's recommended session with exact duration and effort level — appropriate for a ${P.level}, (2) one quick tip, (3) short encouraging line. Use emojis! Keep it short and energising.`;
   showTyping(true);await delay(400);
-  try{const r=await callCoach(msg);showTyping(false);addMsg('coach',r);document.getElementById('today-badge').innerHTML='Today: <span>'+getTodaySport()+'</span>';setQR(['✅ Done! Log workout','😴 Feeling tired','❓ Explain today\'s session','📖 How is my plan structured?']);}
-  catch(e){showTyping(false);addMsg('coach','Good morning '+(P.name||'')+'! 👋\n\nWelcome to TriCoach. I\'m having trouble connecting to the server right now.\n\n**To fix this:** make sure your Railway server is running and that RAILWAY_URL in this file is set to your real Railway URL (not the placeholder).');setQR(['What\'s today\'s session?','Explain my training plan','How does the coaching work?']);}
+  try{
+    const r=await callCoach(msg);showTyping(false);addMsg('coach',r);
+    document.getElementById('today-badge').innerHTML='Today: <span>'+getTodaySport()+'</span>';
+    setQR(['✅ Done! Log it','😴 Feeling tired','❓ What\'s this session for?','📊 How\'s my plan built?']);
+  }catch(e){
+    showTyping(false);
+    addMsg('coach','Hey '+( P.name||'')+'! 👋 Welcome to TriCoach!\n\nI\'m having trouble connecting right now. Make sure your Railway server is running — you can check by visiting your Railway URL directly in the browser.\n\nOnce it\'s up, just send me a message and I\'ll be ready to coach! 💪');
+    setQR(['What\'s today\'s session?','How does my plan work?','Motivate me! 💪']);
+  }
 }
 
-function getTodaySport(){if(!P.plan?.weeks)return 'rest';const start=P.start_date?new Date(P.start_date):TODAY;const wkNum=Math.max(1,Math.ceil((TODAY-start)/604800000)+1);const week=P.plan.weeks.find(w=>w.week===Math.min(P.plan.weeks.length,wkNum));if(!week)return 'rest';const day=week.days?.find(d=>d.day===DAYS[TODAY.getDay()]);return day?.sport||'rest';}
+function getTodaySport(){if(!P.plan?.weeks)return '—';const start=P.start_date?new Date(P.start_date):TODAY;const wkNum=Math.max(1,Math.ceil((TODAY-start)/604800000)+1);const week=P.plan.weeks.find(w=>w.week===Math.min(P.plan.weeks.length,wkNum));if(!week)return '—';const day=week.days?.find(d=>d.day===DAYS[TODAY.getDay()]);return day?.sport||'rest';}
 
-async function sendMsg(){const inp=document.getElementById('chat-in');const text=inp.value.trim();if(!text)return;inp.value='';resizeTA(inp);document.getElementById('qr').innerHTML='';addMsg('user',text);showTyping(true);try{const r=await callCoach(text);showTyping(false);addMsg('coach',r);const l=text.toLowerCase();if(l.includes('done')||l.includes('finished'))setQR(['How was that?','What\'s tomorrow?','Log my time']);else if(l.includes('tired')||l.includes('sore'))setQR(['Should I rest?','Recovery advice','Adjust the week']);else setQR(['Tell me more','Adjust my plan','Motivate me 💪']);}catch(e){showTyping(false);addMsg('coach','Couldn\'t reach the server. Check that Railway is running and RAILWAY_URL is correct.');}  }
+async function sendMsg(){
+  const inp=document.getElementById('chat-in');const text=inp.value.trim();if(!text)return;
+  inp.value='';resizeTA(inp);document.getElementById('qr').innerHTML='';
+  addMsg('user',text);showTyping(true);
+  try{
+    const r=await callCoach(text);showTyping(false);addMsg('coach',r);
+    const l=text.toLowerCase();
+    if(l.includes('done')||l.includes('finished'))setQR(['How was that?','What\'s tomorrow?','Log my stats']);
+    else if(l.includes('tired')||l.includes('sore'))setQR(['Should I rest?','Recovery tips','Adjust the week']);
+    else setQR(['Tell me more','Adjust my plan','Motivate me 💪']);
+  }catch(e){showTyping(false);addMsg('coach','Hmm, couldn\'t reach the server. Is Railway running? 🤔');}
+}
+
 function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 function resizeTA(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
 
 // ── PLAN ──────────────────────────────────────────────────────────────────────
-async function regenPlan(){const isOwn=P.plan_type==='own';document.getElementById('gen-btn').disabled=true;try{if(isOwn){const t=prompt('Update your plan text (leave blank to keep current):',P.own_plan_text||'');if(t!==null&&t.trim())P.own_plan_text=t.trim();const r=await apiPost('/api/parse-plan',{planText:P.own_plan_text,profile:P});if(r?.plan){P.plan=r.plan;renderPlan();renderWeek();}}else{const r=await apiPost('/api/generate-plan',{profile:P});if(r?.plan){P.plan=r.plan;renderPlan();renderWeek();}}}catch(e){alert('Failed — try again');}document.getElementById('gen-btn').disabled=false;}
+async function regenPlan(){
+  document.getElementById('gen-btn').disabled=true;
+  try{
+    const isOwn=P.plan_type==='own';
+    if(isOwn){const t=prompt('Update your plan text:',P.own_plan_text||'');if(t!==null&&t.trim())P.own_plan_text=t.trim();const r=await apiPost('/api/parse-plan',{planText:P.own_plan_text,profile:P});if(r?.plan){P.plan=r.plan;renderPlan();renderWeek();}}
+    else{const r=await apiPost('/api/generate-plan',{profile:P});if(r?.plan){P.plan=r.plan;renderPlan();renderWeek();}}
+  }catch(e){alert('Couldn\'t regenerate — try again!');}
+  document.getElementById('gen-btn').disabled=false;
+}
 
 function si(s){return{swim:'🏊',bike:'🚴',run:'🏃',brick:'⚡',rest:'😴',strength:'💪',test:'🔬',walk:'🚶',other:'🎯'}[s]||'🎯';}
 function bc(ph){const p=(ph||'').toLowerCase();return p.includes('base')?'b-base':p.includes('build')?'b-build':p.includes('peak')?'b-peak':p.includes('taper')?'b-taper':'b-base';}
 
 function renderPlan(){
-  if(!P.plan){document.getElementById('plan-content').innerHTML='<div style="padding:2rem;text-align:center;color:var(--gray-500);font-size:13px">'+(P.plan_type==='own'?'Your plan is being set up. Chat with your coach about today\'s session.':'Your plan is generating — check back in a moment.')+'</div>';document.getElementById('plan-content').classList.add('show');return;}
+  if(!P.plan){document.getElementById('plan-content').innerHTML='<div style="padding:2rem;text-align:center;color:var(--gray-500);font-size:13px">Your plan is loading… chat with your coach in the meantime! 💬</div>';document.getElementById('plan-content').classList.add('show');return;}
   const tw=P.plan.weeks?.length||0;
-  document.getElementById('plan-sub').textContent=(P.event||'Training')+' · '+(P.name||'')+' · '+tw+'-week plan';
+  document.getElementById('plan-sub').textContent=(P.event||'Training')+' · '+P.name+' · '+tw+'-week plan';
   document.getElementById('phase-tabs').innerHTML=(P.plan.phases||[]).map(p=>'<div class="phase-tab">'+p.name+': Wk '+p.weeks+'</div>').join('');
   const c=document.getElementById('plan-content');c.innerHTML='';
   const start=P.start_date?new Date(P.start_date):TODAY;
@@ -818,7 +820,7 @@ function renderPlan(){
   (P.plan.weeks||[]).forEach(w=>{
     const isCur=w.week===curWk;
     const div=document.createElement('div');div.className='week-card '+(w.isRecovery?'recovery':'')+(isCur?' current-week':'');
-    const extra=[isCur?'<span class="badge b-now">▶ Now</span>':'',w.isRecovery?'<span class="badge b-rec">Recovery</span>':'',w.isTestWeek?'<span class="badge b-rec">Test</span>':''].filter(Boolean).join('');
+    const extra=[isCur?'<span class="badge b-now">▶ Now</span>':'',w.isRecovery?'<span class="badge b-rec">Recovery 😴</span>':'',w.isTestWeek?'<span class="badge b-rec">Test 🔬</span>':''].filter(Boolean).join('');
     div.innerHTML='<div class="week-head" onclick="toggleWk('+w.week+')"><div class="wh-left"><div class="wh-num">Week '+w.week+'</div><div class="wh-focus">'+(w.focus||w.phase)+'</div></div><div class="wh-badges"><span class="badge '+bc(w.phase)+'">'+w.phase+'</span>'+extra+'<span class="badge b-hrs">'+(w.totalHours||'?')+'h</span></div></div><div class="week-days" id="wd-'+w.week+'" style="'+(w.week<=2||isCur?'':'display:none')+'">'+(w.days||[]).map(d=>'<div class="day-row"><div class="day-name">'+d.day+'</div><div class="day-sport-icon si-'+(d.sport||'other')+'">'+si(d.sport)+'</div><div class="day-info"><div class="day-title">'+d.title+'</div><div class="day-detail">'+d.detail+'</div></div><div class="day-dur">'+d.duration+'</div></div>').join('')+'</div>';
     c.appendChild(div);
   });
@@ -831,10 +833,10 @@ function wkOff(d){weekOffset+=d;renderWeek();}
 function renderWeek(){
   const off=weekOffset;const ws=new Date(TODAY);ws.setDate(TODAY.getDate()-TODAY.getDay()+(off*7));
   const we=new Date(ws);we.setDate(ws.getDate()+6);
-  document.getElementById('wk-title').textContent=off===0?'This week':off===-1?'Last week':off===1?'Next week':'Week of '+ws.getDate()+' '+MONTHS[ws.getMonth()];
+  document.getElementById('wk-title').textContent=off===0?'This week 📅':off===-1?'Last week':off===1?'Next week':'Week of '+ws.getDate()+' '+MONTHS[ws.getMonth()];
   document.getElementById('wk-sub').textContent=DAYS[ws.getDay()]+' '+ws.getDate()+' '+MONTHS[ws.getMonth()]+' — '+DAYS[we.getDay()]+' '+we.getDate()+' '+MONTHS[we.getMonth()];
   const wd=getWkWorkouts(ws);const total=wd.reduce((s,d)=>s+(d.mins||0),0);const sess=wd.filter(d=>d.sport!=='rest').length;
-  document.getElementById('stats-row').innerHTML='<div class="stat-box"><div class="stat-label">Sessions</div><div class="stat-value">'+sess+'</div><div class="stat-sub">planned</div></div><div class="stat-box"><div class="stat-label">Volume</div><div class="stat-value">'+Math.floor(total/60)+'<span style="font-size:1rem">h</span>'+(total%60?total%60+'m':'')+'</div><div class="stat-sub">this week</div></div><div class="stat-box"><div class="stat-label">Phase</div><div class="stat-value" style="font-size:0.9rem;padding-top:10px">'+(wd[1]?.phase||'Training')+'</div><div class="stat-sub">'+(wd[0]?.isRecovery?'recovery':'training block')+'</div></div>';
+  document.getElementById('stats-row').innerHTML='<div class="stat-box"><div class="stat-label">Sessions</div><div class="stat-value">'+sess+'</div><div class="stat-sub">planned</div></div><div class="stat-box"><div class="stat-label">Volume</div><div class="stat-value">'+Math.floor(total/60)+'<span style="font-size:1rem">h</span>'+(total%60?total%60+'m':'')+'</div><div class="stat-sub">this week</div></div><div class="stat-box"><div class="stat-label">Phase</div><div class="stat-value" style="font-size:0.9rem;padding-top:10px">'+(wd[1]?.phase||'Training')+'</div><div class="stat-sub">'+(wd[0]?.isRecovery?'recovery week 😴':'training block')+'</div></div>';
   const grid=document.getElementById('cal-grid');grid.innerHTML='';
   wd.forEach((d,i)=>{const date=new Date(ws);date.setDate(ws.getDate()+i);const isToday=date.toDateString()===TODAY.toDateString();const isPast=date<TODAY&&!isToday;const cell=document.createElement('div');cell.className='cal-cell '+(isToday?'today':'')+(isPast&&d.sport!=='rest'?' past':'');cell.onclick=()=>showDay(d,date);cell.innerHTML='<div class="cal-day-name">'+DAYS[date.getDay()]+'</div><div class="cal-day-num">'+date.getDate()+'</div><div class="cal-sport">'+si(d.sport)+'</div><div class="cal-title">'+d.title+'</div>'+(d.sport!=='rest'?'<div class="cal-dur">'+d.duration+'</div>':'');grid.appendChild(cell);});
   showDay(wd[TODAY.getDay()]||wd[1],new Date(ws.getTime()+TODAY.getDay()*86400000));
@@ -852,19 +854,18 @@ function getWkWorkouts(ws){
 
 function showDay(d,date){
   if(!d)return;const isToday=date&&date.toDateString()===TODAY.toDateString();
-  const blocks={swim:[{icon:'🏊',name:'Warm-up',desc:'Easy laps, settle in',meta:'5 min',cls:'sb-swim'},{icon:'🏊',name:'Main set',desc:d.detail||'Focus on form',meta:d.duration||'—',cls:'sb-swim'},{icon:'🏊',name:'Cool-down',desc:'Easy backstroke or float',meta:'3 min',cls:'sb-swim'}],bike:[{icon:'🚴',name:'Warm-up',desc:'Easy spin to get legs going',meta:'5-10 min',cls:'sb-bike'},{icon:'🚴',name:'Main ride',desc:d.detail||'Steady comfortable effort',meta:d.duration||'—',cls:'sb-bike'},{icon:'🚴',name:'Cool-down',desc:'Easy spin, lower HR gradually',meta:'5 min',cls:'sb-bike'}],run:[{icon:'🏃',name:'Warm-up',desc:'5 min walk, then easy jog',meta:'5 min',cls:'sb-run'},{icon:'🏃',name:'Main run',desc:d.detail||'Conversational pace — walk breaks totally fine',meta:d.duration||'—',cls:'sb-run'},{icon:'🏃',name:'Cool-down',desc:'Walk 3 min + stretch',meta:'5 min',cls:'sb-run'}],brick:[{icon:'🚴',name:'Bike',desc:'Steady effort, practice T2',meta:'per plan',cls:'sb-bike'},{icon:'🏃',name:'Run off bike',desc:'Easy first few min — legs will feel heavy',meta:'per plan',cls:'sb-run'}],rest:[{icon:'😴',name:'Rest day',desc:'No training. Walk, stretch, hydrate, sleep well.',meta:'—',cls:'sb-rest'}]};
+  const blocks={swim:[{icon:'🏊',name:'Warm-up',desc:'Easy laps to wake up your body',meta:'5 min',cls:'sb-swim'},{icon:'🏊',name:'Main set',desc:d.detail||'Focus on smooth technique',meta:d.duration||'—',cls:'sb-swim'},{icon:'🏊',name:'Cool-down',desc:'Easy floaty laps to finish',meta:'3 min',cls:'sb-swim'}],bike:[{icon:'🚴',name:'Warm-up',desc:'Easy spin, let legs loosen up',meta:'5-10 min',cls:'sb-bike'},{icon:'🚴',name:'Main ride',desc:d.detail||'Comfortable steady effort',meta:d.duration||'—',cls:'sb-bike'},{icon:'🚴',name:'Cool-down',desc:'Easy spin to bring HR down',meta:'5 min',cls:'sb-bike'}],run:[{icon:'🏃',name:'Warm-up',desc:'5 min walk then easy jog',meta:'5 min',cls:'sb-run'},{icon:'🏃',name:'Main run',desc:d.detail||'Should feel comfortable — walk breaks are totally fine!',meta:d.duration||'—',cls:'sb-run'},{icon:'🏃',name:'Cool-down',desc:'3 min walk + stretch it out',meta:'5 min',cls:'sb-run'}],brick:[{icon:'🚴',name:'Bike',desc:'Steady effort — practice quick T2',meta:'per plan',cls:'sb-bike'},{icon:'🏃',name:'Run off bike',desc:'First few min will feel weird — that\'s normal! Just go easy.',meta:'per plan',cls:'sb-run'}],rest:[{icon:'😴',name:'Rest day!',desc:'This is where your fitness actually gets built. Sleep, eat well, chill.',meta:'—',cls:'sb-rest'}]};
   const bl=blocks[d.sport]||[{icon:'🎯',name:'Session',desc:d.detail||d.title,meta:d.duration||'—',cls:'sb-run'}];
-  document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">'+(isToday?'Today — ':'')+d.title+'</div>'+(d.sport!=='rest'?'<div class="ddc-badge">'+d.duration+'</div>':'')+'</div><div class="ddc-sub">'+(d.detail||'Rest day — recovery is when fitness is built.')+'</div><div class="session-blocks">'+bl.map(b=>'<div class="sb '+b.cls+'"><div class="sb-icon">'+b.icon+'</div><div><div class="sb-name">'+b.name+'</div><div class="sb-desc">'+b.desc+'</div></div><div class="sb-meta"><strong>'+b.meta+'</strong></div></div>').join('')+'</div>'+(isToday&&d.sport!=='rest'?'<button class="done-btn" onclick="quickSend(\'✅ Just finished my '+d.title+'! \');showTab(\'chat\')">✅ Log this with my coach</button>':'');
+  document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">'+(isToday?'Today — ':'')+d.title+'</div>'+(d.sport!=='rest'?'<div class="ddc-badge">'+d.duration+'</div>':'')+'</div><div class="ddc-sub">'+(d.detail||'Rest up! 💤 Recovery is when you actually get fitter.')+'</div><div class="session-blocks">'+bl.map(b=>'<div class="sb '+b.cls+'"><div class="sb-icon">'+b.icon+'</div><div><div class="sb-name">'+b.name+'</div><div class="sb-desc">'+b.desc+'</div></div><div class="sb-meta"><strong>'+b.meta+'</strong></div></div>').join('')+'</div>'+(isToday&&d.sport!=='rest'?'<button class="done-btn" onclick="quickSend(\'✅ Just finished my '+d.title+'! \');showTab(\'chat\')">✅ Tell my coach I did it!</button>':'');
 }
 
 function showTab(name){['chat','plan','week','profile'].forEach(t=>{document.getElementById('tab-'+t).classList.toggle('active',t===name);document.getElementById('nav-'+t).classList.toggle('active',t===name);});if(name==='week')renderWeek();}
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 
-// Defaults
+// Set default dates
 const def6m=new Date(TODAY);def6m.setMonth(def6m.getMonth()+6);
 document.getElementById('f-date').value=def6m.toISOString().split('T')[0];
 document.getElementById('f-start').value=TODAY.toISOString().split('T')[0];
-selUploadMethod('pdf');
 renderPills(0);
 </script>
 </body>
