@@ -690,6 +690,30 @@ nav.nav{flex:1;padding:0 0.65rem;}
             <div style="display:flex;align-items:center;gap:0.5rem;"><select id="p-notif-time-evening" style="font-size:12px;padding:0.3rem 0.5rem;border:1.5px solid var(--gray-200);border-radius:6px;"><option value="18:00">6pm</option><option value="19:00">7pm</option><option value="20:00" selected>8pm</option><option value="21:00">9pm</option></select><label class="toggle-switch"><input type="checkbox" id="p-notif-evening"/><span class="toggle-slider"></span></label></div>
           </div>
         </div>
+        <div class="profile-card" id="apple-health-card">
+          <div class="profile-card-title">🍎 Apple Health / Apple Watch</div>
+          <div style="font-size:12px;color:var(--gray-500);margin-bottom:1rem;line-height:1.6;">Auto-log workouts from your Apple Watch using an iOS Shortcut. Every time you finish a workout it gets sent straight to TriCoach — no manual entry.</div>
+          <div style="margin-bottom:0.85rem;">
+            <div style="font-size:11px;font-weight:700;color:var(--gray-500);text-transform:uppercase;margin-bottom:0.35rem;">Your personal API token</div>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+              <div id="health-token-val" style="flex:1;font-family:monospace;font-size:12px;background:var(--gray-100);border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);padding:0.55rem 0.75rem;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Loading...</div>
+              <button onclick="copyHealthToken()" style="flex-shrink:0;padding:0.5rem 0.75rem;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;">Copy</button>
+            </div>
+          </div>
+          <div style="background:var(--blue-light);border-radius:var(--radius-sm);padding:0.85rem 1rem;font-size:12px;color:var(--navy);line-height:1.8;">
+            <div style="font-weight:700;margin-bottom:0.4rem;">Setup (takes 2 min):</div>
+            <div><strong>1.</strong> Copy your token above</div>
+            <div><strong>2.</strong> On your iPhone, open the <strong>Shortcuts</strong> app</div>
+            <div><strong>3.</strong> Tap <strong>+</strong> → <strong>Add Action</strong> → search <strong>"Get Last Workout"</strong> → add it</div>
+            <div><strong>4.</strong> Add another action: <strong>"Get Details of Workout"</strong> — add: Duration, Distance, Active Energy, Average Heart Rate, Workout Type, Start Date</div>
+            <div><strong>5.</strong> Add action: <strong>"Get Contents of URL"</strong></div>
+            <div style="margin-left:1rem;color:var(--gray-600);">URL: <span style="font-family:monospace;font-size:11px;">https://tricoach-server.up.railway.app/api/workout/apple-health?token=YOUR_TOKEN</span></div>
+            <div style="margin-left:1rem;color:var(--gray-600);">Method: <strong>POST</strong> · Request Body: <strong>JSON</strong></div>
+            <div style="margin-left:1rem;color:var(--gray-600);">Fields: workoutType, durationSeconds, distanceMeters, avgHeartRate, calories, startDate</div>
+            <div><strong>6.</strong> Set the Shortcut to run <strong>automatically after a workout</strong> (Automation → Workout → Ends)</div>
+          </div>
+        </div>
+
         <button class="btn-save" onclick="saveProfile()">Save changes</button>
         <div class="save-ok" id="save-ok">Saved!</div>
       </div>
@@ -972,7 +996,7 @@ function initApp(){
   document.getElementById('banner-title').textContent=isOwn?'Your plan - AI coaching':'Evidence-based periodization';
   document.getElementById('banner-sub').textContent=isOwn?'TriCoach coaches you through your existing plan':"Friel's Training Bible - Progressive overload - Recovery weeks";
   var gb=document.getElementById('gen-btn');gb.textContent=isOwn?'Edit plan':'Regenerate';gb.className='btn-gen '+(isOwn?'own':'');
-  renderBars();renderPlan();renderWeek();loadProfileForm();sendBrief();
+  renderBars();renderPlan();renderWeek();loadProfileForm();sendBrief();loadHealthToken();
 }
 
 function renderBars(){var c=document.getElementById('s-bars');c.innerHTML='';var d=P.training_days||4;for(var i=0;i<d;i++){var el=document.createElement('div');el.className='wk-bar '+(i<1?'done':i===1?'today':'');c.appendChild(el);}document.getElementById('s-wk-text').textContent='1 of '+(P.training_days||4)+' sessions';}
@@ -1579,6 +1603,38 @@ function renderRecentSessions(workouts) {
   }).join('');
 }
 
+
+// APPLE HEALTH TOKEN
+var _healthToken = null;
+async function loadHealthToken() {
+  try {
+    var r = await apiGet('/api/health-token');
+    if (r && r.token) {
+      _healthToken = r.token;
+      var el = document.getElementById('health-token-val');
+      if (el) el.textContent = r.token;
+    }
+  } catch(e) { console.log('Health token load failed:', e); }
+}
+
+function copyHealthToken() {
+  if (!_healthToken) return;
+  navigator.clipboard.writeText(_healthToken).then(function() {
+    showToast('Token copied! 📋');
+  }).catch(function() {
+    // Fallback for older iOS
+    var el = document.getElementById('health-token-val');
+    if (el) {
+      var range = document.createRange();
+      range.selectNode(el);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+      showToast('Token copied! 📋');
+    }
+  });
+}
 
 // PULL TO REFRESH
 var _ptrStartY = 0;
