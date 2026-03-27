@@ -116,10 +116,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);font-size:15
 .gen-steps li.cur::before{content:'*';color:var(--blue);}
 
 /* APP LAYOUT */
-#screen-app{flex-direction:row;height:100vh;}
+#screen-app{flex-direction:row;height:100vh;overflow:hidden;}
 
 /* DESKTOP SIDEBAR */
-.sidebar{width:225px;min-width:225px;background:var(--navy);display:flex;flex-direction:column;padding:1.4rem 0;flex-shrink:0;}
+.sidebar{width:225px;min-width:225px;background:var(--navy);display:flex;flex-direction:column;padding:1.4rem 0;flex-shrink:0;transition:transform 0.3s;}
 .sb-brand{display:flex;align-items:center;gap:8px;padding:0 1.2rem;margin-bottom:1.4rem;}
 .sb-brand-icon{width:30px;height:30px;background:var(--blue);border-radius:7px;display:flex;align-items:center;justify-content:center;}
 .sb-brand-icon svg{width:16px;height:16px;fill:white;}
@@ -155,7 +155,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .mobile-brand-name span{color:#93c5fd;}
 .mobile-race-pill{background:rgba(255,255,255,0.12);border-radius:100px;padding:0.3rem 0.8rem;font-size:11px;font-weight:700;color:white;}
 .mobile-race-pill span{color:#93c5fd;}
-.bottom-bar{display:none;background:var(--white);border-top:1px solid var(--gray-200);padding:0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));flex-shrink:0;z-index:100;position:fixed;bottom:0;left:0;right:0;}
+.bottom-bar{display:none;background:var(--white);border-top:1px solid var(--gray-200);padding:0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));flex-shrink:0;z-index:100;}
 .bottom-nav{display:flex;justify-content:space-around;}
 .bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0.4rem 0.5rem;cursor:pointer;border-radius:10px;transition:all 0.15s;flex:1;border:none;background:none;font-family:var(--font);}
 .bottom-nav-item:active{background:var(--gray-100);}
@@ -276,18 +276,25 @@ nav.nav{flex:1;padding:0 0.65rem;}
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  .sidebar { display: none !important; width: 0 !important; min-width: 0 !important; }
+  /* Hide desktop sidebar completely */
+  .sidebar { display: none !important; }
+  /* Show mobile elements */
   .mobile-top-bar { display: flex !important; }
-  .bottom-bar { display: block !important; }
-  .main { height: calc(100vh - 52px); padding-bottom: var(--bottom-bar); }
+  .bottom-bar { display: block !important; position: fixed !important; bottom: 0; left: 0; right: 0; z-index: 200; }
+  /* App layout — full width, no sidebar */
+  #screen-app { flex-direction: column !important; }
+  .main { width: 100% !important; flex: 1; height: calc(100vh - 52px - 70px); padding-bottom: 0; }
   .tab-panel { height: 100%; }
+  /* Padding adjustments */
   .chat-top { padding: 0.7rem 1rem; }
   .messages { padding: 0.85rem; }
-  .scroll-wrap { padding: 0.85rem; }
-  .profile-scroll { padding: 0.85rem; }
+  .scroll-wrap { padding: 0.85rem; padding-bottom: 1rem; }
+  .profile-scroll { padding: 0.85rem; padding-bottom: 1rem; }
+  /* Calendar */
   .cal-grid { gap: 0.2rem; }
   .cal-cell { min-height: 75px; padding: 0.4rem 0.2rem; }
   .stats-row { gap: 0.4rem; }
+  /* Onboarding */
   .ob-card { padding: 1.25rem; border-radius: var(--radius); }
   .auth-card { padding: 1.75rem; }
   .field-row { grid-template-columns: 1fr; }
