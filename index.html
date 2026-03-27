@@ -904,7 +904,7 @@ var activeWd=wd.filter(function(d,i){
   var dayDate=new Date(ws);dayDate.setDate(ws.getDate()+i);
   return dayDate>=startDate;
 });
-var total=activeWd.reduce(function(s,d){return s+(d.mins||0);},0);
+var total=activeWd.reduce(function(s,d){var m=d.mins||0;return s+(m>0&&d.sport!=='rest'?m+8:0);},0);
 var sess=activeWd.filter(function(d){return d.sport!=='rest';}).length;document.getElementById('stats-row').innerHTML='<div class="stat-box"><div class="stat-label">Sessions</div><div class="stat-value">'+sess+'</div><div class="stat-sub">planned</div></div><div class="stat-box"><div class="stat-label">Volume</div><div class="stat-value">'+Math.floor(total/60)+'<span style="font-size:1rem">h</span>'+(total%60?total%60+'m':'')+'</div><div class="stat-sub">this week</div></div><div class="stat-box"><div class="stat-label">Phase</div><div class="stat-value" style="font-size:0.85rem;padding-top:8px">'+(wd[1]&&wd[1].phase?wd[1].phase:'Base')+'</div><div class="stat-sub">'+(wd[0]&&wd[0].isRecovery?'rest week':'training')+'</div></div>';var grid=document.getElementById('cal-grid');grid.innerHTML='';var startDate=P.start_date?new Date(P.start_date):null;wd.forEach(function(d,i){var date=new Date(ws);date.setDate(ws.getDate()+i);var isToday=date.toDateString()===TODAY.toDateString();var isPast=date<TODAY&&!isToday;var isBeforeStart=startDate&&date<startDate&&!isToday;var cell=document.createElement('div');cell.className='cal-cell '+(isToday?'today':'')+(isBeforeStart?' before-start':isPast&&d.sport!=='rest'?' past':'');cell.onclick=function(){showDay(d,date);};var calMins=parseInt(d.duration)||0;var calTotal=calMins>0&&!isBeforeStart&&d.sport!=='rest'?calMins+8:0;var calStr=calTotal>0?calTotal+' min':'';cell.innerHTML='<div class="cal-day-name">'+DAYS[date.getDay()]+'</div><div class="cal-day-num">'+date.getDate()+'</div><div class="cal-sport">'+si(isBeforeStart?'rest':d.sport)+'</div><div class="cal-title">'+(isBeforeStart?'Pre-training':d.title)+'</div>'+(calStr?'<div class="cal-dur">'+calStr+'</div>':'');grid.appendChild(cell);});showDay(wd[TODAY.getDay()]||wd[1],new Date(ws.getTime()+TODAY.getDay()*86400000));
   initDragDrop();}
 
@@ -1128,15 +1128,19 @@ async function swapDays(fromIdx, toIdx) {
 (function() {
   var startY = 0;
   var pulling = false;
-  var threshold = 70;
+  var threshold = 65;
   var ptr = document.getElementById('ptr-indicator');
   var ptrText = document.getElementById('ptr-text');
 
   document.addEventListener('touchstart', function(e) {
-    // Only trigger if at top of a scrollable panel
-    var scrollEl = e.target.closest('.messages, .scroll-wrap, .profile-scroll');
-    if (!scrollEl) return;
-    if (scrollEl.scrollTop > 0) return;
+    // Check if any scrollable parent is at top
+    var el = e.target;
+    var atTop = true;
+    while (el && el !== document.body) {
+      if (el.scrollTop > 5) { atTop = false; break; }
+      el = el.parentElement;
+    }
+    if (!atTop) return;
     startY = e.touches[0].clientY;
     pulling = true;
   }, { passive: true });
@@ -1144,9 +1148,11 @@ async function swapDays(fromIdx, toIdx) {
   document.addEventListener('touchmove', function(e) {
     if (!pulling) return;
     var dy = e.touches[0].clientY - startY;
-    if (dy > 20) {
+    if (dy > 15) {
       ptr.classList.add('visible');
-      ptrText.textContent = dy > threshold ? 'Release to refresh' : 'Pull to refresh';
+      ptrText.textContent = dy > threshold ? 'Release to refresh ↑' : 'Pull to refresh ↓';
+    } else {
+      ptr.classList.remove('visible');
     }
   }, { passive: true });
 
