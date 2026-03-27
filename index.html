@@ -489,7 +489,10 @@ let planType='', selectedEvent='';
 // ── SESSION RESTORE ───────────────────────────────────────────────────────────
 (async () => {
   try {
-    const { data: { session } } = await supa.auth.getSession();
+    // Use getSession with a timeout so it never hangs
+    const sessionPromise = supa.auth.getSession();
+    const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 3000));
+    const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
     if (session?.user && session?.access_token) {
       currentUser = session.user;
       authToken = session.access_token;
