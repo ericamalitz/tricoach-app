@@ -567,17 +567,12 @@ async function handleSignedIn(){
 
 // ── API ───────────────────────────────────────────────────────────────────────
 async function apiPost(path,body){
-  // Always use latest token
-  const {data:{session}} = await supa.auth.getSession();
-  if(session?.access_token) authToken = session.access_token;
   const res=await fetch(RAILWAY_URL+path,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify(body)});
   if(!res.ok){const t=await res.text();throw new Error(t);}
   return res.json();
 }
 async function apiGet(path){
   try{
-    const {data:{session}} = await supa.auth.getSession();
-    if(session?.access_token) authToken = session.access_token;
     const res=await fetch(RAILWAY_URL+path,{headers:{'Authorization':'Bearer '+authToken}});
     if(!res.ok)return null;
     return res.json();
