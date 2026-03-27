@@ -331,10 +331,8 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .btn-log-skip{width:100%;padding:0.6rem;background:none;border:none;color:var(--gray-400);font-size:13px;cursor:pointer;margin-top:0.35rem;font-family:var(--font);}
 
 /* DRAG AND DROP */
-.cal-cell.drag-over { border-color: var(--teal) !important; background: var(--teal-light) !important; transform: scale(1.03); }
-.cal-cell.dragging { opacity: 0.4; }
-.cal-cell { cursor: grab; user-select: none; }
-.cal-cell:active { cursor: grabbing; }
+.cal-cell.drag-over { border-color: var(--teal) !important; background: var(--teal-light) !important; transform: scale(1.04); box-shadow: 0 0 0 3px rgba(13,148,136,0.3) !important; }
+.cal-cell { cursor: pointer; user-select: none; -webkit-user-select: none; }
 </style>
 </head>
 <body>
@@ -951,81 +949,58 @@ async function syncPlan(btn) {
 }
 
 
-// DRAG AND DROP SESSION SWAPPING
-var dragSourceDay = null;
-var dragSourceSession = null;
-var dragSourceWeekData = null;
+// DRAG AND DROP — tap to select, tap target to swap
+var selectedDayIdx = null;
 
 function initDragDrop() {
-  // Called after renderWeek to attach drag handlers
-  var cells = document.querySelectorAll('.cal-cell');
+  var cells = Array.from(document.querySelectorAll('.cal-cell'));
   cells.forEach(function(cell, idx) {
-    // Desktop drag
-    cell.setAttribute('draggable', 'true');
-    cell.addEventListener('dragstart', function(e) {
-      dragSourceDay = idx;
-      cell.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    });
-    cell.addEventListener('dragend', function() {
-      cell.classList.remove('dragging');
-      document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('drag-over'); });
-    });
-    cell.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('drag-over'); });
-      if (dragSourceDay !== idx) cell.classList.add('drag-over');
-    });
-    cell.addEventListener('dragleave', function() {
-      cell.classList.remove('drag-over');
-    });
-    cell.addEventListener('drop', function(e) {
-      e.preventDefault();
-      cell.classList.remove('drag-over');
-      if (dragSourceDay !== null && dragSourceDay !== idx) {
-        swapDays(dragSourceDay, idx);
+    // Remove old listeners by cloning
+    var newCell = cell.cloneNode(true);
+    cell.parentNode.replaceChild(newCell, cell);
+    newCell.addEventListener('click', function(e) {
+      // Don't trigger if clicking the ddc area
+      if (selectedDayIdx === null) {
+        // First tap — select this day
+        selectedDayIdx = idx;
+        document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('drag-over'); });
+        newCell.classList.add('drag-over');
+        showToast('Tap another day to swap sessions');
+      } else if (selectedDayIdx === idx) {
+        // Tap same day — deselect
+        selectedDayIdx = null;
+        document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('drag-over'); });
+      } else {
+        // Second tap — swap
+        var fromIdx = selectedDayIdx;
+        var toIdx = idx;
+        selectedDayIdx = null;
+        document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('drag-over'); });
+        swapDays(fromIdx, toIdx);
       }
-      dragSourceDay = null;
     });
-
-    // Mobile touch
-    var touchStartIdx = null;
-    var touchClone = null;
-    cell.addEventListener('touchstart', function(e) {
-      touchStartIdx = idx;
-      cell.classList.add('dragging');
-    }, { passive: true });
-    cell.addEventListener('touchend', function(e) {
-      cell.classList.remove('dragging');
-      document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('drag-over'); });
-      var touch = e.changedTouches[0];
-      var el = document.elementFromPoint(touch.clientX, touch.clientY);
-      var targetCell = el && el.closest('.cal-cell');
-      if (targetCell) {
-        var cells = Array.from(document.querySelectorAll('.cal-cell'));
-        var targetIdx = cells.indexOf(targetCell);
-        if (targetIdx >= 0 && targetIdx !== touchStartIdx) {
-          swapDays(touchStartIdx, targetIdx);
-        }
-      }
-      touchStartIdx = null;
-    }, { passive: true });
-    cell.addEventListener('touchmove', function(e) {
-      var touch = e.touches[0];
-      var el = document.elementFromPoint(touch.clientX, touch.clientY);
-      document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('drag-over'); });
-      var targetCell = el && el.closest('.cal-cell');
-      if (targetCell && targetCell !== cell) targetCell.classList.add('drag-over');
-    }, { passive: true });
   });
+}
+
+function showToast(msg) {
+  var t = document.getElementById('swap-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'swap-toast';
+    t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--navy);color:white;padding:0.5rem 1.1rem;border-radius:100px;font-size:13px;font-weight:600;z-index:1000;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2);';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.style.display = 'none'; }, 2500);
 }
 
 async function swapDays(fromIdx, toIdx) {
   if (!P.plan || !P.plan.weeks) return;
-  var startDate = P.start_date ? new Date(P.start_date) : TODAY;
   var ws = new Date(TODAY);
   ws.setDate(TODAY.getDate() - TODAY.getDay() + (weekOffset * 7));
+  var startDate = P.start_date ? new Date(P.start_date) : TODAY;
   var daysSinceStart = Math.floor((ws - startDate) / 86400000);
   var wn = daysSinceStart < 0 ? 1 : Math.floor(daysSinceStart / 7) + 1;
   var planWeek = P.plan.weeks.find(function(w){ return w.week === Math.min(P.plan.weeks.length, wn); });
@@ -1035,24 +1010,20 @@ async function swapDays(fromIdx, toIdx) {
   var toDay = DAYS[toIdx];
   var fromSession = planWeek.days.find(function(d){ return d.day === fromDay; });
   var toSession = planWeek.days.find(function(d){ return d.day === toDay; });
-
   if (!fromSession || !toSession) return;
 
-  // Swap session content (keep day names, swap everything else)
-  var tempTitle = fromSession.title, tempSport = fromSession.sport, tempDetail = fromSession.detail, tempDuration = fromSession.duration;
+  // Swap content
+  var tmp = { title: fromSession.title, sport: fromSession.sport, detail: fromSession.detail, duration: fromSession.duration };
   fromSession.title = toSession.title; fromSession.sport = toSession.sport; fromSession.detail = toSession.detail; fromSession.duration = toSession.duration;
-  toSession.title = tempTitle; toSession.sport = tempSport; toSession.detail = tempDetail; toSession.duration = tempDuration;
+  toSession.title = tmp.title; toSession.sport = tmp.sport; toSession.detail = tmp.detail; toSession.duration = tmp.duration;
 
-  // Save updated plan to server
-  try { await apiPost('/api/save-plan', { plan: P.plan }); } catch(e) { console.log('Plan save failed:', e); }
-
-  // Update local plan
+  // Re-render immediately
   renderWeek();
   renderPlan();
+  showToast('Swapped ' + fromDay + ' and ' + toDay + '!');
 
-  // Notify coach
-  var msg = 'I swapped ' + fromDay + ' and ' + toDay + ' this week — moved ' + toSession.title + ' to ' + fromDay + ' and ' + fromSession.title + ' to ' + toDay + '.';
-  try { await callCoach(msg); } catch(e) {}
+  // Save to server
+  try { await apiPost('/api/save-plan', { plan: P.plan }); } catch(e) { console.log('Save failed:', e); }
 }
 
 function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
