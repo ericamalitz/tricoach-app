@@ -4,29 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TriCoach</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Nunito+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-
-<!-- !! REPLACE THESE TWO VALUES WITH YOUR OWN FROM SUPABASE → SETTINGS → API !! -->
-<script>
-  const SUPABASE_URL = 'https://myguepayxnbdydcftgxa.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15Z3VlcGF5eG5iZHlkY2Z0Z3hhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NTc2NzgsImV4cCI6MjA5MDEzMzY3OH0.WMcTUvV-GW-F6ru7jAv1RUA2KZr6vYd1rGIzdasrU8U';
-</script>
-
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-
 <style>
 :root {
-  --bg:#f7f8fa;--white:#fff;--navy:#1a2640;--navy-mid:#2c3e5a;
-  --blue:#3b82f6;--blue-light:#eff6ff;--blue-mid:#dbeafe;
-  --teal:#0d9488;--teal-light:#f0fdf9;--orange:#f97316;
-  --gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
-  --gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-800:#1f2937;
-  --red:#dc2626;--red-light:#fef2f2;
-  --shadow-sm:0 1px 3px rgba(0,0,0,0.07);--shadow:0 4px 12px rgba(0,0,0,0.08);
+  --bg:#f7f8fa; --white:#fff; --navy:#1a2640; --navy-mid:#2c3e5a;
+  --blue:#3b82f6; --blue-light:#eff6ff; --blue-mid:#dbeafe;
+  --teal:#0d9488; --teal-light:#f0fdf9; --orange:#f97316;
+  --green:#16a34a; --green-light:#f0fdf4;
+  --gray-100:#f3f4f6; --gray-200:#e5e7eb; --gray-300:#d1d5db;
+  --gray-400:#9ca3af; --gray-500:#6b7280; --gray-600:#4b5563; --gray-800:#1f2937;
+  --red:#dc2626; --red-light:#fef2f2;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.07); --shadow:0 4px 12px rgba(0,0,0,0.08);
   --shadow-lg:0 16px 40px rgba(0,0,0,0.12);
-  --radius:14px;--radius-sm:8px;--radius-lg:22px;
-  --font:'Nunito Sans',sans-serif;--font-d:'Nunito',sans-serif;
+  --radius:14px; --radius-sm:8px; --radius-lg:22px;
+  --font:'Nunito Sans',sans-serif; --font-d:'Nunito',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;}
@@ -34,58 +26,40 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);font-size:15
 .screen{display:none;height:100vh;overflow:hidden;}
 .screen.active{display:flex;flex-direction:column;}
 
-/* ── AUTH SCREEN ── */
-#screen-auth{
-  background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);
-  align-items:center;justify-content:center;padding:1.5rem;
-}
-.auth-card{
-  background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);
-  padding:2.5rem;width:100%;max-width:420px;animation:fadeUp 0.4s ease;
-}
+/* ── CONFIG NOTICE ── */
+.config-notice{position:fixed;top:0;left:0;right:0;background:#dc2626;color:white;padding:10px 16px;font-size:13px;font-weight:600;text-align:center;z-index:999;display:none;}
+.config-notice.show{display:block;}
+
+/* ── AUTH ── */
+#screen-auth{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;padding:1.5rem;}
+.auth-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:2.5rem;width:100%;max-width:420px;animation:fadeUp 0.4s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:0.5rem;}
+.auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:0.4rem;}
 .auth-brand-icon{width:40px;height:40px;background:var(--navy);border-radius:11px;display:flex;align-items:center;justify-content:center;}
 .auth-brand-icon svg{width:22px;height:22px;fill:white;}
-.auth-brand-name{font-family:var(--font-d);font-size:1.5rem;font-weight:800;color:var(--navy);letter-spacing:-0.02em;}
+.auth-brand-name{font-family:var(--font-d);font-size:1.5rem;font-weight:800;color:var(--navy);}
 .auth-brand-name span{color:var(--blue);}
 .auth-tagline{font-size:13px;color:var(--gray-500);margin-bottom:1.75rem;}
-
 .auth-tabs{display:flex;border-bottom:2px solid var(--gray-200);margin-bottom:1.5rem;}
 .auth-tab{flex:1;text-align:center;padding:0.6rem;font-size:13px;font-weight:700;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;}
 .auth-tab.active{color:var(--blue);border-bottom-color:var(--blue);}
-
 .auth-form{display:none;}.auth-form.active{display:block;}
 .auth-field{margin-bottom:1rem;}
-.auth-field label{display:block;font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.04em;}
+.auth-field label{display:block;font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:0.35rem;text-transform:uppercase;}
 .auth-field input{width:100%;padding:0.75rem 1rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;color:var(--navy);background:var(--white);outline:none;transition:all 0.2s;}
 .auth-field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
-
-.btn-auth{width:100%;padding:0.85rem;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-family:var(--font-d);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:1rem;}
+.btn-auth{width:100%;padding:0.85rem;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-family:var(--font-d);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:0.75rem;}
 .btn-auth:hover{background:var(--blue);transform:translateY(-1px);}
 .btn-auth:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-
-.auth-divider{display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;}
-.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--gray-200);}
-.auth-divider span{font-size:12px;color:var(--gray-400);font-weight:500;}
-
-.btn-google{width:100%;padding:0.75rem 1rem;background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;font-weight:600;color:var(--navy);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.75rem;}
-.btn-google:hover{border-color:var(--blue);background:var(--blue-light);}
-.btn-google svg{width:18px;height:18px;flex-shrink:0;}
-
 .auth-error{background:var(--red-light);border:1px solid #fecaca;border-radius:var(--radius-sm);padding:0.65rem 0.9rem;font-size:13px;color:var(--red);margin-bottom:1rem;display:none;}
 .auth-error.show{display:block;}
 .auth-success{background:var(--teal-light);border:1px solid #99f6e4;border-radius:var(--radius-sm);padding:0.65rem 0.9rem;font-size:13px;color:var(--teal);margin-bottom:1rem;display:none;}
 .auth-success.show{display:block;}
-
-.auth-footer{text-align:center;font-size:12px;color:var(--gray-400);margin-top:1.25rem;}
-.auth-footer a{color:var(--blue);cursor:pointer;font-weight:600;text-decoration:none;}
+.auth-footer{text-align:center;font-size:12px;color:var(--gray-400);margin-top:1rem;}
+.auth-footer a{color:var(--blue);cursor:pointer;font-weight:600;}
 
 /* ── ONBOARDING ── */
-#screen-onboard{
-  background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);
-  align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto;
-}
+#screen-onboard{background:linear-gradient(135deg,#f0f9ff 0%,#fafafa 50%,#fff7ed 100%);align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto;}
 .ob-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:2.25rem;width:100%;max-width:520px;margin:auto;animation:fadeUp 0.4s ease;}
 .brand{display:flex;align-items:center;gap:10px;margin-bottom:1.75rem;}
 .brand-icon{width:38px;height:38px;background:var(--navy);border-radius:10px;display:flex;align-items:center;justify-content:center;}
@@ -95,21 +69,28 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);font-size:15
 .step-pills{display:flex;gap:5px;margin-bottom:1.5rem;}
 .step-pill{flex:1;height:3px;border-radius:2px;background:var(--gray-200);transition:background 0.3s;}
 .step-pill.active{background:var(--blue);}.step-pill.done{background:var(--teal);}
-.step{display:none;}.step.active{display:block;animation:fadeUp 0.25s ease;}
+.ob-step{display:none;}.ob-step.active{display:block;animation:fadeUp 0.25s ease;}
 .eyebrow{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:0.35rem;}
-.step h2{font-family:var(--font-d);font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:0.25rem;}
-.step p.sub{font-size:13px;color:var(--gray-500);margin-bottom:1.25rem;line-height:1.5;}
+.ob-step h2{font-family:var(--font-d);font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:0.25rem;}
+.ob-step p.sub{font-size:13px;color:var(--gray-500);margin-bottom:1.25rem;line-height:1.5;}
 .field{margin-bottom:0.9rem;}
 .field label{display:block;font-size:11px;font-weight:700;color:var(--gray-600);margin-bottom:0.35rem;text-transform:uppercase;}
 .field input,.field select,.field textarea{width:100%;padding:0.65rem 0.85rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;color:var(--navy);background:var(--white);outline:none;transition:border-color 0.2s;appearance:none;}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
-.field textarea{resize:vertical;min-height:70px;}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;}
+.field textarea{resize:vertical;min-height:65px;}
 .field-hint{font-size:11px;color:var(--gray-400);margin-top:0.25rem;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;}
 .chip-group{display:flex;gap:0.4rem;flex-wrap:wrap;}
 .chip{padding:0.4rem 0.9rem;border-radius:100px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font);}
 .chip:hover{border-color:var(--blue);color:var(--navy);background:var(--blue-light);}
 .chip.sel{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:700;}
+.event-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.5rem;}
+.event-card{border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);padding:0.75rem 1rem;cursor:pointer;transition:all 0.15s;background:var(--white);}
+.event-card:hover{border-color:var(--blue);background:var(--blue-light);}
+.event-card.sel{border-color:var(--blue);background:var(--blue-light);}
+.event-card-icon{font-size:1.4rem;margin-bottom:0.2rem;}
+.event-card-name{font-size:13px;font-weight:700;color:var(--navy);}
+.event-card-detail{font-size:11px;color:var(--gray-500);margin-top:1px;}
 .sdivider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-400);margin:1rem 0 0.6rem;padding-bottom:0.35rem;border-bottom:1px solid var(--gray-100);}
 .btn-next{width:100%;padding:0.8rem;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-family:var(--font-d);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:1.25rem;}
 .btn-next:hover{background:var(--blue);transform:translateY(-1px);}
@@ -149,14 +130,13 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .nav-dot{width:5px;height:5px;border-radius:50%;background:transparent;flex-shrink:0;}.nav-item.active .nav-dot{background:var(--blue);}
 .nav-icon{font-size:15px;width:18px;text-align:center;}
 .sb-footer{padding:1rem 1.1rem 0;border-top:1px solid rgba(255,255,255,0.07);}
-.wk-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:0.4rem;}
+.wk-label{font-size:10px;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:0.4rem;}
 .wk-bars{display:flex;gap:4px;margin-bottom:0.3rem;}
 .wk-bar{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,0.08);}
 .wk-bar.done{background:var(--teal);}.wk-bar.today{background:var(--orange);}
 .wk-text{font-size:10px;color:rgba(255,255,255,0.35);}
-.btn-signout{margin:0.75rem 0.9rem 0;padding:0.5rem 0.75rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:rgba(255,255,255,0.45);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--font);width:calc(100% - 1.8rem);}
+.btn-signout{margin:0.75rem 0.9rem 0;padding:0.5rem 0.75rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:rgba(255,255,255,0.45);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);width:calc(100% - 1.8rem);}
 .btn-signout:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);}
-
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
 .tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden;}.tab-panel.active{display:flex;}
 
@@ -203,11 +183,11 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .friel-banner{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:1rem;}
 .friel-icon{font-size:1.6rem;flex-shrink:0;}.friel-title{font-size:13px;font-weight:700;color:white;margin-bottom:2px;}.friel-sub{font-size:11px;color:rgba(255,255,255,0.55);line-height:1.4;}
 .phase-tabs{display:flex;gap:0.35rem;margin-bottom:1.1rem;overflow-x:auto;padding-bottom:2px;}
-.phase-tab{padding:0.3rem 0.85rem;border-radius:100px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-500);font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
-.phase-tab:hover{border-color:var(--blue);color:var(--blue);}
+.phase-tab{padding:0.3rem 0.85rem;border-radius:100px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-500);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .plan-content{display:none;}.plan-content.show{display:block;}
 .week-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--gray-200);margin-bottom:0.75rem;overflow:hidden;box-shadow:var(--shadow-sm);}
 .week-card.recovery{border-color:#d1fae5;background:#f0fdf4;}
+.week-card.current-week{border-color:var(--blue);border-width:2px;}
 .week-head{padding:0.8rem 1rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.15s;}
 .week-head:hover{background:var(--gray-100);}
 .wh-left{display:flex;align-items:center;gap:0.7rem;}
@@ -217,12 +197,13 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .badge{padding:0.12rem 0.5rem;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;}
 .b-prep{background:#f3e8ff;color:#7c3aed;}.b-base{background:var(--blue-mid);color:#1d4ed8;}.b-build{background:#ffedd5;color:#c2410c;}
 .b-peak{background:#fee2e2;color:#b91c1c;}.b-taper{background:var(--teal-light);color:#0f766e;}.b-rec{background:#d1fae5;color:#065f46;}.b-hrs{background:var(--gray-100);color:var(--gray-500);}
+.b-now{background:var(--blue-mid);color:var(--blue);}
 .week-days{padding:0.35rem 0.5rem 0.5rem;}
 .day-row{display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0.5rem;border-radius:7px;transition:background 0.15s;}
 .day-row:hover{background:var(--gray-100);}
 .day-name{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-400);min-width:26px;}
 .day-sport-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.si-swim{background:#dbeafe;}.si-bike{background:#ffedd5;}.si-run{background:var(--teal-light);}.si-brick{background:#f3e8ff;}.si-rest{background:var(--gray-100);}.si-strength{background:#fef3c7;}.si-test{background:#fce7f3;}
+.si-swim{background:#dbeafe;}.si-bike{background:#ffedd5;}.si-run{background:var(--teal-light);}.si-brick{background:#f3e8ff;}.si-rest{background:var(--gray-100);}.si-strength{background:#fef3c7;}.si-test{background:#fce7f3;}.si-walk{background:#f0fdf4;}
 .day-info{flex:1;}.day-title{font-size:12px;font-weight:600;color:var(--navy);}.day-detail{font-size:11px;color:var(--gray-500);margin-top:1px;}.day-dur{font-size:11px;color:var(--gray-400);font-weight:600;white-space:nowrap;}
 
 /* ── WEEK VIEW ── */
@@ -232,11 +213,11 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .wnav-title h2{font-family:var(--font-d);font-size:1.4rem;font-weight:800;color:var(--navy);}.wnav-title p{font-size:11px;color:var(--gray-400);}
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.65rem;margin-bottom:1.1rem;}
 .stat-box{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:0.85rem;box-shadow:var(--shadow-sm);}
-.stat-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-400);margin-bottom:0.15rem;}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-400);margin-bottom:0.15rem;}
 .stat-value{font-family:var(--font-d);font-size:1.6rem;font-weight:800;color:var(--navy);line-height:1;}.stat-sub{font-size:10px;color:var(--gray-400);margin-top:2px;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0.4rem;margin-bottom:1.1rem;}
 .cal-cell{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:0.6rem 0.35rem;min-height:110px;cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;gap:0.25rem;box-shadow:var(--shadow-sm);}
-.cal-cell:hover{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.08);}.cal-cell.today{border-color:var(--blue);background:var(--blue-light);}.cal-cell.past{opacity:0.5;}
+.cal-cell:hover{border-color:var(--blue);}.cal-cell.today{border-color:var(--blue);background:var(--blue-light);}.cal-cell.past{opacity:0.5;}
 .cal-day-name{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gray-400);}.cal-day-num{font-family:var(--font-d);font-size:1.15rem;font-weight:800;color:var(--navy);line-height:1;}.cal-cell.today .cal-day-num{color:var(--blue);}
 .cal-sport{font-size:14px;margin-top:auto;}.cal-title{font-size:9px;color:var(--gray-500);line-height:1.3;}.cal-dur{font-size:9px;font-weight:700;color:var(--blue);}
 .ddc{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow-sm);}
@@ -248,7 +229,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .sb-swim{border-left-color:var(--blue);}.sb-bike{border-left-color:var(--orange);}.sb-run{border-left-color:var(--teal);}.sb-rest{border-left-color:var(--gray-300);}
 .sb-icon{font-size:17px;flex-shrink:0;}.sb-name{font-size:12px;font-weight:700;color:var(--navy);}.sb-desc{font-size:11px;color:var(--gray-500);margin-top:1px;}
 .sb-meta{margin-left:auto;text-align:right;}.sb-meta strong{display:block;font-size:12px;font-weight:700;color:var(--navy);}.sb-meta span{font-size:10px;color:var(--gray-400);}
-.done-btn{margin-top:0.9rem;padding:0.55rem 1.1rem;background:var(--teal);border:none;border-radius:7px;color:white;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s;}
+.done-btn{margin-top:0.9rem;padding:0.55rem 1.1rem;background:var(--teal);border:none;border-radius:7px;color:white;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;}
 .done-btn:hover{background:#0f766e;}
 
 /* ── PROFILE ── */
@@ -258,58 +239,52 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .pf{margin-bottom:0.8rem;}.pf:last-child{margin-bottom:0;}
 .pf label{display:block;font-size:11px;font-weight:700;color:var(--gray-500);margin-bottom:0.3rem;text-transform:uppercase;}
 .pf input,.pf select,.pf textarea{width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font);font-size:13px;color:var(--navy);background:var(--white);outline:none;transition:all 0.2s;appearance:none;}
-.pf input:focus,.pf select:focus,.pf textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,0.08);}
+.pf input:focus,.pf select:focus,.pf textarea:focus{border-color:var(--blue);}
 .pf textarea{resize:vertical;min-height:60px;}.pf-hint{font-size:11px;color:var(--gray-400);margin-top:0.25rem;}
-.btn-save{padding:0.6rem 1.4rem;background:var(--navy);border:none;border-radius:var(--radius-sm);color:white;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.btn-save{padding:0.6rem 1.4rem;background:var(--navy);border:none;border-radius:var(--radius-sm);color:white;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;}
 .btn-save:hover{background:var(--blue);}
 .save-ok{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--teal);font-weight:600;margin-left:0.65rem;opacity:0;transition:opacity 0.3s;}
 .save-ok.show{opacity:1;}
 .account-info{background:var(--blue-light);border-radius:var(--radius-sm);padding:0.75rem 1rem;margin-bottom:0.85rem;font-size:13px;color:var(--navy);}
-.account-info strong{font-weight:700;}
 </style>
 </head>
 <body>
 
-<!-- AUTH SCREEN -->
+<div class="config-notice" id="config-notice">
+  ⚠️ Configuration needed — update SUPABASE_URL, SUPABASE_ANON_KEY, and RAILWAY_URL in this file before deploying.
+</div>
+
+<!-- !! REPLACE THESE THREE VALUES !! -->
+<script>
+  const SUPABASE_URL = 'https://myguepayxnbdydcftgxa.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15Z3VlcGF5eG5iZHlkY2Z0Z3hhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NTc2NzgsImV4cCI6MjA5MDEzMzY3OH0.WMcTUvV-GW-F6ru7jAv1RUA2KZr6vYd1rGIzdasrU8U';
+  const RAILWAY_URL = 'https://tricoach-server.up.railway.app';
+</script>
+
+<!-- AUTH -->
 <div id="screen-auth" class="screen active">
 <div class="auth-card">
   <div class="auth-brand">
     <div class="auth-brand-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
     <div class="auth-brand-name">Tri<span>Coach</span></div>
   </div>
-  <div class="auth-tagline">AI-powered Olympic triathlon coaching</div>
-
+  <div class="auth-tagline">Your personalised AI endurance coach</div>
   <div class="auth-tabs">
     <div class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign in</div>
     <div class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create account</div>
   </div>
-
   <div class="auth-error" id="auth-error"></div>
   <div class="auth-success" id="auth-success"></div>
-
-  <!-- Sign in form -->
   <div class="auth-form active" id="form-signin">
     <div class="auth-field"><label>Email</label><input type="email" id="si-email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')signIn()"/></div>
     <div class="auth-field"><label>Password</label><input type="password" id="si-pass" placeholder="Your password" onkeydown="if(event.key==='Enter')signIn()"/></div>
     <button class="btn-auth" onclick="signIn()" id="btn-signin">Sign in</button>
-    <div class="auth-divider"><span>or</span></div>
-    <button class="btn-google" onclick="signInGoogle()">
-      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continue with Google
-    </button>
-    <div class="auth-footer">Don't have an account? <a onclick="switchTab('signup')">Create one free →</a></div>
+    <div class="auth-footer">No account? <a onclick="switchTab('signup')">Create one free →</a></div>
   </div>
-
-  <!-- Sign up form -->
   <div class="auth-form" id="form-signup">
     <div class="auth-field"><label>Email</label><input type="email" id="su-email" placeholder="you@example.com"/></div>
     <div class="auth-field"><label>Password</label><input type="password" id="su-pass" placeholder="At least 8 characters" onkeydown="if(event.key==='Enter')signUp()"/></div>
     <button class="btn-auth" onclick="signUp()" id="btn-signup">Create account</button>
-    <div class="auth-divider"><span>or</span></div>
-    <button class="btn-google" onclick="signInGoogle()">
-      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continue with Google
-    </button>
     <div class="auth-footer">Already have an account? <a onclick="switchTab('signin')">Sign in →</a></div>
   </div>
 </div>
@@ -326,148 +301,205 @@ nav.nav{flex:1;padding:0 0.65rem;}
     <div class="step-pill active" id="p0"></div><div class="step-pill" id="p1"></div>
     <div class="step-pill" id="p2"></div><div class="step-pill" id="p3"></div><div class="step-pill" id="p4"></div>
   </div>
-  <div class="step active" id="ob0">
+
+  <!-- Step 0: Event + Race -->
+  <div class="ob-step active" id="ob0">
     <div class="eyebrow">Step 1 of 5</div>
-    <h2>Let's build your plan</h2>
-    <p class="sub">Tell us the basics — we save everything to your account as you go.</p>
-    <div class="field"><label>Your first name</label><input type="text" id="f-name" placeholder="e.g. Erica"/></div>
-    <div class="field-row">
-      <div class="field"><label>Race date</label><input type="date" id="f-date"/></div>
-      <div class="field"><label>Race name</label><input type="text" id="f-race" placeholder="e.g. Chicago Tri"/></div>
-    </div>
-    <div class="field">
-      <label>WhatsApp number (for daily coaching)</label>
-      <input type="tel" id="f-phone" placeholder="+13125551234"/>
-      <div class="field-hint">Include country code. US: +1 then 10 digits.</div>
-    </div>
-    <button class="btn-next" onclick="go(1)">Continue →</button>
-  </div>
-  <div class="step" id="ob1">
-    <div class="eyebrow">Step 2 of 5</div>
-    <h2>Your fitness background</h2>
-    <p class="sub">Be honest — this shapes your training load and periodization.</p>
-    <div class="sdivider">Experience</div>
-    <div class="field"><label>Triathlon experience</label>
-      <div class="chip-group" id="cg-level">
-        <div class="chip" data-v="first-timer" onclick="pick('cg-level',this)">First triathlon</div>
-        <div class="chip" data-v="beginner" onclick="pick('cg-level',this)">Beginner (1-2)</div>
-        <div class="chip sel" data-v="intermediate" onclick="pick('cg-level',this)">Intermediate (3-5)</div>
-        <div class="chip" data-v="advanced" onclick="pick('cg-level',this)">Advanced (6+)</div>
+    <h2>What are you training for?</h2>
+    <p class="sub">Choose your event — your entire plan and coaching will be built around this.</p>
+    <div class="event-grid" id="event-grid">
+      <div class="event-card" data-v="Sprint triathlon" onclick="selectEvent(this)">
+        <div class="event-card-icon">🏊🚴🏃</div>
+        <div class="event-card-name">Sprint triathlon</div>
+        <div class="event-card-detail">750m · 20km · 5km</div>
+      </div>
+      <div class="event-card" data-v="Olympic triathlon" onclick="selectEvent(this)">
+        <div class="event-card-icon">🏊🚴🏃</div>
+        <div class="event-card-name">Olympic triathlon</div>
+        <div class="event-card-detail">1.5km · 40km · 10km</div>
+      </div>
+      <div class="event-card" data-v="70.3 Half Ironman" onclick="selectEvent(this)">
+        <div class="event-card-icon">🏊🚴🏃</div>
+        <div class="event-card-name">70.3 Half Ironman</div>
+        <div class="event-card-detail">1.9km · 90km · 21km</div>
+      </div>
+      <div class="event-card" data-v="Full Ironman" onclick="selectEvent(this)">
+        <div class="event-card-icon">🏊🚴🏃</div>
+        <div class="event-card-name">Full Ironman</div>
+        <div class="event-card-detail">3.8km · 180km · 42.2km</div>
+      </div>
+      <div class="event-card" data-v="5K run" onclick="selectEvent(this)">
+        <div class="event-card-icon">🏃</div>
+        <div class="event-card-name">5K run</div>
+        <div class="event-card-detail">5 kilometres</div>
+      </div>
+      <div class="event-card" data-v="10K run" onclick="selectEvent(this)">
+        <div class="event-card-icon">🏃</div>
+        <div class="event-card-name">10K run</div>
+        <div class="event-card-detail">10 kilometres</div>
+      </div>
+      <div class="event-card" data-v="Half marathon" onclick="selectEvent(this)">
+        <div class="event-card-icon">🏃</div>
+        <div class="event-card-name">Half marathon</div>
+        <div class="event-card-detail">21.1 kilometres</div>
+      </div>
+      <div class="event-card" data-v="Marathon" onclick="selectEvent(this)">
+        <div class="event-card-icon">🏃</div>
+        <div class="event-card-name">Marathon</div>
+        <div class="event-card-detail">42.2 kilometres</div>
       </div>
     </div>
-    <div class="field"><label>Previous race times (helps calibrate zones)</label><input type="text" id="f-times" placeholder="e.g. Olympic 2:45, sprint 1:10, 10K 52min"/></div>
-    <div class="sdivider">Current training</div>
-    <div class="field"><label>Hours per week currently</label>
+    <div class="field"><label>Race name (optional)</label><input type="text" id="f-race" placeholder="e.g. Chicago Triathlon, Boston Marathon"/></div>
+    <div class="field-row">
+      <div class="field"><label>Race date</label><input type="date" id="f-date"/></div>
+      <div class="field"><label>Training start date</label><input type="date" id="f-start"/></div>
+    </div>
+    <button class="btn-next" onclick="ob(1)">Continue →</button>
+  </div>
+
+  <!-- Step 1: About you -->
+  <div class="ob-step" id="ob1">
+    <div class="eyebrow">Step 2 of 5</div>
+    <h2>About you</h2>
+    <p class="sub">Basic info so we can personalise your plan and send coaching messages.</p>
+    <div class="field"><label>Your first name</label><input type="text" id="f-name" placeholder="e.g. Erica"/></div>
+    <div class="field">
+      <label>WhatsApp number (optional — for daily coaching)</label>
+      <input type="tel" id="f-phone" placeholder="+13125551234"/>
+      <div class="field-hint">Include country code. US: +1 then 10 digits. We'll send your morning workout brief here.</div>
+    </div>
+    <div class="field"><label>Primary goal</label>
+      <div class="chip-group" id="cg-goal">
+        <div class="chip sel" data-v="finish" onclick="pick('cg-goal',this)">Just finish</div>
+        <div class="chip" data-v="finish-strong" onclick="pick('cg-goal',this)">Finish strong</div>
+        <div class="chip" data-v="time-goal" onclick="pick('cg-goal',this)">Hit a time goal</div>
+        <div class="chip" data-v="podium" onclick="pick('cg-goal',this)">Podium / AG win</div>
+      </div>
+    </div>
+    <div class="field" id="time-goal-field" style="display:none">
+      <label>Target finish time</label>
+      <input type="text" id="f-time-goal" placeholder="e.g. Sub 2:30, under 4 hours"/>
+    </div>
+    <div class="btn-row"><button class="btn-back" onclick="ob(0)">← Back</button><button class="btn-next" style="flex:1" onclick="ob(2)">Continue →</button></div>
+  </div>
+
+  <!-- Step 2: Current fitness -->
+  <div class="ob-step" id="ob2">
+    <div class="eyebrow">Step 3 of 5</div>
+    <h2>Your current fitness</h2>
+    <p class="sub">Be completely honest — the plan is only useful if it starts where you actually are right now.</p>
+    <div class="field"><label>Overall experience level</label>
+      <div class="chip-group" id="cg-level">
+        <div class="chip" data-v="complete-beginner" onclick="pick('cg-level',this)">Complete beginner</div>
+        <div class="chip" data-v="beginner" onclick="pick('cg-level',this)">Some experience</div>
+        <div class="chip sel" data-v="intermediate" onclick="pick('cg-level',this)">Intermediate</div>
+        <div class="chip" data-v="advanced" onclick="pick('cg-level',this)">Advanced</div>
+      </div>
+    </div>
+    <div class="field"><label>Hours per week you currently train</label>
       <div class="chip-group" id="cg-hours">
-        <div class="chip" data-v="0-3" onclick="pick('cg-hours',this)">0–3 hrs</div>
+        <div class="chip" data-v="0-2" onclick="pick('cg-hours',this)">0–2 hrs</div>
+        <div class="chip" data-v="2-4" onclick="pick('cg-hours',this)">2–4 hrs</div>
         <div class="chip sel" data-v="4-6" onclick="pick('cg-hours',this)">4–6 hrs</div>
-        <div class="chip" data-v="7-10" onclick="pick('cg-hours',this)">7–10 hrs</div>
+        <div class="chip" data-v="6-10" onclick="pick('cg-hours',this)">6–10 hrs</div>
         <div class="chip" data-v="10+" onclick="pick('cg-hours',this)">10+ hrs</div>
       </div>
     </div>
     <div class="field"><label>Training days available per week</label>
       <div class="chip-group" id="cg-days">
-        <div class="chip" data-v="4" onclick="pick('cg-days',this)">4 days</div>
-        <div class="chip sel" data-v="5" onclick="pick('cg-days',this)">5 days</div>
+        <div class="chip" data-v="3" onclick="pick('cg-days',this)">3 days</div>
+        <div class="chip sel" data-v="4" onclick="pick('cg-days',this)">4 days</div>
+        <div class="chip" data-v="5" onclick="pick('cg-days',this)">5 days</div>
         <div class="chip" data-v="6" onclick="pick('cg-days',this)">6 days</div>
       </div>
     </div>
-    <div class="btn-row"><button class="btn-back" onclick="go(0)">← Back</button><button class="btn-next" style="flex:1" onclick="go(2)">Continue →</button></div>
+    <div class="field"><label>What can you do comfortably right now?</label>
+      <textarea id="f-current" placeholder="e.g. I can run for 20 minutes without stopping, swim 200m, haven't been on a bike in years..."></textarea>
+    </div>
+    <div class="field"><label>Previous race or fitness history</label>
+      <input type="text" id="f-history" placeholder="e.g. Completed a sprint tri last year in 1:45, 10K PB 58min, or 'no race experience'"/>
+    </div>
+    <div class="btn-row"><button class="btn-back" onclick="ob(1)">← Back</button><button class="btn-next" style="flex:1" onclick="ob(3)">Continue →</button></div>
   </div>
-  <div class="step" id="ob2">
-    <div class="eyebrow">Step 3 of 5</div>
-    <h2>Your three disciplines</h2>
-    <p class="sub">Friel focuses on your limiters — tell us about each so we allocate time correctly.</p>
-    <div class="sdivider">Swim</div>
-    <div class="field"><label>Swim ability</label>
-      <div class="chip-group" id="cg-swim">
-        <div class="chip" data-v="non-swimmer" onclick="pick('cg-swim',this)">Non-swimmer</div>
-        <div class="chip" data-v="beginner" onclick="pick('cg-swim',this)">Basic</div>
-        <div class="chip sel" data-v="intermediate" onclick="pick('cg-swim',this)">Comfortable</div>
-        <div class="chip" data-v="strong" onclick="pick('cg-swim',this)">Strong</div>
-      </div>
-    </div>
-    <div class="field"><label>CSS / 100m pace (optional)</label><input type="text" id="f-css" placeholder="e.g. 1:45/100m or unknown"/></div>
-    <div class="sdivider">Bike</div>
-    <div class="field"><label>Bike ability</label>
-      <div class="chip-group" id="cg-bike">
-        <div class="chip" data-v="beginner" onclick="pick('cg-bike',this)">Casual</div>
-        <div class="chip sel" data-v="intermediate" onclick="pick('cg-bike',this)">Regular cyclist</div>
-        <div class="chip" data-v="strong" onclick="pick('cg-bike',this)">Strong</div>
-      </div>
-    </div>
-    <div class="field"><label>FTP or avg speed (optional)</label><input type="text" id="f-ftp" placeholder="e.g. 210w, 28kph, or unknown"/></div>
-    <div class="sdivider">Run</div>
-    <div class="field"><label>Run ability</label>
-      <div class="chip-group" id="cg-run">
-        <div class="chip" data-v="beginner" onclick="pick('cg-run',this)">Run/walk</div>
-        <div class="chip sel" data-v="intermediate" onclick="pick('cg-run',this)">Consistent</div>
-        <div class="chip" data-v="strong" onclick="pick('cg-run',this)">Strong</div>
-      </div>
-    </div>
-    <div class="field"><label>Recent paces (optional)</label><input type="text" id="f-pace" placeholder="e.g. 5:30/km 10K"/></div>
-    <div class="btn-row"><button class="btn-back" onclick="go(1)">← Back</button><button class="btn-next" style="flex:1" onclick="go(3)">Continue →</button></div>
-  </div>
-  <div class="step" id="ob3">
+
+  <!-- Step 3: Triathlon-specific (shown for tri events) or Run-specific -->
+  <div class="ob-step" id="ob3">
     <div class="eyebrow">Step 4 of 5</div>
-    <h2>Goals and life context</h2>
-    <p class="sub">Your coach needs to understand success and what to plan around.</p>
-    <div class="sdivider">Race goals</div>
-    <div class="field"><label>Primary goal</label>
-      <div class="chip-group" id="cg-goal">
-        <div class="chip" data-v="finish" onclick="pick('cg-goal',this)">Finish strong</div>
-        <div class="chip sel" data-v="sub2:30" onclick="pick('cg-goal',this)">Sub 2:30</div>
-        <div class="chip" data-v="sub2:15" onclick="pick('cg-goal',this)">Sub 2:15</div>
-        <div class="chip" data-v="sub2:00" onclick="pick('cg-goal',this)">Sub 2:00</div>
-        <div class="chip" data-v="podium" onclick="pick('cg-goal',this)">Podium</div>
+    <h2 id="ob3-title">Your disciplines</h2>
+    <p class="sub" id="ob3-sub">Rate yourself honestly in each — this determines how we prioritise your training.</p>
+    <div id="ob3-tri">
+      <div class="sdivider">Swim</div>
+      <div class="field"><label>Swim ability</label>
+        <div class="chip-group" id="cg-swim">
+          <div class="chip" data-v="cant-swim" onclick="pick('cg-swim',this)">Can't swim yet</div>
+          <div class="chip" data-v="beginner" onclick="pick('cg-swim',this)">Can do a length or two</div>
+          <div class="chip sel" data-v="intermediate" onclick="pick('cg-swim',this)">Can complete the distance</div>
+          <div class="chip" data-v="strong" onclick="pick('cg-swim',this)">Strong swimmer</div>
+        </div>
+      </div>
+      <div class="field"><label>CSS pace / 100m time (optional)</label><input type="text" id="f-css" placeholder="e.g. 2:00/100m, or 'I don't know'"/></div>
+      <div class="sdivider">Bike</div>
+      <div class="field"><label>Bike ability</label>
+        <div class="chip-group" id="cg-bike">
+          <div class="chip" data-v="beginner" onclick="pick('cg-bike',this)">Rarely ride</div>
+          <div class="chip sel" data-v="intermediate" onclick="pick('cg-bike',this)">Ride occasionally</div>
+          <div class="chip" data-v="strong" onclick="pick('cg-bike',this)">Regular cyclist</div>
+        </div>
+      </div>
+      <div class="field"><label>FTP or average speed (optional)</label><input type="text" id="f-ftp" placeholder="e.g. 180w, 25kph, or 'unknown'"/></div>
+      <div class="sdivider">Run</div>
+      <div class="field"><label>Run ability</label>
+        <div class="chip-group" id="cg-run">
+          <div class="chip" data-v="beginner" onclick="pick('cg-run',this)">Walk/run intervals</div>
+          <div class="chip sel" data-v="intermediate" onclick="pick('cg-run',this)">Can run continuously</div>
+          <div class="chip" data-v="strong" onclick="pick('cg-run',this)">Confident runner</div>
+        </div>
       </div>
     </div>
-    <div class="field"><label>What would make you proud on race day?</label><textarea id="f-arace" placeholder="e.g. I want to negative split the run, not blow up on the bike..."></textarea></div>
-    <div class="sdivider">Life and constraints</div>
-    <div class="field"><label>Busy or travel periods?</label><input type="text" id="f-travel" placeholder="e.g. Business trip week 8, family holiday June"/></div>
-    <div class="field"><label>Injuries or limitations?</label><textarea id="f-injuries" placeholder="e.g. Left knee on long runs, tight hip flexors..." style="min-height:60px"></textarea></div>
-    <div class="field"><label>When do you usually train?</label>
-      <div class="chip-group" id="cg-time">
-        <div class="chip" data-v="morning" onclick="pick('cg-time',this)">Mornings</div>
-        <div class="chip sel" data-v="mixed" onclick="pick('cg-time',this)">Mixed</div>
-        <div class="chip" data-v="evening" onclick="pick('cg-time',this)">Evenings</div>
-        <div class="chip" data-v="weekends" onclick="pick('cg-time',this)">Mostly weekends</div>
+    <div id="ob3-run" style="display:none">
+      <div class="field"><label>Current longest run</label>
+        <div class="chip-group" id="cg-longest-run">
+          <div class="chip" data-v="cant-run" onclick="pick('cg-longest-run',this)">Haven't started running</div>
+          <div class="chip" data-v="1-2km" onclick="pick('cg-longest-run',this)">1–2 km</div>
+          <div class="chip sel" data-v="3-5km" onclick="pick('cg-longest-run',this)">3–5 km</div>
+          <div class="chip" data-v="5-10km" onclick="pick('cg-longest-run',this)">5–10 km</div>
+          <div class="chip" data-v="10-15km" onclick="pick('cg-longest-run',this)">10–15 km</div>
+          <div class="chip" data-v="15km+" onclick="pick('cg-longest-run',this)">15 km+</div>
+        </div>
       </div>
+      <div class="field"><label>Recent pace (optional)</label><input type="text" id="f-run-pace" placeholder="e.g. 6:30/km, 8 min/mile, or 'I don't know'"/></div>
     </div>
-    <div class="btn-row"><button class="btn-back" onclick="go(2)">← Back</button><button class="btn-next" style="flex:1" onclick="go(4)">Continue →</button></div>
+    <div class="field"><label>Run comfortably without stopping</label>
+      <input type="text" id="f-run-comfortable" placeholder="e.g. 20 minutes, 3km, or 'not yet'"/>
+    </div>
+    <div class="btn-row"><button class="btn-back" onclick="ob(2)">← Back</button><button class="btn-next" style="flex:1" onclick="ob(4)">Continue →</button></div>
   </div>
-  <div class="step" id="ob4">
+
+  <!-- Step 4: Life context -->
+  <div class="ob-step" id="ob4">
     <div class="eyebrow">Step 5 of 5</div>
-    <h2>Almost ready!</h2>
-    <p class="sub">Last few details to personalise your coaching.</p>
-    <div class="sdivider">Equipment and access</div>
-    <div class="field"><label>Bike type</label>
-      <div class="chip-group" id="cg-bike-type">
-        <div class="chip" data-v="road" onclick="pick('cg-bike-type',this)">Road bike</div>
-        <div class="chip sel" data-v="tri" onclick="pick('cg-bike-type',this)">TT / tri bike</div>
-        <div class="chip" data-v="gravel" onclick="pick('cg-bike-type',this)">Gravel / hybrid</div>
-        <div class="chip" data-v="indoor" onclick="pick('cg-bike-type',this)">Mostly indoor</div>
+    <h2>Life and context</h2>
+    <p class="sub">The more your coach knows, the better the plan. All optional.</p>
+    <div class="field"><label>Injuries, niggles, or physical limitations</label>
+      <textarea id="f-injuries" placeholder="e.g. Left knee flares up on long runs, had shoulder surgery 2 years ago, lower back stiffness..."></textarea>
+    </div>
+    <div class="field"><label>Busy periods or travel during training</label>
+      <input type="text" id="f-travel" placeholder="e.g. Work trip for 2 weeks in May, family holiday in July"/>
+    </div>
+    <div class="field"><label>Equipment and access</label>
+      <div class="chip-group" id="cg-access">
+        <div class="chip sel" data-v="pool" onclick="this.classList.toggle('sel')">Pool access</div>
+        <div class="chip" data-v="open-water" onclick="this.classList.toggle('sel')">Open water nearby</div>
+        <div class="chip" data-v="road-bike" onclick="this.classList.toggle('sel')">Road bike</div>
+        <div class="chip" data-v="tri-bike" onclick="this.classList.toggle('sel')">Tri / TT bike</div>
+        <div class="chip" data-v="turbo-trainer" onclick="this.classList.toggle('sel')">Turbo trainer</div>
+        <div class="chip" data-v="gym" onclick="this.classList.toggle('sel')">Gym access</div>
       </div>
     </div>
-    <div class="field"><label>Pool access</label>
-      <div class="chip-group" id="cg-pool">
-        <div class="chip sel" data-v="regular" onclick="pick('cg-pool',this)">Regular access</div>
-        <div class="chip" data-v="limited" onclick="pick('cg-pool',this)">Limited (1-2x/wk)</div>
-        <div class="chip" data-v="open-water" onclick="pick('cg-pool',this)">Open water only</div>
-      </div>
+    <div class="field"><label>Anything else your coach should know?</label>
+      <textarea id="f-other" placeholder="e.g. I work night shifts so mornings are hard. I've read the Triathlete's Training Bible. I tend to overtrain and get injured..."></textarea>
     </div>
-    <div class="field"><label>Wearables (select all that apply)</label>
-      <div class="chip-group" id="cg-tech">
-        <div class="chip sel" data-v="apple-watch" onclick="this.classList.toggle('sel')">Apple Watch</div>
-        <div class="chip" data-v="garmin" onclick="this.classList.toggle('sel')">Garmin</div>
-        <div class="chip" data-v="strava" onclick="this.classList.toggle('sel')">Strava</div>
-        <div class="chip" data-v="whoop" onclick="this.classList.toggle('sel')">Whoop</div>
-        <div class="chip" data-v="none" onclick="this.classList.toggle('sel')">None</div>
-      </div>
-    </div>
-    <div class="sdivider">Anything else</div>
-    <div class="field"><label>Anything else your coach should know?</label><textarea id="f-other" placeholder="e.g. I've read the Triathlete's Training Bible. Struggle with nutrition on long rides..."></textarea></div>
-    <div class="btn-row"><button class="btn-back" onclick="go(3)">← Back</button><button class="btn-next" style="flex:1" id="btn-launch" onclick="launch()">Build my plan →</button></div>
+    <div class="btn-row"><button class="btn-back" onclick="ob(3)">← Back</button><button class="btn-next" style="flex:1" id="btn-launch" onclick="launch()">Build my plan →</button></div>
   </div>
 </div>
 </div>
@@ -480,11 +512,11 @@ nav.nav{flex:1;padding:0 0.65rem;}
   <div class="gen-status" id="gen-status">Saving your profile…</div>
   <ul class="gen-steps">
     <li id="gs0">Saving profile to your account</li>
-    <li id="gs1">Calculating weeks to race</li>
-    <li id="gs2">Designing Friel periodization</li>
-    <li id="gs3">Scheduling phases and recovery weeks</li>
-    <li id="gs4">Writing your weekly sessions</li>
-    <li id="gs5">Preparing your morning brief</li>
+    <li id="gs1">Calculating weeks from start to race</li>
+    <li id="gs2">Designing periodization structure</li>
+    <li id="gs3">Setting beginner-appropriate volumes</li>
+    <li id="gs4">Scheduling sessions around your life</li>
+    <li id="gs5">Preparing your first coaching message</li>
   </ul>
 </div>
 </div>
@@ -496,27 +528,28 @@ nav.nav{flex:1;padding:0 0.65rem;}
       <div class="sb-brand-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
       <div class="sb-brand-name">TriCoach</div>
     </div>
-    <div class="athlete-card"><div class="athlete-name" id="s-name">Athlete</div><div class="athlete-meta" id="s-meta">Olympic · 5 days/wk</div></div>
+    <div class="athlete-card"><div class="athlete-name" id="s-name">Athlete</div><div class="athlete-meta" id="s-meta">Loading…</div></div>
     <div class="race-card"><div class="race-label">Race day</div><div class="race-days" id="s-days">—</div><div class="race-name" id="s-race">days to go</div></div>
     <nav class="nav">
-      <div class="nav-item active" id="nav-chat" onclick="tab('chat')"><span class="nav-dot"></span><span class="nav-icon">💬</span> Coach chat</div>
-      <div class="nav-item" id="nav-plan" onclick="tab('plan')"><span class="nav-dot"></span><span class="nav-icon">📋</span> Training plan</div>
-      <div class="nav-item" id="nav-week" onclick="tab('week')"><span class="nav-dot"></span><span class="nav-icon">📅</span> This week</div>
-      <div class="nav-item" id="nav-profile" onclick="tab('profile')"><span class="nav-dot"></span><span class="nav-icon">👤</span> My profile</div>
+      <div class="nav-item active" id="nav-chat" onclick="showTab('chat')"><span class="nav-dot"></span><span class="nav-icon">💬</span> Coach chat</div>
+      <div class="nav-item" id="nav-plan" onclick="showTab('plan')"><span class="nav-dot"></span><span class="nav-icon">📋</span> Training plan</div>
+      <div class="nav-item" id="nav-week" onclick="showTab('week')"><span class="nav-dot"></span><span class="nav-icon">📅</span> This week</div>
+      <div class="nav-item" id="nav-profile" onclick="showTab('profile')"><span class="nav-dot"></span><span class="nav-icon">👤</span> My profile</div>
     </nav>
     <div class="sb-footer">
       <div class="wk-label">This week</div>
       <div class="wk-bars" id="s-bars"></div>
-      <div class="wk-text" id="s-wk-text">0 sessions</div>
+      <div class="wk-text" id="s-wk-text">— sessions</div>
     </div>
     <button class="btn-signout" onclick="signOut()">Sign out</button>
   </div>
   <div class="main">
+    <!-- CHAT -->
     <div class="tab-panel active" id="tab-chat">
       <div class="chat-top">
         <div class="coach-av">TC</div>
         <div><div class="cn">TriCoach AI</div><div class="cs">Active now</div></div>
-        <div class="today-badge" id="today-badge">Today: <span>loading…</span></div>
+        <div class="today-badge" id="today-badge">Today: <span>—</span></div>
       </div>
       <div class="messages" id="messages"></div>
       <div class="typing" id="typing">
@@ -525,24 +558,26 @@ nav.nav{flex:1;padding:0 0.65rem;}
       </div>
       <div class="qr" id="qr"></div>
       <div class="chat-input-row">
-        <textarea class="chat-ta" id="chat-in" placeholder="Ask your coach anything…" rows="1" onkeydown="onKey(event)" oninput="resize(this)"></textarea>
-        <button class="send-btn" id="send-btn" onclick="send()">↑</button>
+        <textarea class="chat-ta" id="chat-in" placeholder="Ask your coach anything…" rows="1" onkeydown="onKey(event)" oninput="resizeTA(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMsg()">↑</button>
       </div>
     </div>
+    <!-- PLAN -->
     <div class="tab-panel" id="tab-plan">
       <div class="scroll-wrap">
         <div class="page-head">
           <div><div class="page-title">Training Plan</div><div class="page-sub" id="plan-sub">Loading…</div></div>
-          <button class="btn-gen" id="gen-btn" onclick="regen()">↺ Regenerate</button>
+          <button class="btn-gen" id="gen-btn" onclick="regenPlan()">↺ Regenerate</button>
         </div>
         <div class="friel-banner">
           <div class="friel-icon">📖</div>
-          <div><div class="friel-title">Triathlete's Training Bible methodology</div><div class="friel-sub">Friel periodization · Test weeks · Recovery every 3-4 weeks · Limiter-focused</div></div>
+          <div><div class="friel-title">Evidence-based periodization</div><div class="friel-sub">Friel's Training Bible · Progressive overload · Recovery weeks · Volume appropriate to your level</div></div>
         </div>
         <div class="phase-tabs" id="phase-tabs"></div>
         <div class="plan-content" id="plan-content"></div>
       </div>
     </div>
+    <!-- WEEK -->
     <div class="tab-panel" id="tab-week">
       <div class="scroll-wrap">
         <div class="week-nav">
@@ -555,31 +590,34 @@ nav.nav{flex:1;padding:0 0.65rem;}
         <div class="ddc" id="ddc"></div>
       </div>
     </div>
+    <!-- PROFILE -->
     <div class="tab-panel" id="tab-profile">
       <div class="profile-scroll">
-        <div class="page-head"><div><div class="page-title">My Profile</div><div class="page-sub">Your details are saved to your account</div></div></div>
-        <div class="account-info" id="account-info">Signed in as <strong id="account-email">loading…</strong></div>
+        <div class="page-head"><div><div class="page-title">My Profile</div><div class="page-sub">Changes save to your account</div></div></div>
+        <div class="account-info">Signed in as <strong id="account-email">—</strong></div>
         <div class="profile-card">
           <div class="profile-card-title">👤 About you</div>
           <div class="pf"><label>Name</label><input type="text" id="p-name"/></div>
+          <div class="pf"><label>Event</label><input type="text" id="p-event" readonly style="background:var(--gray-100);color:var(--gray-500)"/></div>
           <div class="pf"><label>Race name</label><input type="text" id="p-race"/></div>
           <div class="pf"><label>Race date</label><input type="date" id="p-date"/></div>
-          <div class="pf"><label>WhatsApp number</label><input type="tel" id="p-phone" placeholder="+13125551234"/><div class="pf-hint">Include country code. Your coach messages you here every morning.</div></div>
+          <div class="pf"><label>Training start date</label><input type="date" id="p-start"/></div>
+          <div class="pf"><label>WhatsApp number</label><input type="tel" id="p-phone" placeholder="+13125551234"/><div class="pf-hint">Your coach messages you here every morning.</div></div>
         </div>
         <div class="profile-card">
           <div class="profile-card-title">🎯 Training settings</div>
-          <div class="pf"><label>Experience level</label><select id="p-level"><option value="first-timer">First triathlon</option><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></div>
-          <div class="pf"><label>Training days per week</label><select id="p-days"><option value="4">4 days</option><option value="5">5 days</option><option value="6">6 days</option></select></div>
-          <div class="pf"><label>Goal</label><select id="p-goal"><option value="finish">Finish strong</option><option value="sub2:30">Sub 2:30</option><option value="sub2:15">Sub 2:15</option><option value="sub2:00">Sub 2:00</option><option value="podium">Podium</option></select></div>
+          <div class="pf"><label>Experience level</label><select id="p-level"><option value="complete-beginner">Complete beginner</option><option value="beginner">Some experience</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></div>
+          <div class="pf"><label>Training days per week</label><select id="p-days"><option value="3">3 days</option><option value="4">4 days</option><option value="5">5 days</option><option value="6">6 days</option></select></div>
+          <div class="pf"><label>Goal</label><input type="text" id="p-goal"/></div>
         </div>
         <div class="profile-card">
-          <div class="profile-card-title">📝 Notes for your coach</div>
-          <div class="pf"><label>Injuries and constraints</label><textarea id="p-injuries"></textarea></div>
-          <div class="pf"><label>Other context</label><textarea id="p-other"></textarea></div>
+          <div class="profile-card-title">📝 Coach notes</div>
+          <div class="pf"><label>Injuries and limitations</label><textarea id="p-injuries"></textarea></div>
+          <div class="pf"><label>Other notes</label><textarea id="p-other"></textarea></div>
         </div>
         <div style="display:flex;align-items:center;gap:0.65rem">
           <button class="btn-save" onclick="saveProfile()">Save changes</button>
-          <div class="save-ok" id="save-ok">✓ Saved to your account!</div>
+          <div class="save-ok" id="save-ok">✓ Saved!</div>
         </div>
       </div>
     </div>
@@ -587,84 +625,62 @@ nav.nav{flex:1;padding:0 0.65rem;}
 </div>
 
 <script>
-// ── SUPABASE CLIENT ──
-const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ── CONFIG CHECK ──────────────────────────────────────────────────────────────
+if (SUPABASE_URL.includes('YOUR_PROJECT') || RAILWAY_URL.includes('YOUR_RAILWAY')) {
+  document.getElementById('config-notice').classList.add('show');
+}
 
+// ── CLIENTS ───────────────────────────────────────────────────────────────────
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const TODAY = new Date();
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 let currentUser = null;
-let A = {name:'',race:'',date:'',phone:'',level:'intermediate',hours:'4-6',days:5,swimLevel:'intermediate',bikeLevel:'intermediate',runLevel:'intermediate',css:'',ftp:'',pace:'',times:'',goal:'sub2:30',arace:'',travel:'',injuries:'',trainTime:'mixed',bikeType:'tri',pool:'regular',tech:[],other:'',plan:null,history:[],wkOff:0};
+let authToken = null;
+let P = {}; // profile
+let chatHistory = [];
+let weekOffset = 0;
 
-// ── AUTH ──
+// ── AUTH ──────────────────────────────────────────────────────────────────────
 function switchTab(t) {
-  document.querySelectorAll('.auth-tab').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.auth-form').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.auth-tab').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.auth-form').forEach(e => e.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
   document.getElementById('form-'+t).classList.add('active');
-  clearAuthMessages();
+  clearAuthMsg();
 }
-
-function showAuthError(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg; el.classList.add('show');
-  document.getElementById('auth-success').classList.remove('show');
-}
-function showAuthSuccess(msg) {
-  const el = document.getElementById('auth-success');
-  el.textContent = msg; el.classList.add('show');
-  document.getElementById('auth-error').classList.remove('show');
-}
-function clearAuthMessages() {
-  document.getElementById('auth-error').classList.remove('show');
-  document.getElementById('auth-success').classList.remove('show');
-}
+function showAuthErr(m) { const e=document.getElementById('auth-error'); e.textContent=m; e.classList.add('show'); document.getElementById('auth-success').classList.remove('show'); }
+function showAuthOk(m) { const e=document.getElementById('auth-success'); e.textContent=m; e.classList.add('show'); document.getElementById('auth-error').classList.remove('show'); }
+function clearAuthMsg() { document.getElementById('auth-error').classList.remove('show'); document.getElementById('auth-success').classList.remove('show'); }
 
 async function signIn() {
-  const email = document.getElementById('si-email').value.trim();
-  const pass = document.getElementById('si-pass').value;
-  if (!email || !pass) { showAuthError('Please enter your email and password'); return; }
-  const btn = document.getElementById('btn-signin');
-  btn.disabled = true; btn.textContent = 'Signing in…';
-  const { error } = await supa.auth.signInWithPassword({ email, password: pass });
-  btn.disabled = false; btn.textContent = 'Sign in';
-  if (error) { showAuthError(error.message); return; }
-  // onAuthStateChange will handle the rest
+  const email=document.getElementById('si-email').value.trim(), pass=document.getElementById('si-pass').value;
+  if (!email||!pass) { showAuthErr('Please enter your email and password'); return; }
+  const btn=document.getElementById('btn-signin'); btn.disabled=true; btn.textContent='Signing in…';
+  const {error} = await supa.auth.signInWithPassword({email,password:pass});
+  btn.disabled=false; btn.textContent='Sign in';
+  if (error) showAuthErr(error.message);
 }
-
 async function signUp() {
-  const email = document.getElementById('su-email').value.trim();
-  const pass = document.getElementById('su-pass').value;
-  if (!email || !pass) { showAuthError('Please enter your email and password'); return; }
-  if (pass.length < 8) { showAuthError('Password must be at least 8 characters'); return; }
-  const btn = document.getElementById('btn-signup');
-  btn.disabled = true; btn.textContent = 'Creating account…';
-  const { error } = await supa.auth.signUp({ email, password: pass });
-  btn.disabled = false; btn.textContent = 'Create account';
-  if (error) { showAuthError(error.message); return; }
-  showAuthSuccess('Account created! Check your email to confirm, then sign in.');
+  const email=document.getElementById('su-email').value.trim(), pass=document.getElementById('su-pass').value;
+  if (!email||!pass) { showAuthErr('Please fill in both fields'); return; }
+  if (pass.length<8) { showAuthErr('Password must be at least 8 characters'); return; }
+  const btn=document.getElementById('btn-signup'); btn.disabled=true; btn.textContent='Creating…';
+  const {error} = await supa.auth.signUp({email,password:pass});
+  btn.disabled=false; btn.textContent='Create account';
+  if (error) { showAuthErr(error.message); return; }
+  showAuthOk('Account created! Check your email to confirm, then sign in here.');
 }
-
-async function signInGoogle() {
-  const { error } = await supa.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.href }
-  });
-  if (error) showAuthError(error.message);
-}
-
 async function signOut() {
-  await supa.auth.signOut();
-  currentUser = null;
-  A = {name:'',race:'',date:'',phone:'',level:'intermediate',hours:'4-6',days:5,swimLevel:'intermediate',bikeLevel:'intermediate',runLevel:'intermediate',css:'',ftp:'',pace:'',times:'',goal:'sub2:30',arace:'',travel:'',injuries:'',trainTime:'mixed',bikeType:'tri',pool:'regular',tech:[],other:'',plan:null,history:[],wkOff:0};
+  await supa.auth.signOut(); currentUser=null; authToken=null; P={}; chatHistory=[];
   showScreen('auth');
 }
 
-// ── AUTH STATE LISTENER ──
 supa.auth.onAuthStateChange(async (event, session) => {
   if (session?.user) {
     currentUser = session.user;
+    authToken = session.access_token;
     await handleSignedIn();
   } else if (event === 'SIGNED_OUT') {
     showScreen('auth');
@@ -672,131 +688,123 @@ supa.auth.onAuthStateChange(async (event, session) => {
 });
 
 async function handleSignedIn() {
-  // Try to load existing profile
-  const { data: profile } = await supa.from('profiles').select('*').eq('user_id', currentUser.id).single();
-  if (profile) {
-    // User has a profile — load it and go to app
-    loadProfileFromDB(profile);
-    const { data: planData } = await supa.from('plans').select('*').eq('user_id', currentUser.id).single();
-    if (planData?.plan_json) A.plan = planData.plan_json;
-    showScreen('app');
-    initApp();
-  } else {
-    // New user — go to onboarding
-    showScreen('onboard');
-  }
+  // Try to load from Railway server
+  try {
+    const res = await apiGet('/api/profile');
+    if (res && res.name) {
+      P = res;
+      const planRes = await apiGet('/api/plan');
+      if (planRes && planRes.plan_json) P.plan = planRes.plan_json;
+      // Load chat history
+      const hist = await apiGet('/api/chat-history');
+      if (hist) chatHistory = hist;
+      showScreen('app');
+      initApp();
+      return;
+    }
+  } catch(e) {}
+  // No profile — go to onboarding
+  showScreen('onboard');
 }
 
-function loadProfileFromDB(p) {
-  A.name = p.name || '';
-  A.race = p.race_name || '';
-  A.date = p.race_date || '';
-  A.phone = p.phone || '';
-  A.level = p.level || 'intermediate';
-  A.hours = p.hours || '4-6';
-  A.days = p.training_days || 5;
-  A.swimLevel = p.swim_level || 'intermediate';
-  A.bikeLevel = p.bike_level || 'intermediate';
-  A.runLevel = p.run_level || 'intermediate';
-  A.css = p.css_pace || '';
-  A.ftp = p.ftp || '';
-  A.pace = p.run_pace || '';
-  A.times = p.previous_times || '';
-  A.goal = p.goal || 'sub2:30';
-  A.arace = p.race_goal_notes || '';
-  A.travel = p.travel_constraints || '';
-  A.injuries = p.injuries || '';
-  A.trainTime = p.train_time || 'mixed';
-  A.bikeType = p.bike_type || 'tri';
-  A.pool = p.pool_access || 'regular';
-  A.tech = p.tech ? (typeof p.tech === 'string' ? JSON.parse(p.tech) : p.tech) : [];
-  A.other = p.other_notes || '';
+// ── API HELPERS ───────────────────────────────────────────────────────────────
+async function apiPost(path, body) {
+  const res = await fetch(RAILWAY_URL + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+async function apiGet(path) {
+  const res = await fetch(RAILWAY_URL + path, {
+    headers: { 'Authorization': 'Bearer ' + authToken }
+  });
+  if (!res.ok) return null;
+  return res.json();
 }
 
-async function saveProfileToDB() {
-  if (!currentUser) return;
-  const payload = {
-    user_id: currentUser.id,
-    name: A.name, race_name: A.race, race_date: A.date, phone: A.phone,
-    level: A.level, hours: A.hours, training_days: A.days,
-    swim_level: A.swimLevel, bike_level: A.bikeLevel, run_level: A.runLevel,
-    css_pace: A.css, ftp: A.ftp, run_pace: A.pace, previous_times: A.times,
-    goal: A.goal, race_goal_notes: A.arace, travel_constraints: A.travel,
-    injuries: A.injuries, train_time: A.trainTime, bike_type: A.bikeType,
-    pool_access: A.pool, tech: JSON.stringify(A.tech), other_notes: A.other,
-    updated_at: new Date().toISOString()
-  };
-  await supa.from('profiles').upsert(payload, { onConflict: 'user_id' });
+// ── ONBOARDING ────────────────────────────────────────────────────────────────
+let selectedEvent = '';
+function selectEvent(el) {
+  document.querySelectorAll('.event-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedEvent = el.dataset.v;
+  const isTri = selectedEvent.includes('triathlon') || selectedEvent.includes('Ironman') || selectedEvent.includes('70.3');
+  document.getElementById('ob3-tri').style.display = isTri ? '' : 'none';
+  document.getElementById('ob3-run').style.display = isTri ? 'none' : '';
+  document.getElementById('ob3-title').textContent = isTri ? 'Your three disciplines' : 'Your running fitness';
+  document.getElementById('ob3-sub').textContent = isTri
+    ? 'Rate yourself in each — this determines how we prioritise your training.'
+    : 'Be honest — this is what Week 1 is built around.';
 }
 
-async function savePlanToDB() {
-  if (!currentUser || !A.plan) return;
-  await supa.from('plans').upsert({
-    user_id: currentUser.id,
-    plan_json: A.plan,
-    generated_at: new Date().toISOString()
-  }, { onConflict: 'user_id' });
-}
-
-// ── SCREEN MANAGEMENT ──
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-'+name).classList.add('active');
-}
-
-// ── ONBOARDING ──
 function pick(gid, el) {
   document.querySelectorAll('#'+gid+' .chip').forEach(c => c.classList.remove('sel'));
   el.classList.add('sel');
+  if (gid === 'cg-goal') {
+    document.getElementById('time-goal-field').style.display = el.dataset.v === 'time-goal' ? '' : 'none';
+  }
 }
 function getChip(gid) { return document.querySelector('#'+gid+' .sel')?.dataset.v || ''; }
 
-function go(n) {
-  if (n===1) {
-    A.name = document.getElementById('f-name').value.trim();
-    A.date = document.getElementById('f-date').value;
-    A.race = document.getElementById('f-race').value.trim() || 'Olympic Triathlon';
-    A.phone = document.getElementById('f-phone').value.trim();
-    if (!A.name || !A.date) { alert('Please enter your name and race date'); return; }
+function ob(n) {
+  if (n === 1) {
+    if (!selectedEvent) { alert('Please select your event'); return; }
+    if (!document.getElementById('f-date').value) { alert('Please enter your race date'); return; }
+    if (!document.getElementById('f-start').value) { alert('Please enter your training start date'); return; }
   }
-  if (n===2) {
-    A.level = getChip('cg-level') || 'intermediate';
-    A.hours = getChip('cg-hours') || '4-6';
-    A.days = parseInt(getChip('cg-days') || '5');
-    A.times = document.getElementById('f-times').value.trim();
+  if (n === 2) {
+    if (!document.getElementById('f-name').value.trim()) { alert('Please enter your name'); return; }
   }
-  if (n===3) {
-    A.swimLevel = getChip('cg-swim') || 'intermediate';
-    A.bikeLevel = getChip('cg-bike') || 'intermediate';
-    A.runLevel = getChip('cg-run') || 'intermediate';
-    A.css = document.getElementById('f-css').value.trim();
-    A.ftp = document.getElementById('f-ftp').value.trim();
-    A.pace = document.getElementById('f-pace').value.trim();
-  }
-  if (n===4) {
-    A.goal = getChip('cg-goal') || 'sub2:30';
-    A.arace = document.getElementById('f-arace').value.trim();
-    A.travel = document.getElementById('f-travel').value.trim();
-    A.injuries = document.getElementById('f-injuries').value.trim();
-    A.trainTime = getChip('cg-time') || 'mixed';
-  }
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.ob-step').forEach(s => s.classList.remove('active'));
   document.getElementById('ob'+n).classList.add('active');
-  document.querySelectorAll('.step-pill').forEach((p, i) => {
+  document.querySelectorAll('.step-pill').forEach((p,i) => {
     p.classList.toggle('done', i < n);
     p.classList.toggle('active', i === n);
   });
+  // Show/hide tri vs run on step 3
+  if (n === 3) {
+    const isTri = selectedEvent.includes('triathlon') || selectedEvent.includes('Ironman') || selectedEvent.includes('70.3');
+    document.getElementById('ob3-tri').style.display = isTri ? '' : 'none';
+    document.getElementById('ob3-run').style.display = isTri ? 'none' : '';
+  }
 }
 
 async function launch() {
-  A.bikeType = getChip('cg-bike-type') || 'tri';
-  A.pool = getChip('cg-pool') || 'regular';
-  A.tech = [...document.querySelectorAll('#cg-tech .sel')].map(c => c.dataset.v);
-  A.other = document.getElementById('f-other').value.trim();
+  const btn = document.getElementById('btn-launch');
+  btn.disabled = true;
 
-  document.getElementById('btn-launch').disabled = true;
+  // Collect all profile data
+  const isTri = selectedEvent.includes('triathlon') || selectedEvent.includes('Ironman') || selectedEvent.includes('70.3');
+  P = {
+    event: selectedEvent,
+    race_name: document.getElementById('f-race').value.trim() || selectedEvent,
+    race_date: document.getElementById('f-date').value,
+    start_date: document.getElementById('f-start').value,
+    name: document.getElementById('f-name').value.trim(),
+    phone: document.getElementById('f-phone').value.trim(),
+    goal: getChip('cg-goal') + (document.getElementById('f-time-goal').value ? ' — ' + document.getElementById('f-time-goal').value : ''),
+    level: getChip('cg-level') || 'beginner',
+    current_hours: getChip('cg-hours') || '2-4',
+    training_days: parseInt(getChip('cg-days') || '4'),
+    current_fitness: document.getElementById('f-current').value.trim(),
+    history: document.getElementById('f-history').value.trim(),
+    swim_level: isTri ? (getChip('cg-swim') || 'beginner') : null,
+    bike_level: isTri ? (getChip('cg-bike') || 'beginner') : null,
+    run_level: isTri ? (getChip('cg-run') || 'beginner') : (getChip('cg-longest-run') || '3-5km'),
+    run_pace: document.getElementById(isTri ? 'f-css' : 'f-run-pace')?.value?.trim() || '',
+    css_pace: isTri ? document.getElementById('f-css').value.trim() : '',
+    ftp: isTri ? document.getElementById('f-ftp').value.trim() : '',
+    run_comfortable: document.getElementById('f-run-comfortable').value.trim(),
+    injuries: document.getElementById('f-injuries').value.trim(),
+    travel: document.getElementById('f-travel').value.trim(),
+    access: [...document.querySelectorAll('#cg-access .sel')].map(c => c.dataset.v).join(', '),
+    notes: document.getElementById('f-other').value.trim(),
+  };
+
   showScreen('generating');
-
   const gs = ['gs0','gs1','gs2','gs3','gs4','gs5'];
   let si = 0; document.getElementById(gs[0]).classList.add('cur');
   const iv = setInterval(() => {
@@ -807,249 +815,283 @@ async function launch() {
     }
   }, 1200);
 
-  // Save profile first
-  await saveProfileToDB();
-  // Generate plan
-  await genPlan();
-  // Save plan
-  await savePlanToDB();
+  try {
+    // Save profile
+    await apiPost('/api/profile', P);
+    // Generate plan
+    const planRes = await apiPost('/api/generate-plan', { profile: P });
+    if (planRes?.plan) P.plan = planRes.plan;
+  } catch(e) {
+    console.error('Launch error:', e);
+  }
 
   clearInterval(iv);
   gs.forEach(id => { document.getElementById(id).classList.add('done'); document.getElementById(id).classList.remove('cur'); });
   await delay(400);
   showScreen('app');
   initApp();
+  btn.disabled = false;
 }
 
-// ── APP ──
-function weeksOut() { return Math.max(4, Math.ceil((new Date(A.date) - TODAY) / 604800000)); }
+// ── APP ───────────────────────────────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+}
 
 function initApp() {
-  document.getElementById('s-name').textContent = A.name;
-  document.getElementById('s-meta').textContent = 'Olympic · ' + A.days + ' days/wk';
-  const diff = Math.ceil((new Date(A.date) - TODAY) / 86400000);
-  document.getElementById('s-days').textContent = diff > 0 ? diff : 0;
-  document.getElementById('s-race').textContent = A.race;
+  document.getElementById('s-name').textContent = P.name || 'Athlete';
+  document.getElementById('s-meta').textContent = (P.event || 'Training') + ' · ' + (P.training_days || 4) + ' days/wk';
   document.getElementById('account-email').textContent = currentUser?.email || '';
-  renderBars(); renderPlan(); renderWeek(); loadProfileForm(); sendBrief();
+  const diff = P.race_date ? Math.ceil((new Date(P.race_date) - TODAY) / 86400000) : 0;
+  document.getElementById('s-days').textContent = diff > 0 ? diff : '—';
+  document.getElementById('s-race').textContent = P.race_name || 'Race day';
+  renderBars();
+  renderPlan();
+  renderWeek();
+  loadProfileForm();
+  sendBrief();
 }
 
 function renderBars() {
   const c = document.getElementById('s-bars'); c.innerHTML = '';
-  for (let i = 0; i < A.days; i++) {
+  const days = P.training_days || 4;
+  for (let i = 0; i < days; i++) {
     const d = document.createElement('div');
-    d.className = 'wk-bar '+(i<2?'done':i===2?'today':'');
+    d.className = 'wk-bar '+(i<1?'done':i===1?'today':'');
     c.appendChild(d);
   }
-  document.getElementById('s-wk-text').textContent = '2 of '+A.days+' sessions';
+  document.getElementById('s-wk-text').textContent = '1 of '+days+' sessions';
 }
 
 function loadProfileForm() {
-  document.getElementById('p-name').value = A.name;
-  document.getElementById('p-race').value = A.race;
-  document.getElementById('p-date').value = A.date;
-  document.getElementById('p-phone').value = A.phone;
-  document.getElementById('p-level').value = A.level;
-  document.getElementById('p-days').value = String(A.days);
-  document.getElementById('p-goal').value = A.goal;
-  document.getElementById('p-injuries').value = A.injuries;
-  document.getElementById('p-other').value = A.other;
+  document.getElementById('p-name').value = P.name || '';
+  document.getElementById('p-event').value = P.event || '';
+  document.getElementById('p-race').value = P.race_name || '';
+  document.getElementById('p-date').value = P.race_date || '';
+  document.getElementById('p-start').value = P.start_date || '';
+  document.getElementById('p-phone').value = P.phone || '';
+  document.getElementById('p-level').value = P.level || 'beginner';
+  document.getElementById('p-days').value = String(P.training_days || 4);
+  document.getElementById('p-goal').value = P.goal || '';
+  document.getElementById('p-injuries').value = P.injuries || '';
+  document.getElementById('p-other').value = P.notes || '';
 }
 
 async function saveProfile() {
-  A.name = document.getElementById('p-name').value.trim();
-  A.race = document.getElementById('p-race').value.trim();
-  A.date = document.getElementById('p-date').value;
-  A.phone = document.getElementById('p-phone').value.trim();
-  A.level = document.getElementById('p-level').value;
-  A.days = parseInt(document.getElementById('p-days').value);
-  A.goal = document.getElementById('p-goal').value;
-  A.injuries = document.getElementById('p-injuries').value.trim();
-  A.other = document.getElementById('p-other').value.trim();
-  document.getElementById('s-name').textContent = A.name;
-  await saveProfileToDB();
-  const ok = document.getElementById('save-ok');
-  ok.classList.add('show'); setTimeout(() => ok.classList.remove('show'), 2500);
+  P.name = document.getElementById('p-name').value.trim();
+  P.race_name = document.getElementById('p-race').value.trim();
+  P.race_date = document.getElementById('p-date').value;
+  P.start_date = document.getElementById('p-start').value;
+  P.phone = document.getElementById('p-phone').value.trim();
+  P.level = document.getElementById('p-level').value;
+  P.training_days = parseInt(document.getElementById('p-days').value);
+  P.goal = document.getElementById('p-goal').value.trim();
+  P.injuries = document.getElementById('p-injuries').value.trim();
+  P.notes = document.getElementById('p-other').value.trim();
+  try {
+    await apiPost('/api/profile', P);
+    document.getElementById('s-name').textContent = P.name;
+    const ok = document.getElementById('save-ok');
+    ok.classList.add('show'); setTimeout(() => ok.classList.remove('show'), 2500);
+  } catch(e) { alert('Save failed — check your connection'); }
 }
 
-// ── CHAT ──
-function sysPrompt() {
-  const wo = weeksOut(); const tw = A.plan?.weeks?.length || wo;
-  return 'You are TriCoach, an expert AI triathlon coach following Joe Friel\'s Training Bible. Warm, encouraging, specific.\n\nATHLETE: '+A.name+' | Olympic tri | '+A.race+' on '+A.date+' ('+wo+' weeks, '+tw+'-week plan)\nLevel: '+A.level+' | Hours: '+A.hours+'/wk | Days: '+A.days+'\nSwim: '+A.swimLevel+(A.css?' CSS:'+A.css:'')+' | Bike: '+A.bikeLevel+(A.ftp?' '+A.ftp:'')+' | Run: '+A.runLevel+(A.pace?' '+A.pace:'')+'\nGoal: '+A.goal+(A.arace?' — "'+A.arace+'"':'')+'\nInjuries: '+(A.injuries||'none')+' | Travel: '+(A.travel||'none')+'\nOther: '+(A.other||'none')+'\nPhase: '+(A.plan?.phase||'Base')+'\n\nFRIEL: Periodize Base→Build→Peak→Taper. Recovery weeks every 3-4 weeks. Test weeks (CSS, FTP, threshold run). Bricks in Build+Peak. Taper -50% volume. Zone 1-2 base, 3-4 build, VO2 peak.\n\nWarm, specific, 2-4 paragraphs. Bold key points with **.';
-}
-
-async function claude(msg) {
-  A.history.push({ role:'user', content:msg });
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, system:sysPrompt(), messages:A.history.map(h=>({role:h.role,content:h.content})) })
-  });
-  const d = await res.json();
-  const r = d.content?.[0]?.text || 'Connection issue!';
-  A.history.push({ role:'assistant', content:r });
-  return r;
-}
-
+// ── CHAT ──────────────────────────────────────────────────────────────────────
 function addMsg(role, text) {
   const c = document.getElementById('messages');
   const div = document.createElement('div'); div.className = 'msg '+role;
   const t = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  const av = role==='coach'?'TC':(A.name?A.name[0].toUpperCase():'U');
+  const av = role==='coach' ? 'TC' : (P.name ? P.name[0].toUpperCase() : 'U');
   div.innerHTML = '<div class="msg-av">'+av+'</div><div><div class="msg-bubble">'+fmt(text)+'</div><div class="msg-time">'+t+'</div></div>';
   c.appendChild(div); c.scrollTop = c.scrollHeight;
 }
-
 function fmt(t) {
   return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/(<li>.*<\/li>\n?)+/g,m=>'<ul>'+m+'</ul>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
 }
-
 function showTyping(on) { document.getElementById('typing').classList.toggle('on',on); document.getElementById('send-btn').disabled=on; document.getElementById('messages').scrollTop=9999; }
 function setQR(arr) { document.getElementById('qr').innerHTML=arr.map(r=>'<div class="qr-chip" onclick="quickSend(\''+r.replace(/'/g,"\\'")+'\')">'+r+'</div>').join(''); }
-function quickSend(t) { document.getElementById('qr').innerHTML=''; document.getElementById('chat-in').value=t; send(); }
+function quickSend(t) { document.getElementById('qr').innerHTML=''; document.getElementById('chat-in').value=t; sendMsg(); }
+
+async function callCoach(message) {
+  const data = await apiPost('/api/chat', {
+    message,
+    history: chatHistory.slice(-20),
+    profile: P,
+    planPhase: P.plan?.phase || 'Base 1'
+  });
+  chatHistory.push({ role: 'user', content: message });
+  chatHistory.push({ role: 'assistant', content: data.reply });
+  return data.reply;
+}
 
 async function sendBrief() {
   const dow = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][TODAY.getDay()];
-  const wo = weeksOut(); const tw = A.plan?.weeks?.length || wo;
-  const p = 'Good morning '+A.name+'! It\'s '+dow+', '+wo+' weeks from '+A.race+', '+tw+'-week Friel plan. Send a warm energizing brief: (1) current phase and this week\'s focus, (2) today\'s specific workout with zones, (3) one tip for their weakest discipline. Friendly and motivating.';
-  showTyping(true); await delay(500);
+  const weeksOut = P.race_date ? Math.max(0, Math.ceil((new Date(P.race_date)-TODAY)/604800000)) : '?';
+  const msg = `Good morning ${P.name || 'there'}! It's ${dow}. We're ${weeksOut} weeks out from ${P.race_name || 'race day'}. This athlete is a ${P.level} training for a ${P.event}. Their current fitness: ${P.current_fitness || 'not specified'}. Send a warm, specific morning brief: (1) what phase of training we're in, (2) today's recommended session with VERY specific detail — duration, effort level, and structure appropriate for their level, (3) one encouraging tip. Remember: for a complete-beginner, today's session should be SHORT and achievable. Be warm, specific, and encouraging.`;
+  showTyping(true);
+  await delay(400);
   try {
-    const r = await claude(p); showTyping(false); addMsg('coach', r);
-    const sports=['rest','swim','bike','run','brick','easy run','long ride'];
-    document.getElementById('today-badge').innerHTML='Today: <span>'+sports[TODAY.getDay()]+'</span>';
-    setQR(['✅ Workout done!','😴 Feeling fatigued','❓ Explain today\'s session','📖 What phase am I in?']);
+    const reply = await callCoach(msg);
+    showTyping(false);
+    addMsg('coach', reply);
+    document.getElementById('today-badge').innerHTML = 'Today: <span>' + getSportToday() + '</span>';
+    setQR(['✅ Workout done!', '😴 Tired today', '❓ Explain my session', '📊 How is my plan built?']);
   } catch(e) {
     showTyping(false);
-    addMsg('coach', 'Good morning '+A.name+'! 👋\n\nWelcome back to TriCoach. Your **'+weeksOut()+'-week Friel plan** is loaded and ready.\n\nWhat\'s on your mind today?');
-    setQR(['What\'s today\'s workout?','Explain my training phases','How\'s my plan looking?']);
+    addMsg('coach', 'Good morning '+( P.name||'')+'! 👋\n\nWelcome to TriCoach. I\'m having a moment connecting to the server — try refreshing in a minute, or just type a message below.\n\nIf this keeps happening, make sure your Railway URL is set correctly in the app file.');
+    setQR(['What\'s today\'s session?', 'Explain my training plan', 'How does periodization work?']);
   }
 }
 
-async function send() {
-  const inp = document.getElementById('chat-in'); const text = inp.value.trim(); if (!text) return;
-  inp.value=''; resize(inp); document.getElementById('qr').innerHTML='';
-  addMsg('user', text); showTyping(true);
-  try {
-    const r = await claude(text); showTyping(false); addMsg('coach', r);
-    const l = text.toLowerCase();
-    if(l.includes('done')||l.includes('finished')) setQR(['How was that?','What\'s tomorrow?','Log my stats']);
-    else if(l.includes('tired')||l.includes('sore')) setQR(['Should I rest?','Recovery advice','Adjust the week']);
-    else setQR(['Tell me more','Adjust my plan','Motivate me 💪']);
-  } catch(e) { showTyping(false); addMsg('coach','Connection hiccup — try again!'); }
+function getSportToday() {
+  if (!P.plan?.weeks) return 'rest';
+  const startDate = P.start_date ? new Date(P.start_date) : TODAY;
+  const wkNum = Math.ceil((TODAY - startDate) / 604800000) + 1;
+  const week = P.plan.weeks.find(w => w.week === Math.max(1, Math.min(P.plan.weeks.length, wkNum)));
+  if (!week) return 'rest';
+  const day = week.days?.find(d => d.day === DAYS[TODAY.getDay()]);
+  return day?.sport || 'rest';
 }
 
-function onKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} }
-function resize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,100)+'px'; }
-
-// ── PLAN ──
-async function genPlan() {
-  document.getElementById('gen-btn').disabled = true;
-  const wo = weeksOut(); const tw = Math.max(4, wo);
-  const p = 'Create a '+tw+'-week Olympic triathlon plan for '+A.name+' using Joe Friel\'s Training Bible.\n\nAthlete: '+A.level+', swim '+A.swimLevel+(A.css?' CSS:'+A.css:'')+', bike '+A.bikeLevel+(A.ftp?' '+A.ftp:'')+', run '+A.runLevel+(A.pace?' '+A.pace:'')+', '+A.days+' days/wk, '+A.hours+'hrs/wk, goal '+A.goal+', injuries: '+(A.injuries||'none')+'.\n\nFriel structure: Base ~'+Math.round(tw*0.4)+' wks, Build ~'+Math.round(tw*0.35)+' wks, Peak ~'+Math.round(tw*0.15)+' wks, Taper ~'+Math.round(tw*0.1)+' wks. Recovery every 3-4 wks. Test week end of Base. Bricks in Build+. Taper -50%. '+A.days+' training days, '+(7-A.days)+' rest days.\n\nRespond ONLY with valid JSON:\n{"totalWeeks":'+tw+',"phases":[{"name":"Base","weeks":"1-'+Math.round(tw*0.4)+'","tag":"base","focus":"Aerobic foundation"}],"weeks":[{"week":1,"phase":"Base","focus":"Aerobic base","totalHours":"6-8","isRecovery":false,"isTestWeek":false,"days":[{"day":"Mon","sport":"rest","title":"Rest","detail":"Active recovery","duration":"—"},{"day":"Tue","sport":"swim","title":"Form swim","detail":"400 WU drills 6x100 CSS 200 CD","duration":"50 min"},{"day":"Wed","sport":"bike","title":"Zone 2 ride","detail":"Easy 90rpm","duration":"60 min"},{"day":"Thu","sport":"run","title":"Easy run","detail":"Zone 1-2","duration":"40 min"},{"day":"Fri","sport":"rest","title":"Rest","detail":"Stretch foam roll","duration":"—"},{"day":"Sat","sport":"bike","title":"Long ride","detail":"Zone 2 steady","duration":"90 min"},{"day":"Sun","sport":"run","title":"Long run","detail":"Zone 1-2","duration":"55 min"}]}],"currentWeek":1,"phase":"Base"}\n\nInclude ALL '+tw+' weeks.';
+async function sendMsg() {
+  const inp = document.getElementById('chat-in'); const text = inp.value.trim(); if (!text) return;
+  inp.value = ''; resizeTA(inp); document.getElementById('qr').innerHTML = '';
+  addMsg('user', text); showTyping(true);
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{role:'user',content:p}] })
-    });
-    const d = await res.json(); let txt = d.content?.[0]?.text||'';
-    txt = txt.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
-    const f=txt.indexOf('{'),l=txt.lastIndexOf('}'); if(f>=0&&l>f) txt=txt.slice(f,l+1);
-    const parsed = JSON.parse(txt);
-    if (!parsed.weeks||parsed.weeks.length<2) throw new Error('bad');
-    A.plan = parsed;
-  } catch(e) { A.plan = fallbackPlan(); }
+    const r = await callCoach(text); showTyping(false); addMsg('coach', r);
+    const l = text.toLowerCase();
+    if(l.includes('done')||l.includes('finished')) setQR(['How did that feel?','What\'s tomorrow?','Log my time']);
+    else if(l.includes('tired')||l.includes('sore')||l.includes('hurt')) setQR(['Should I rest?','How to recover','Adjust the week']);
+    else setQR(['Tell me more','Adjust my plan','Motivate me 💪']);
+  } catch(e) { showTyping(false); addMsg('coach','I had trouble reaching the server. Make sure your Railway server is running and the RAILWAY_URL in this file is correct.'); }
+}
+
+function onKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+function resizeTA(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,100)+'px'; }
+
+// ── PLAN ──────────────────────────────────────────────────────────────────────
+async function regenPlan() {
+  document.getElementById('gen-btn').disabled = true;
+  document.getElementById('plan-sub').textContent = 'Regenerating…';
+  try {
+    const res = await apiPost('/api/generate-plan', { profile: P });
+    if (res?.plan) { P.plan = res.plan; renderPlan(); renderWeek(); }
+  } catch(e) { alert('Regeneration failed. Try again in a moment.'); }
   document.getElementById('gen-btn').disabled = false;
 }
 
-async function regen() { await genPlan(); await savePlanToDB(); renderPlan(); renderWeek(); }
-
-function fallbackPlan() {
-  const wo=weeksOut();const tw=Math.max(8,wo);const weeks=[];
-  for(let w=1;w<=tw;w++){
-    const pct=w/tw;const isRec=w%4===0;const isTest=w%4===3&&pct<0.75;
-    const isTaper=pct>0.88;const isPeak=pct>0.72&&!isTaper;const isBuild=pct>0.38&&!isPeak&&!isTaper;
-    const ph=isTaper?'Taper':isPeak?'Peak':isBuild?'Build':'Base';
-    const m=isRec?0.62:isTaper?0.5:1;const bh=isTaper?5:isPeak?11:isBuild?9:7;const hrs=Math.round(bh*m);
-    weeks.push({week:w,phase:ph,focus:isTest?'Testing week':isRec?'Recovery week':isTaper?'Race prep':isPeak?'Race-specific intensity':isBuild?'Threshold and bricks':'Aerobic base',totalHours:hrs+'-'+(hrs+2),isRecovery:isRec,isTestWeek:isTest,days:getDays(ph,isRec,isTest,isTaper,m)});
-  }
-  const pb=Math.round(tw*0.4);const pbu=Math.round(tw*0.75);
-  return{totalWeeks:tw,phases:[{name:'Base',weeks:'1-'+pb,tag:'base',focus:'Aerobic foundation'},{name:'Build',weeks:(pb+1)+'-'+pbu,tag:'build',focus:'Threshold and bricks'},{name:'Peak/Taper',weeks:(pbu+1)+'-'+tw,tag:'taper',focus:'Race preparation'}],weeks,currentWeek:1,phase:'Base'};
-}
-
-function getDays(phase,isRec,isTest,isTaper,m){
-  const min=n=>Math.round(n*m)+' min';
-  if(isTaper)return[{day:'Mon',sport:'rest',title:'Rest',detail:'Full recovery',duration:'—'},{day:'Tue',sport:'swim',title:'Race-sharp swim',detail:'400 easy + 6x50 race pace + starts',duration:min(35)},{day:'Wed',sport:'bike',title:'Race tune-up',detail:'30 min with 3x3 min race power',duration:min(40)},{day:'Thu',sport:'run',title:'Strides',detail:'20 min easy with 5x20s race-pace strides',duration:min(28)},{day:'Fri',sport:'rest',title:'Rest',detail:'Gear check, visualization',duration:'—'},{day:'Sat',sport:'swim',title:'Pre-race swim',detail:'Easy 400m, practice sighting',duration:'20 min'},{day:'Sun',sport:'rest',title:'Race prep',detail:'Light walk, hydrate, carb-load',duration:'—'}];
-  if(isTest)return[{day:'Mon',sport:'rest',title:'Rest',detail:'Fresh for testing',duration:'—'},{day:'Tue',sport:'swim',title:'CSS Test',detail:'400m TT for CSS then easy 600m',duration:'50 min'},{day:'Wed',sport:'bike',title:'FTP Ramp Test',detail:'8 min WU 20 min all-out TT CD',duration:'55 min'},{day:'Thu',sport:'run',title:'Threshold Run Test',detail:'10 min WU 30 min best effort CD',duration:'55 min'},{day:'Fri',sport:'rest',title:'Rest',detail:'Test recovery',duration:'—'},{day:'Sat',sport:'bike',title:'Easy spin',detail:'Zone 1-2 recovery',duration:min(60)},{day:'Sun',sport:'run',title:'Easy run',detail:'Zone 1-2',duration:min(40)}];
-  if(phase==='Peak')return[{day:'Mon',sport:'rest',title:'Rest',detail:'Full recovery',duration:'—'},{day:'Tue',sport:'swim',title:'VO2 swim',detail:'CSS sets race-pace 50s open water sim',duration:min(60)},{day:'Wed',sport:'bike',title:'VO2 ride',detail:'5x4 min at 105% FTP 5 min recovery',duration:min(75)},{day:'Thu',sport:'run',title:'Race-pace run',detail:'15 WU + 25 min goal 10K pace + 10 CD',duration:min(55)},{day:'Fri',sport:'rest',title:'Rest',detail:'Sleep nutrition feet up',duration:'—'},{day:'Sat',sport:'brick',title:'Race sim brick',detail:'40km race watts then 10km goal pace',duration:Math.round(3.5*m)+' hrs'},{day:'Sun',sport:'run',title:'Recovery run',detail:'Zone 1 easy',duration:min(30)}];
-  if(phase==='Build')return[{day:'Mon',sport:'rest',title:'Rest',detail:'Active recovery',duration:'—'},{day:'Tue',sport:'swim',title:'Threshold swim',detail:(isRec?'4':'6')+'x200m CSS pace 20s rest',duration:min(55)},{day:'Wed',sport:'bike',title:'Tempo ride',detail:'15 WU + 3x12 min Zone 3 + 15 CD',duration:min(75)},{day:'Thu',sport:'run',title:'Tempo run',detail:'15 easy + 20 min Zone 3 + 10 CD',duration:min(48)},{day:'Fri',sport:'strength',title:'Strength',detail:'Friel S+C: single-leg hip stability core',duration:min(45)},{day:'Sat',sport:'brick',title:'Brick session',detail:'90 min Zone 2 bike then 20 min run',duration:Math.round(2*m)+' hrs'},{day:'Sun',sport:'run',title:'Long run',detail:'Zone 1-2 building to 75+ min',duration:min(68)}];
-  return[{day:'Mon',sport:'rest',title:'Rest',detail:'Active recovery stretch foam roll',duration:'—'},{day:'Tue',sport:'swim',title:'Form swim',detail:'400 WU drills 6x100 CSS 200 CD',duration:min(50)},{day:'Wed',sport:'bike',title:'Zone 2 ride',detail:'75-80% max HR cadence 90rpm',duration:min(60)},{day:'Thu',sport:'run',title:'Easy run',detail:'Zone 1-2 conversational',duration:min(40)},{day:'Fri',sport:'rest',title:'Rest',detail:'Stretch and foam roll',duration:'—'},{day:'Sat',sport:'bike',title:'Long ride',detail:'Zone 2 steady fuel every 45 min',duration:min(90)},{day:'Sun',sport:'run',title:'Long run',detail:'Zone 1-2 build time on feet',duration:min(55)}];
-}
-
-function si(s){return{swim:'🏊',bike:'🚴',run:'🏃',brick:'⚡',rest:'😴',strength:'💪',test:'🔬'}[s]||'🏃';}
-function bc(ph){return{Prep:'b-prep',Base:'b-base',Build:'b-build',Peak:'b-peak',Taper:'b-taper'}[ph]||'b-base';}
+function si(s) { return {swim:'🏊',bike:'🚴',run:'🏃',brick:'⚡',rest:'😴',strength:'💪',test:'🔬',walk:'🚶'}[s]||'🏃'; }
+function bc(ph) { const p=(ph||'').toLowerCase(); return p.includes('prep')?'b-prep':p.includes('base')?'b-base':p.includes('build')?'b-build':p.includes('peak')?'b-peak':p.includes('taper')?'b-taper':'b-base'; }
 
 function renderPlan() {
-  if(!A.plan)return;
-  const tw=A.plan.weeks?.length||weeksOut();
-  document.getElementById('plan-sub').textContent='Olympic · '+A.name+' · '+tw+'-week plan · Friel periodization';
-  document.getElementById('phase-tabs').innerHTML=(A.plan.phases||[]).map(p=>'<div class="phase-tab">'+p.name+': Wk '+p.weeks+'</div>').join('');
-  const c=document.getElementById('plan-content');c.innerHTML='';
-  (A.plan.weeks||[]).forEach(w=>{
-    const div=document.createElement('div');div.className='week-card '+(w.isRecovery?'recovery':'');
-    const extra=[w.isRecovery?'<span class="badge b-rec">Recovery</span>':'',w.isTestWeek?'<span class="badge b-rec">Test week</span>':''].filter(Boolean).join('');
-    div.innerHTML='<div class="week-head" onclick="toggleWk('+w.week+')"><div class="wh-left"><div class="wh-num">Week '+w.week+'</div><div class="wh-focus">'+w.focus+'</div></div><div class="wh-badges"><span class="badge '+bc(w.phase)+'">'+w.phase+'</span>'+extra+'<span class="badge b-hrs">'+w.totalHours+'h</span></div></div><div class="week-days" id="wd-'+w.week+'" style="'+(w.week<=2?'':'display:none')+'">'+(w.days||[]).map(d=>'<div class="day-row"><div class="day-name">'+d.day+'</div><div class="day-sport-icon si-'+d.sport+'">'+si(d.sport)+'</div><div class="day-info"><div class="day-title">'+d.title+'</div><div class="day-detail">'+d.detail+'</div></div><div class="day-dur">'+d.duration+'</div></div>').join('')+'</div>';
+  if (!P.plan) { document.getElementById('plan-content').innerHTML='<p style="color:var(--gray-500);font-size:13px;padding:1rem 0">Your plan is generating… check back in a moment.</p>'; return; }
+  const tw = P.plan.weeks?.length || 0;
+  document.getElementById('plan-sub').textContent = (P.event||'Training') + ' · ' + (P.name||'') + ' · ' + tw + '-week plan';
+  document.getElementById('phase-tabs').innerHTML = (P.plan.phases||[]).map(p=>'<div class="phase-tab">'+p.name+': Wk '+p.weeks+'</div>').join('');
+  const c = document.getElementById('plan-content'); c.innerHTML = '';
+
+  // Figure out current week number
+  const startDate = P.start_date ? new Date(P.start_date) : TODAY;
+  const currentWkNum = Math.max(1, Math.ceil((TODAY - startDate) / 604800000) + 1);
+
+  (P.plan.weeks||[]).forEach(w => {
+    const isCurrent = w.week === currentWkNum;
+    const div = document.createElement('div');
+    div.className = 'week-card '+(w.isRecovery?'recovery':'')+(isCurrent?' current-week':'');
+    const extra = [
+      isCurrent ? '<span class="badge b-now">▶ Current</span>' : '',
+      w.isRecovery ? '<span class="badge b-rec">Recovery</span>' : '',
+      w.isTestWeek ? '<span class="badge b-rec">Test</span>' : ''
+    ].filter(Boolean).join('');
+    div.innerHTML = '<div class="week-head" onclick="toggleWk('+w.week+')"><div class="wh-left"><div class="wh-num">Week '+w.week+'</div><div class="wh-focus">'+(w.focus||w.phase)+'</div></div><div class="wh-badges"><span class="badge '+bc(w.phase)+'">'+w.phase+'</span>'+extra+'<span class="badge b-hrs">'+(w.totalHours||'?')+'h</span></div></div>'
+      +'<div class="week-days" id="wd-'+w.week+'" style="'+(w.week<=2||isCurrent?'':'display:none')+'">'
+      +(w.days||[]).map(d=>'<div class="day-row"><div class="day-name">'+d.day+'</div><div class="day-sport-icon si-'+d.sport+'">'+si(d.sport)+'</div><div class="day-info"><div class="day-title">'+d.title+'</div><div class="day-detail">'+d.detail+'</div></div><div class="day-dur">'+d.duration+'</div></div>').join('')
+      +'</div>';
     c.appendChild(div);
   });
   document.getElementById('plan-content').classList.add('show');
 }
 
-function toggleWk(n){const el=document.getElementById('wd-'+n);if(el)el.style.display=el.style.display==='none'?'':'none';}
+function toggleWk(n) { const el=document.getElementById('wd-'+n); if(el) el.style.display=el.style.display==='none'?'':'none'; }
 
-let weekOffset=0;
-function wkOff(d){weekOffset+=d;renderWeek();}
-function renderWeek(){
-  const off=weekOffset;const ws=new Date(TODAY);ws.setDate(TODAY.getDate()-TODAY.getDay()+(off*7));
-  const we=new Date(ws);we.setDate(ws.getDate()+6);
-  document.getElementById('wk-title').textContent=off===0?'This week':off===-1?'Last week':off===1?'Next week':'Week of '+ws.getDate()+' '+MONTHS[ws.getMonth()];
-  document.getElementById('wk-sub').textContent=DAYS[ws.getDay()]+' '+ws.getDate()+' '+MONTHS[ws.getMonth()]+' — '+DAYS[we.getDay()]+' '+we.getDate()+' '+MONTHS[we.getMonth()];
-  const wd=getWkWorkouts(ws);const total=wd.reduce((s,d)=>s+(d.mins||0),0);const sess=wd.filter(d=>d.sport!=='rest').length;
-  document.getElementById('stats-row').innerHTML='<div class="stat-box"><div class="stat-label">Sessions</div><div class="stat-value">'+sess+'</div><div class="stat-sub">planned</div></div><div class="stat-box"><div class="stat-label">Volume</div><div class="stat-value">'+Math.floor(total/60)+'<span style="font-size:1rem">h</span>'+(total%60?total%60+'m':'')+'</div><div class="stat-sub">this week</div></div><div class="stat-box"><div class="stat-label">Phase</div><div class="stat-value" style="font-size:1rem;padding-top:8px">'+(wd[1]?.phase||'Base')+'</div><div class="stat-sub">'+(wd[0]?.isRecovery?'recovery week':'training block')+'</div></div>';
-  const grid=document.getElementById('cal-grid');grid.innerHTML='';
-  wd.forEach((d,i)=>{
-    const date=new Date(ws);date.setDate(ws.getDate()+i);
-    const isToday=date.toDateString()===TODAY.toDateString();const isPast=date<TODAY&&!isToday;
-    const cell=document.createElement('div');cell.className='cal-cell '+(isToday?'today':'')+(isPast&&d.sport!=='rest'?' past':'');
-    cell.onclick=()=>showDay(d,date);
-    cell.innerHTML='<div class="cal-day-name">'+DAYS[date.getDay()]+'</div><div class="cal-day-num">'+date.getDate()+'</div><div class="cal-sport">'+si(d.sport)+'</div><div class="cal-title">'+d.title+'</div>'+(d.sport!=='rest'?'<div class="cal-dur">'+d.duration+'</div>':'');
+// ── WEEK VIEW ─────────────────────────────────────────────────────────────────
+function wkOff(d) { weekOffset+=d; renderWeek(); }
+function renderWeek() {
+  const ws = new Date(TODAY); ws.setDate(TODAY.getDate()-TODAY.getDay()+(weekOffset*7));
+  const we = new Date(ws); we.setDate(ws.getDate()+6);
+  const off = weekOffset;
+  document.getElementById('wk-title').textContent = off===0?'This week':off===-1?'Last week':off===1?'Next week':'Week of '+ws.getDate()+' '+MONTHS[ws.getMonth()];
+  document.getElementById('wk-sub').textContent = DAYS[ws.getDay()]+' '+ws.getDate()+' '+MONTHS[ws.getMonth()]+' — '+DAYS[we.getDay()]+' '+we.getDate()+' '+MONTHS[we.getMonth()];
+  const wd = getWkWorkouts(ws);
+  const total = wd.reduce((s,d)=>s+(d.mins||0),0);
+  const sess = wd.filter(d=>d.sport!=='rest').length;
+  document.getElementById('stats-row').innerHTML =
+    '<div class="stat-box"><div class="stat-label">Sessions</div><div class="stat-value">'+sess+'</div><div class="stat-sub">planned</div></div>'
+    +'<div class="stat-box"><div class="stat-label">Volume</div><div class="stat-value">'+Math.floor(total/60)+'<span style="font-size:1rem">h</span>'+(total%60?total%60+'m':'')+'</div><div class="stat-sub">this week</div></div>'
+    +'<div class="stat-box"><div class="stat-label">Phase</div><div class="stat-value" style="font-size:0.95rem;padding-top:9px">'+(wd[1]?.phase||'Base')+'</div><div class="stat-sub">'+(wd[0]?.isRecovery?'recovery':'training block')+'</div></div>';
+  const grid = document.getElementById('cal-grid'); grid.innerHTML = '';
+  wd.forEach((d,i) => {
+    const date = new Date(ws); date.setDate(ws.getDate()+i);
+    const isToday = date.toDateString()===TODAY.toDateString();
+    const isPast = date<TODAY&&!isToday;
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell '+(isToday?'today':'')+(isPast&&d.sport!=='rest'?' past':'');
+    cell.onclick = () => showDay(d, date);
+    cell.innerHTML = '<div class="cal-day-name">'+DAYS[date.getDay()]+'</div><div class="cal-day-num">'+date.getDate()+'</div><div class="cal-sport">'+si(d.sport)+'</div><div class="cal-title">'+d.title+'</div>'+(d.sport!=='rest'?'<div class="cal-dur">'+d.duration+'</div>':'');
     grid.appendChild(cell);
   });
-  showDay(wd[TODAY.getDay()]||wd[1],new Date(ws.getTime()+TODAY.getDay()*86400000));
+  showDay(wd[TODAY.getDay()]||wd[1], new Date(ws.getTime()+TODAY.getDay()*86400000));
 }
 
-function getWkWorkouts(ws){
-  const def=[{sport:'rest',title:'Rest',detail:'Recovery',duration:'—',mins:0,phase:'Base'},{sport:'swim',title:'Form swim',detail:'Drills + CSS',duration:'50 min',mins:50,phase:'Base'},{sport:'bike',title:'Zone 2 ride',detail:'Aerobic base',duration:'60 min',mins:60,phase:'Base'},{sport:'run',title:'Easy run',detail:'Zone 1-2',duration:'40 min',mins:40,phase:'Base'},{sport:'brick',title:'Brick',detail:'Bike to run',duration:'90 min',mins:90,phase:'Base'},{sport:'swim',title:'Endurance swim',detail:'1500m',duration:'50 min',mins:50,phase:'Base'},{sport:'bike',title:'Long ride',detail:'Zone 2',duration:'90 min',mins:90,phase:'Base'}];
-  if(!A.plan?.weeks)return def;
-  const rd=new Date(A.date);const ps=new Date(rd);ps.setDate(rd.getDate()-(A.plan.weeks.length*7));
-  const wn=Math.ceil((ws-ps)/604800000);const pw=A.plan.weeks.find(w=>w.week===Math.max(1,Math.min(A.plan.weeks.length,wn)));
-  if(!pw)return def;
-  return['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(day=>{const d=pw.days?.find(x=>x.day===day)||{sport:'rest',title:'Rest',detail:'',duration:'—'};return{...d,mins:parseInt(d.duration)||0,phase:pw.phase,isRecovery:pw.isRecovery};});
+function getWkWorkouts(ws) {
+  const fallback = [{sport:'rest',title:'Rest',detail:'',duration:'—',mins:0,phase:'Base'},{sport:'run',title:'Easy session',detail:'',duration:'20 min',mins:20,phase:'Base'},{sport:'rest',title:'Rest',detail:'',duration:'—',mins:0,phase:'Base'},{sport:'run',title:'Easy session',detail:'',duration:'20 min',mins:20,phase:'Base'},{sport:'rest',title:'Rest',detail:'',duration:'—',mins:0,phase:'Base'},{sport:'run',title:'Session',detail:'',duration:'25 min',mins:25,phase:'Base'},{sport:'rest',title:'Rest',detail:'',duration:'—',mins:0,phase:'Base'}];
+  if (!P.plan?.weeks) return fallback;
+  const startDate = P.start_date ? new Date(P.start_date) : new Date(P.race_date || TODAY);
+  if (!P.start_date) startDate.setDate(startDate.getDate() - (P.plan.weeks.length * 7));
+  const wn = Math.max(1, Math.ceil((ws - startDate) / 604800000) + 1);
+  const pw = P.plan.weeks.find(w => w.week === Math.min(P.plan.weeks.length, wn));
+  if (!pw) return fallback;
+  return DAYS.map(day => {
+    const d = pw.days?.find(x => x.day === day) || {sport:'rest',title:'Rest',detail:'',duration:'—'};
+    return {...d, mins:parseInt(d.duration)||0, phase:pw.phase, isRecovery:pw.isRecovery};
+  });
 }
 
-function showDay(d,date){
-  if(!d)return;const isToday=date&&date.toDateString()===TODAY.toDateString();
-  const zones={swim:[{icon:'🏊',name:'Warm-up',desc:'300-400m easy',meta:'400m',cls:'sb-swim'},{icon:'🏊',name:'Main set',desc:d.detail||'CSS intervals',meta:d.duration||'—',cls:'sb-swim'},{icon:'🏊',name:'Cool-down',desc:'200m easy',meta:'200m',cls:'sb-swim'}],bike:[{icon:'🚴',name:'Warm-up',desc:'10-15 min easy spin',meta:'15 min',cls:'sb-bike'},{icon:'🚴',name:'Main effort',desc:d.detail||'Zone 2',meta:d.duration||'—',cls:'sb-bike'},{icon:'🚴',name:'Cool-down',desc:'5-10 min easy',meta:'10 min',cls:'sb-bike'}],run:[{icon:'🏃',name:'Warm-up',desc:'10 min easy + drills',meta:'10 min',cls:'sb-run'},{icon:'🏃',name:'Main set',desc:d.detail||'Steady effort',meta:d.duration||'—',cls:'sb-run'},{icon:'🏃',name:'Cool-down',desc:'5 min walk + stretch',meta:'5 min',cls:'sb-run'}],brick:[{icon:'🚴',name:'Bike leg',desc:'T1 practice',meta:'60-90 min',cls:'sb-bike'},{icon:'🏃',name:'Run leg',desc:'First 5 min easy then goal pace',meta:'20-30 min',cls:'sb-run'}],test:[{icon:'🔬',name:'Test protocol',desc:d.detail||'Friel testing protocol',meta:d.duration||'—',cls:'sb-run'}],rest:[{icon:'😴',name:'Active recovery',desc:'Light walk, gentle stretch, foam rolling.',meta:'—',cls:'sb-rest'}]};
-  const blocks=zones[d.sport]||zones.rest;
-  document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">'+(isToday?'Today — ':'')+d.title+'</div>'+(d.sport!=='rest'?'<div class="ddc-badge">'+d.duration+'</div>':'')+'</div><div class="ddc-sub">'+(d.detail||'Rest and recover well.')+'</div><div class="session-blocks">'+blocks.map(b=>'<div class="sb '+b.cls+'"><div class="sb-icon">'+b.icon+'</div><div><div class="sb-name">'+b.name+'</div><div class="sb-desc">'+b.desc+'</div></div><div class="sb-meta"><strong>'+b.meta+'</strong></div></div>').join('')+'</div>'+(isToday&&d.sport!=='rest'?'<button class="done-btn" onclick="quickSend(\'✅ Just finished my '+d.title+'! \');tab(\'chat\')">✅ Log this with my coach</button>':'');
+function showDay(d, date) {
+  if (!d) return;
+  const isToday = date && date.toDateString()===TODAY.toDateString();
+  const zones = {
+    swim:[{icon:'🏊',name:'Warm-up',desc:'Easy laps, get comfortable',meta:'5 min',cls:'sb-swim'},{icon:'🏊',name:'Main set',desc:d.detail||'Easy continuous swimming',meta:d.duration||'—',cls:'sb-swim'},{icon:'🏊',name:'Cool-down',desc:'Easy laps, controlled breathing',meta:'3 min',cls:'sb-swim'}],
+    bike:[{icon:'🚴',name:'Warm-up',desc:'Easy spin, gradual HR build',meta:'5-10 min',cls:'sb-bike'},{icon:'🚴',name:'Main ride',desc:d.detail||'Easy effort, comfortable pace',meta:d.duration||'—',cls:'sb-bike'},{icon:'🚴',name:'Cool-down',desc:'Easy spin, slow down gradually',meta:'5 min',cls:'sb-bike'}],
+    run:[{icon:'🏃',name:'Warm-up',desc:'5 min easy walk, then light jog',meta:'5 min',cls:'sb-run'},{icon:'🏃',name:'Main set',desc:d.detail||'Easy conversational pace — walk breaks are fine',meta:d.duration||'—',cls:'sb-run'},{icon:'🏃',name:'Cool-down',desc:'3 min walk + gentle stretch',meta:'5 min',cls:'sb-run'}],
+    brick:[{icon:'🚴',name:'Bike',desc:'As planned, T2 practice',meta:'per plan',cls:'sb-bike'},{icon:'🏃',name:'Run off bike',desc:'First few min easy — legs will feel strange',meta:'per plan',cls:'sb-run'}],
+    walk:[{icon:'🚶',name:'Easy walk',desc:d.detail||'Comfortable walking pace',meta:d.duration||'—',cls:'sb-rest'}],
+    test:[{icon:'🔬',name:'Test',desc:d.detail||'Follow test protocol exactly',meta:d.duration||'—',cls:'sb-run'}],
+    rest:[{icon:'😴',name:'Rest day',desc:'No training. Walk, stretch, sleep well, hydrate.',meta:'—',cls:'sb-rest'}]
+  };
+  const blocks = zones[d.sport] || zones.rest;
+  document.getElementById('ddc').innerHTML =
+    '<div class="ddc-head"><div class="ddc-title">'+(isToday?'Today — ':'')+d.title+'</div>'+(d.sport!=='rest'?'<div class="ddc-badge">'+d.duration+'</div>':'')+'</div>'
+    +'<div class="ddc-sub">'+(d.detail||'Rest day — recovery is when fitness actually builds.')+'</div>'
+    +'<div class="session-blocks">'+blocks.map(b=>'<div class="sb '+b.cls+'"><div class="sb-icon">'+b.icon+'</div><div><div class="sb-name">'+b.name+'</div><div class="sb-desc">'+b.desc+'</div></div><div class="sb-meta"><strong>'+b.meta+'</strong></div></div>').join('')+'</div>'
+    +(isToday&&d.sport!=='rest'?'<button class="done-btn" onclick="quickSend(\'✅ Just finished my '+d.title+'! \');showTab(\'chat\')">✅ Log this with my coach</button>':'');
 }
 
-function tab(name){
-  ['chat','plan','week','profile'].forEach(t=>{document.getElementById('tab-'+t).classList.toggle('active',t===name);document.getElementById('nav-'+t).classList.toggle('active',t===name);});
-  if(name==='week')renderWeek();
+function showTab(name) {
+  ['chat','plan','week','profile'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+    document.getElementById('nav-'+t).classList.toggle('active', t===name);
+  });
+  if (name==='week') renderWeek();
 }
-function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 
-// Set default race date 6 months out
-const rd=new Date(TODAY);rd.setMonth(rd.getMonth()+6);
-document.getElementById('f-date').value=rd.toISOString().split('T')[0];
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Set default dates
+const today6m = new Date(TODAY); today6m.setMonth(today6m.getMonth()+6);
+document.getElementById('f-date').value = today6m.toISOString().split('T')[0];
+document.getElementById('f-start').value = TODAY.toISOString().split('T')[0];
 </script>
 </body>
 </html>
