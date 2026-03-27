@@ -611,15 +611,15 @@ nav.nav{flex:1;padding:0 0.65rem;}
           <div style="font-size:12px;color:var(--gray-500);margin-bottom:1rem;">Choose when your coach checks in via WhatsApp each day.</div>
           <div class="pf" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.65rem;">
             <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Morning brief</div><div style="font-size:11px;color:var(--gray-400);">Today's workout + motivation</div></div>
-            <div style="display:flex;align-items:center;gap:0.5rem;"><input type="time" id="p-notif-time-morning" style="font-size:12px;padding:0.3rem 0.5rem;border:1.5px solid var(--gray-200);border-radius:6px;width:80px;" value="07:00"/><label class="toggle-switch"><input type="checkbox" id="p-notif-morning" checked/><span class="toggle-slider"></span></label></div>
+            <div style="display:flex;align-items:center;gap:0.5rem;"><select id="p-notif-time-morning" style="font-size:12px;padding:0.3rem 0.5rem;border:1.5px solid var(--gray-200);border-radius:6px;"><option value="06:00">6am</option><option value="07:00" selected>7am</option><option value="08:00">8am</option><option value="09:00">9am</option></select><label class="toggle-switch"><input type="checkbox" id="p-notif-morning" checked/><span class="toggle-slider"></span></label></div>
           </div>
           <div class="pf" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.65rem;">
             <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Afternoon check-in</div><div style="font-size:11px;color:var(--gray-400);">Reminder + tip for the day</div></div>
-            <div style="display:flex;align-items:center;gap:0.5rem;"><input type="time" id="p-notif-time-afternoon" style="font-size:12px;padding:0.3rem 0.5rem;border:1.5px solid var(--gray-200);border-radius:6px;width:80px;" value="13:00"/><label class="toggle-switch"><input type="checkbox" id="p-notif-afternoon"/><span class="toggle-slider"></span></label></div>
+            <div style="display:flex;align-items:center;gap:0.5rem;"><select id="p-notif-time-afternoon" style="font-size:12px;padding:0.3rem 0.5rem;border:1.5px solid var(--gray-200);border-radius:6px;"><option value="12:00">12pm</option><option value="13:00" selected>1pm</option><option value="14:00">2pm</option><option value="15:00">3pm</option></select><label class="toggle-switch"><input type="checkbox" id="p-notif-afternoon"/><span class="toggle-slider"></span></label></div>
           </div>
           <div class="pf" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0;">
             <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Evening wrap-up</div><div style="font-size:11px;color:var(--gray-400);">Recap + tomorrow's session preview</div></div>
-            <div style="display:flex;align-items:center;gap:0.5rem;"><input type="time" id="p-notif-time-evening" style="font-size:12px;padding:0.3rem 0.5rem;border:1.5px solid var(--gray-200);border-radius:6px;width:80px;" value="20:00"/><label class="toggle-switch"><input type="checkbox" id="p-notif-evening"/><span class="toggle-slider"></span></label></div>
+            <div style="display:flex;align-items:center;gap:0.5rem;"><select id="p-notif-time-evening" style="font-size:12px;padding:0.3rem 0.5rem;border:1.5px solid var(--gray-200);border-radius:6px;"><option value="18:00">6pm</option><option value="19:00">7pm</option><option value="20:00" selected>8pm</option><option value="21:00">9pm</option></select><label class="toggle-switch"><input type="checkbox" id="p-notif-evening"/><span class="toggle-slider"></span></label></div>
           </div>
         </div>
         <button class="btn-save" onclick="saveProfile()">Save changes</button>
@@ -820,6 +820,8 @@ function loadProfileForm(){document.getElementById('p-name').value=P.name||'';do
   document.getElementById('p-notif-time-morning').value = P.notif_time_morning || '07:00';
   document.getElementById('p-notif-time-afternoon').value = P.notif_time_afternoon || '13:00';
   document.getElementById('p-notif-time-evening').value = P.notif_time_evening || '20:00';
+  // Set selected option
+  ['morning','afternoon','evening'].forEach(function(t){var el=document.getElementById('p-notif-time-'+t);if(el)el.value=el.value||el.options[0].value;});
 }
 
 async function saveProfile(){P.name=document.getElementById('p-name').value.trim();P.race_name=document.getElementById('p-race').value.trim();P.race_date=document.getElementById('p-date').value;P.start_date=document.getElementById('p-start').value;P.phone=document.getElementById('p-phone').value.trim();P.level=document.getElementById('p-level').value;P.training_days=parseInt(document.getElementById('p-days').value);P.goal=document.getElementById('p-goal').value.trim();P.injuries=document.getElementById('p-injuries').value.trim();P.notes=document.getElementById('p-other').value.trim();
