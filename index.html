@@ -1770,6 +1770,25 @@ window.addEventListener('load', function() {
 
 function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
 
+// Refresh data when app comes back into focus (mobile tab switching)
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible' && currentUser && P.name) {
+    apiGet('/api/profile').then(function(r) {
+      if (r && r.name) {
+        P = Object.assign(P, r);
+        loadProfileForm();
+        var diff = P.race_date ? Math.ceil((new Date(P.race_date) - new Date()) / 86400000) : 0;
+        var sd = document.getElementById('s-days'); if (sd) sd.textContent = diff > 0 ? diff : '-';
+        var md = document.getElementById('mobile-days'); if (md) md.textContent = diff > 0 ? diff : '-';
+      }
+    });
+    apiGet('/api/plan').then(function(r) {
+      if (r && r.plan_json) { P.plan = r.plan_json; renderPlan(); renderWeek(); renderBars(); }
+    });
+    progressLoaded = false;
+  }
+});
+
 // Defaults
 var def6m=new Date(TODAY);def6m.setMonth(def6m.getMonth()+6);
 document.getElementById('f-date').value=def6m.toISOString().split('T')[0];
