@@ -1582,10 +1582,14 @@ function renderSportBreakdown(workouts) {
   }).join('');
 }
 
+var _workoutMap = {};
+
 function renderRecentSessions(workouts) {
   var feelEmoji = { great:'&#x1F929;', good:'&#x1F604;', ok:'&#x1F610;', hard:'&#x1F625;', terrible:'&#x1F915;' };
   var recent = workouts.slice(0, 8);
   var container = document.getElementById('recent-list');
+  _workoutMap = {};
+  workouts.forEach(function(w) { _workoutMap[w.id] = w; });
   if (recent.length === 0) {
     container.innerHTML = '<div class="prog-empty">No sessions logged yet.<br>Tap &#x2705; on any day in This Week to log your first one!</div>';
     return;
@@ -1601,7 +1605,7 @@ function renderRecentSessions(workouts) {
       '<div class="recent-meta">' + (dur ? dur : '') + (w.note ? (dur ? ' &bull; ' : '') + w.note : '') + '</div></div>' +
       (feel ? '<div class="recent-feeling">' + feel + '</div>' : '') +
       '<div class="recent-date">' + dateStr + '</div>' +
-      '<button class="recent-delete" onclick="openEditModal(' + JSON.stringify(w).replace(/'/g,"&#39;") + ')" title="Edit" style="color:var(--blue)">&#x270E;</button>' +
+      '<button class="recent-delete" onclick="openEditModal(\'' + w.id + '\')" title="Edit" style="color:var(--blue)">&#x270E;</button>' +
       '<button class="recent-delete" onclick="deleteWorkout(\'' + w.id + '\')" title="Delete">&#x2715;</button>' +
       '</div>';
   }).join('');
@@ -1631,7 +1635,9 @@ async function deleteWorkout(id) {
 var _editWorkout = null;
 var _editFeeling = null;
 
-function openEditModal(w) {
+function openEditModal(id) {
+  var w = _workoutMap[id];
+  if (!w) return;
   _editWorkout = w;
   _editFeeling = w.feeling || null;
   document.getElementById('edit-modal-sub').textContent = w.planned_title || 'Session';
