@@ -489,15 +489,6 @@ let planType='', selectedEvent='';
 // ── SESSION RESTORE ───────────────────────────────────────────────────────────
 (async () => {
   try {
-    // Force a session refresh to get a fresh token
-    const { data: refreshData } = await supa.auth.refreshSession();
-    if (refreshData?.session?.user) {
-      currentUser = refreshData.session.user;
-      authToken = refreshData.session.access_token;
-      await handleSignedIn();
-      return;
-    }
-    // Fall back to getSession
     const { data: { session } } = await supa.auth.getSession();
     if (session?.user && session?.access_token) {
       currentUser = session.user;
