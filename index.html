@@ -780,8 +780,24 @@ async function sendBrief(){
   var daysToStart=Math.ceil((startDate-TODAY)/86400000);
   var notStarted=daysToStart>0;
   var weekNum=getCurrentWeek();
-  var context=notStarted?'Training has NOT started yet - starts in '+daysToStart+' day'+(daysToStart===1?'':'s')+'. Do not give any workout for today. Send an encouraging pre-training message.':'Currently in week '+weekNum+' of training.';
-  var prompt=greeting+' '+( P.name||'there')+'! It is '+dow+' '+( hour<12?'morning':hour<17?'afternoon':'evening')+'. '+wo+' weeks to '+(P.race_name||'race day')+'. Event: '+P.event+'. Level: '+P.level+'. '+context+' Fitness: '+(P.current_fitness||'not specified')+'. Injuries: '+(P.injuries||'none')+'.\n\nSend a warm '+( hour<12?'morning':hour<17?'afternoon':'evening')+' message. '+(notStarted?'Get them excited about starting - no workout today.':'Give today\'s session with exact duration for a '+P.level+' and one quick tip.')+' Short, warm, use a couple of emojis!';
+  // Look up today's actual session from the plan
+  var todaySession = null;
+  if(!notStarted && P.plan && P.plan.weeks) {
+    var wk = getCurrentWeek();
+    var planWeek = P.plan.weeks.find(function(w){ return w.week === Math.min(P.plan.weeks.length, wk); });
+    if(planWeek && planWeek.days) {
+      var td = planWeek.days.find(function(d){ return d.day === DAYS[TODAY.getDay()]; });
+      if(td) todaySession = td;
+    }
+  }
+  var isRestDay = !todaySession || todaySession.sport === 'rest';
+  var timeOfDay = hour>=5&&hour<12?'morning':hour>=12&&hour<18?'afternoon':'evening';
+  var sessionCtx = notStarted
+    ? 'Training starts in '+daysToStart+' day'+(daysToStart===1?'':'s')+'. Do NOT mention any workout today. Send excitement about the upcoming start.'
+    : isRestDay
+      ? 'TODAY IS A REST DAY. Do NOT suggest any training session. Celebrate the rest — explain that rest is when fitness actually gets built.'
+      : 'TODAY PLANNED SESSION: '+todaySession.title+' ('+todaySession.duration+') — '+todaySession.detail+'. Coach them through this specific session.';
+  var prompt = greeting+' '+(P.name||'there')+'! It is '+dow+' '+timeOfDay+'. '+wo+' weeks to '+(P.race_name||'race day')+'. Event: '+P.event+'. Level: '+P.level+'. Week '+weekNum+'. '+sessionCtx+' Injuries: '+(P.injuries||'none')+'.\n\nWrite a warm '+timeOfDay+' message. '+(notStarted?'Get them excited — no workout today.':isRestDay?'Celebrate the rest day and explain why recovery matters. One rest tip.':'Give specific coaching for today\'s session. One technique tip.')+' Keep it short, warm, 2-3 emojis.';
   showTyping(true);await delay(400);
   try{var r=await callCoach(prompt);showTyping(false);addMsg('coach',r);document.getElementById('today-badge').innerHTML='Today: <span>'+getTodaySport()+'</span>';setQR(["Done! Log it","Feeling tired","What's this for?","Explain my plan"]);}
   catch(e){showTyping(false);addMsg('coach','Hey '+(P.name||'')+'!\n\nHaving trouble connecting. Check Railway is running!\n\nSend me a message once it is up.');}
