@@ -1356,14 +1356,23 @@ function renderProgressStats(workouts) {
   // This week: logged vs planned this week
   var weekStart = new Date(todayNorm); weekStart.setDate(todayNorm.getDate() - todayNorm.getDay()); weekStart.setHours(0,0,0,0);
   var thisWeekDone = workouts.filter(function(w) { return w.completed_at && new Date(w.completed_at) >= weekStart; }).length;
-  // Count planned sessions this week from the plan
+  // Count planned sessions this week from the plan, skipping days before startDate
   var thisWeekPlanned = 0;
   if (P.plan && P.plan.weeks) {
     var daysFromStartThisWeek = Math.floor((weekStart - startDate) / 86400000);
     var thisWn = Math.max(1, Math.floor(daysFromStartThisWeek / 7) + 1);
     var thisWkPlan = P.plan.weeks.find(function(w) { return w.week === Math.min(P.plan.weeks.length, thisWn); });
     if (thisWkPlan && thisWkPlan.days) {
-      thisWeekPlanned = thisWkPlan.days.filter(function(d) { return d.sport !== 'rest'; }).length;
+      thisWkPlan.days.forEach(function(d) {
+        if (d.sport === 'rest') return;
+        // Find the actual calendar date for this plan day this week
+        var dayIdx = DAYS.indexOf(d.day);
+        var calDate = new Date(weekStart);
+        calDate.setDate(weekStart.getDate() + dayIdx);
+        calDate.setHours(0,0,0,0);
+        // Only count if on or after training start
+        if (calDate >= startDate) thisWeekPlanned++;
+      });
     }
   } else {
     thisWeekPlanned = P.training_days || 4;
