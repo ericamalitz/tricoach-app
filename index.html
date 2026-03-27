@@ -289,6 +289,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
   #tab-plan { padding-bottom: 100px; }
   #tab-week { padding-bottom: 100px; }
   #tab-profile { padding-bottom: 100px; }
+  #tab-progress { padding-bottom: 100px; }
   /* Padding adjustments */
   .chat-top { padding: 0.7rem 1rem; }
   .messages { padding: 0.85rem; }
@@ -341,6 +342,65 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .toggle-switch input:checked + .toggle-slider { background: var(--teal); }
 .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
 
+
+/* PROGRESS TAB */
+.progress-scroll{flex:1;overflow-y:auto;padding:1rem;-webkit-overflow-scrolling:touch;}
+.progress-scroll::-webkit-scrollbar{width:3px;}.progress-scroll::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:2px;}
+.streak-banner{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:var(--radius);padding:1.1rem 1.2rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);}
+.streak-main{display:flex;align-items:center;gap:0.75rem;}
+.streak-fire{font-size:2rem;line-height:1;}
+.streak-num{font-family:var(--font-d);font-size:2.8rem;font-weight:800;color:white;line-height:1;}
+.streak-unit{font-size:12px;color:rgba(255,255,255,0.55);font-weight:600;margin-top:2px;}
+.streak-right{text-align:right;}
+.streak-best-val{font-family:var(--font-d);font-size:1.5rem;font-weight:800;color:#93c5fd;line-height:1;}
+.streak-best-lbl{font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.prog-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;}
+.section-card{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:1rem;margin-bottom:0.75rem;box-shadow:var(--shadow-sm);}
+.section-card-title{font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.85rem;}
+/* HEATMAP */
+.heatmap-outer{display:flex;gap:4px;align-items:flex-start;overflow-x:auto;padding-bottom:4px;}
+.heatmap-day-labels{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
+.heatmap-day-lbl{height:13px;width:10px;font-size:8px;font-weight:700;color:var(--gray-400);display:flex;align-items:center;}
+.heatmap-grid{display:flex;gap:2px;flex-shrink:0;}
+.heatmap-week{display:flex;flex-direction:column;gap:2px;}
+.hm-cell{width:13px;height:13px;border-radius:2px;background:var(--gray-100);cursor:default;transition:transform 0.1s;}
+.hm-cell:hover{transform:scale(1.3);z-index:2;position:relative;}
+.hm-cell.hm-done{background:var(--teal);}
+.hm-cell.hm-missed{background:#fca5a5;}
+.hm-cell.hm-rest{background:var(--gray-200);}
+.hm-cell.hm-future{background:var(--gray-100);opacity:0.4;}
+.hm-cell.hm-prestart{background:var(--gray-100);opacity:0.2;}
+.hm-cell.hm-today{outline:2px solid var(--blue);outline-offset:1px;}
+.heatmap-legend{display:flex;align-items:center;gap:0.75rem;margin-top:0.6rem;flex-wrap:wrap;}
+.hm-leg-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--gray-500);}
+.hm-leg-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+/* VOLUME CHART */
+.volume-chart{display:flex;align-items:flex-end;gap:3px;height:70px;margin-bottom:0.35rem;}
+.vol-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.vol-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px;}
+.vol-lbl{font-size:8px;color:var(--gray-400);text-align:center;white-space:nowrap;overflow:hidden;}
+/* SPORT BARS */
+.sport-bars{display:flex;flex-direction:column;gap:0.6rem;}
+.sport-bar-row{display:flex;align-items:center;gap:0.6rem;}
+.sport-bar-icon{font-size:14px;width:20px;text-align:center;flex-shrink:0;}
+.sport-bar-label{font-size:12px;font-weight:600;color:var(--navy);width:48px;flex-shrink:0;}
+.sport-bar-track{flex:1;height:7px;background:var(--gray-100);border-radius:4px;overflow:hidden;}
+.sport-bar-fill{height:100%;border-radius:4px;transition:width 0.7s ease;}
+.sport-bar-fill.swim{background:var(--blue);}
+.sport-bar-fill.bike{background:var(--orange);}
+.sport-bar-fill.run{background:var(--teal);}
+.sport-bar-fill.other{background:var(--purple);}
+.sport-bar-count{font-size:11px;font-weight:700;color:var(--gray-500);width:24px;text-align:right;flex-shrink:0;}
+/* RECENT SESSIONS */
+.recent-list{display:flex;flex-direction:column;gap:0.4rem;}
+.recent-item{display:flex;align-items:center;gap:0.6rem;padding:0.55rem 0.7rem;background:var(--gray-100);border-radius:8px;}
+.recent-sport{font-size:15px;flex-shrink:0;}
+.recent-info{flex:1;min-width:0;}
+.recent-title{font-size:12px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.recent-meta{font-size:10px;color:var(--gray-400);margin-top:1px;}
+.recent-feeling{font-size:15px;flex-shrink:0;}
+.recent-date{font-size:10px;color:var(--gray-400);white-space:nowrap;flex-shrink:0;}
+.prog-empty{text-align:center;padding:1.5rem 1rem;font-size:13px;color:var(--gray-400);line-height:1.6;}
 
 /* PULL TO REFRESH */
 #ptr-bar{position:fixed;top:52px;left:0;right:0;height:0;overflow:hidden;background:var(--white);border-bottom:1px solid var(--gray-100);z-index:400;transition:height 0.15s;display:flex;align-items:center;justify-content:center;}
@@ -542,6 +602,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
       <div class="nav-item" id="nav-plan" onclick="showTab('plan')"><span class="nav-dot"></span><span class="nav-icon">&#x1F4CB;</span> Training plan <span class="plan-type-badge" id="plan-badge"></span></div>
       <div class="nav-item" id="nav-week" onclick="showTab('week')"><span class="nav-dot"></span><span class="nav-icon">&#x1F4C5;</span> This week</div>
       <div class="nav-item" id="nav-profile" onclick="showTab('profile')"><span class="nav-dot"></span><span class="nav-icon">&#x1F464;</span> My profile</div>
+      <div class="nav-item" id="nav-progress" onclick="showTab('progress')"><span class="nav-dot"></span><span class="nav-icon">&#x1F4CA;</span> Progress</div>
     </nav>
     <div class="sb-footer"><div class="wk-label">This week</div><div class="wk-bars" id="s-bars"></div><div class="wk-text" id="s-wk-text">- sessions</div></div>
     <button class="btn-signout" onclick="signOut()">Sign out</button>
@@ -633,7 +694,99 @@ nav.nav{flex:1;padding:0 0.65rem;}
         <div class="save-ok" id="save-ok">Saved!</div>
       </div>
     </div>
-  </div>
+
+    <!-- PROGRESS TAB -->
+    <div class="tab-panel" id="tab-progress">
+      <div class="progress-scroll">
+        <div class="page-head">
+          <div><div class="page-title">Progress</div><div class="page-sub" id="prog-sub">Your training at a glance</div></div>
+          <button class="btn-gen" onclick="refreshProgress()" id="prog-refresh-btn">&#x21BB; Refresh</button>
+        </div>
+
+        <div id="progress-loading" style="display:flex;align-items:center;justify-content:center;padding:3rem 1rem;gap:0.75rem;">
+          <div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--gray-200);border-top-color:var(--blue);animation:spin 0.8s linear infinite;flex-shrink:0;"></div>
+          <span style="font-size:13px;color:var(--gray-500);">Loading your stats...</span>
+        </div>
+
+        <div id="progress-content" style="display:none;">
+
+          <!-- Streak Banner -->
+          <div class="streak-banner">
+            <div class="streak-main">
+              <div class="streak-fire">&#x1F525;</div>
+              <div>
+                <div class="streak-num" id="prog-streak">0</div>
+                <div class="streak-unit">day streak</div>
+              </div>
+            </div>
+            <div class="streak-right">
+              <div class="streak-best-val" id="prog-best">0</div>
+              <div class="streak-best-lbl">Best streak</div>
+            </div>
+          </div>
+
+          <!-- Stats Row -->
+          <div class="prog-stats">
+            <div class="stat-box">
+              <div class="stat-label">Sessions</div>
+              <div class="stat-value" id="prog-total">0</div>
+              <div class="stat-sub">logged</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Completion</div>
+              <div class="stat-value" id="prog-rate">&#x2013;</div>
+              <div class="stat-sub">vs planned</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">This week</div>
+              <div class="stat-value" id="prog-thisweek">0</div>
+              <div class="stat-sub">done</div>
+            </div>
+          </div>
+
+          <!-- Heatmap -->
+          <div class="section-card">
+            <div class="section-card-title">Activity &#x2014; last 16 weeks</div>
+            <div class="heatmap-outer">
+              <div class="heatmap-day-labels">
+                <div class="heatmap-day-lbl">S</div>
+                <div class="heatmap-day-lbl">M</div>
+                <div class="heatmap-day-lbl">T</div>
+                <div class="heatmap-day-lbl">W</div>
+                <div class="heatmap-day-lbl">T</div>
+                <div class="heatmap-day-lbl">F</div>
+                <div class="heatmap-day-lbl">S</div>
+              </div>
+              <div class="heatmap-grid" id="heatmap-grid"></div>
+            </div>
+            <div class="heatmap-legend">
+              <div class="hm-leg-item"><div class="hm-leg-swatch" style="background:var(--teal);"></div>Done</div>
+              <div class="hm-leg-item"><div class="hm-leg-swatch" style="background:#fca5a5;"></div>Missed</div>
+              <div class="hm-leg-item"><div class="hm-leg-swatch" style="background:var(--gray-200);"></div>Rest</div>
+            </div>
+          </div>
+
+          <!-- Weekly Volume -->
+          <div class="section-card">
+            <div class="section-card-title">Sessions logged &#x2014; last 8 weeks</div>
+            <div class="volume-chart" id="volume-chart"></div>
+          </div>
+
+          <!-- Sport Breakdown -->
+          <div class="section-card">
+            <div class="section-card-title">Sport breakdown</div>
+            <div class="sport-bars" id="sport-bars"></div>
+          </div>
+
+          <!-- Recent Sessions -->
+          <div class="section-card">
+            <div class="section-card-title">Recent sessions</div>
+            <div class="recent-list" id="recent-list"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
   <!-- Mobile bottom bar -->
   <div class="bottom-bar">
@@ -645,6 +798,10 @@ nav.nav{flex:1;padding:0 0.65rem;}
       <button class="bottom-nav-item" id="bnav-week" onclick="showTab('week')">
         <div class="bottom-nav-icon">&#x1F4C5;</div>
         <div class="bottom-nav-label">This Week</div>
+      </button>
+      <button class="bottom-nav-item" id="bnav-progress" onclick="showTab('progress')">
+        <div class="bottom-nav-icon">&#x1F4CA;</div>
+        <div class="bottom-nav-label">Progress</div>
       </button>
       <button class="bottom-nav-item" id="bnav-plan" onclick="showTab('plan')">
         <div class="bottom-nav-icon">&#x1F4CB;</div>
@@ -916,12 +1073,13 @@ function showDay(d,date){if(!d)return;var isToday=date&&date.toDateString()===TO
 document.getElementById('ddc').innerHTML='<div class="ddc-head"><div class="ddc-title">'+(isToday?'Today - ':'')+d.title+'</div>'+(d.sport!=='rest'?'<div class="ddc-badge">'+totalStr+'</div>':'')+'</div><div class="ddc-sub">'+(d.detail||'Rest up! Recovery is when you get fitter.')+'</div><div style="font-size:11px;color:var(--gray-400);margin-bottom:0.5rem;">Double tap a day to swap sessions</div><div class="session-blocks">'+bl.map(function(b){return '<div class="sb '+b.cls+'"><div class="sb-icon">'+b.icon+'</div><div><div class="sb-name">'+b.name+'</div><div class="sb-desc">'+b.desc+'</div></div><div class="sb-meta"><strong>'+b.meta+'</strong></div></div>';}).join('')+'</div>'+(isToday&&d.sport!=='rest'?'<button class="done-btn" onclick="openLogModal('+JSON.stringify(d)+',new Date())">&#x2705; Log this session</button>':'');}
 
 function showTab(name){
-  ['chat','plan','week','profile'].forEach(function(t){
+  ['chat','plan','week','profile','progress'].forEach(function(t){
     document.getElementById('tab-'+t).classList.toggle('active',t===name);
     var navEl=document.getElementById('nav-'+t);if(navEl)navEl.classList.toggle('active',t===name);
     var bnavEl=document.getElementById('bnav-'+t);if(bnavEl)bnavEl.classList.toggle('active',t===name);
   });
   if(name==='week')renderWeek();
+  if(name==='progress')loadProgress();
 }
 
 
@@ -1126,6 +1284,253 @@ async function swapDays(fromIdx, toIdx) {
 }
 
 
+
+
+// PROGRESS TAB
+var progressLoaded = false;
+
+function refreshProgress() {
+  progressLoaded = false;
+  document.getElementById('progress-content').style.display = 'none';
+  document.getElementById('progress-loading').style.display = 'flex';
+  loadProgress();
+}
+
+async function loadProgress() {
+  if (progressLoaded) return;
+  progressLoaded = true;
+  document.getElementById('progress-loading').style.display = 'flex';
+  document.getElementById('progress-content').style.display = 'none';
+  var workouts = await apiGet('/api/workouts/all') || [];
+  document.getElementById('progress-loading').style.display = 'none';
+  document.getElementById('progress-content').style.display = 'block';
+  renderProgressStats(workouts);
+  renderHeatmap(workouts);
+  renderVolumeChart(workouts);
+  renderSportBreakdown(workouts);
+  renderRecentSessions(workouts);
+}
+
+function renderProgressStats(workouts) {
+  var startDate = P.start_date ? new Date(P.start_date) : new Date(TODAY);
+  startDate.setHours(0,0,0,0);
+  var todayNorm = new Date(TODAY); todayNorm.setHours(0,0,0,0);
+
+  // Build date → workouts map
+  var byDate = {};
+  workouts.forEach(function(w) {
+    var d = w.completed_at ? w.completed_at.split('T')[0] : null;
+    if (d) { if (!byDate[d]) byDate[d] = []; byDate[d].push(w); }
+  });
+
+  // Current streak — consecutive days going backwards from today
+  var streak = 0;
+  var check = new Date(todayNorm);
+  for (var i = 0; i < 400; i++) {
+    var ds = check.toISOString().split('T')[0];
+    if (byDate[ds] && byDate[ds].length > 0) { streak++; check.setDate(check.getDate() - 1); }
+    else break;
+  }
+
+  // Best streak ever
+  var bestStreak = streak;
+  if (workouts.length > 0) {
+    var allDates = Object.keys(byDate).sort();
+    var first = new Date(allDates[0]); first.setHours(0,0,0,0);
+    var cur = 0;
+    var d2 = new Date(first);
+    while (d2 <= todayNorm) {
+      var ds2 = d2.toISOString().split('T')[0];
+      if (byDate[ds2] && byDate[ds2].length > 0) { cur++; if (cur > bestStreak) bestStreak = cur; }
+      else cur = 0;
+      d2.setDate(d2.getDate() + 1);
+    }
+  }
+
+  // This week sessions
+  var weekStart = new Date(todayNorm); weekStart.setDate(todayNorm.getDate() - todayNorm.getDay()); weekStart.setHours(0,0,0,0);
+  var thisWeek = workouts.filter(function(w) { return w.completed_at && new Date(w.completed_at) >= weekStart; }).length;
+
+  // Completion rate: logged vs expected sessions since start
+  var weeksElapsed = Math.max(1, Math.floor((todayNorm - startDate) / 86400000 / 7));
+  var expected = weeksElapsed * (P.training_days || 4);
+  var rate = expected > 0 ? Math.min(100, Math.round(workouts.length / expected * 100)) : 0;
+
+  document.getElementById('prog-streak').textContent = streak;
+  document.getElementById('prog-best').textContent = bestStreak;
+  document.getElementById('prog-total').textContent = workouts.length;
+  document.getElementById('prog-rate').textContent = rate + '%';
+  document.getElementById('prog-thisweek').textContent = thisWeek;
+
+  // Update sub text
+  var weeksToRace = P.race_date ? Math.max(0, Math.ceil((new Date(P.race_date) - new Date(TODAY)) / 604800000)) : null;
+  document.getElementById('prog-sub').textContent = weeksToRace ? weeksToRace + ' weeks to race day' : 'Your training at a glance';
+}
+
+function renderHeatmap(workouts) {
+  var byDate = {};
+  workouts.forEach(function(w) {
+    var d = w.completed_at ? w.completed_at.split('T')[0] : null;
+    if (d) { if (!byDate[d]) byDate[d] = []; byDate[d].push(w); }
+  });
+
+  var startDate = P.start_date ? new Date(P.start_date) : new Date(TODAY);
+  startDate.setHours(0,0,0,0);
+  var todayNorm = new Date(TODAY); todayNorm.setHours(0,0,0,0);
+
+  // Grid: 16 weeks, starting from the Sunday 15 weeks ago
+  var gridStart = new Date(todayNorm);
+  gridStart.setDate(gridStart.getDate() - gridStart.getDay()); // this Sunday
+  gridStart.setDate(gridStart.getDate() - 15 * 7);             // 15 weeks back
+
+  var container = document.getElementById('heatmap-grid');
+  container.innerHTML = '';
+
+  for (var week = 0; week < 16; week++) {
+    var weekDiv = document.createElement('div');
+    weekDiv.className = 'heatmap-week';
+    for (var dayIdx = 0; dayIdx < 7; dayIdx++) {
+      var cell = document.createElement('div');
+      var cellDate = new Date(gridStart);
+      cellDate.setDate(gridStart.getDate() + week * 7 + dayIdx);
+      var ds = cellDate.toISOString().split('T')[0];
+      var isToday = cellDate.toDateString() === todayNorm.toDateString();
+      var isFuture = cellDate > todayNorm;
+      var isPreStart = cellDate < startDate;
+
+      cell.className = 'hm-cell';
+      if (isToday) cell.classList.add('hm-today');
+
+      if (isPreStart) {
+        cell.classList.add('hm-prestart');
+        cell.title = 'Before training start';
+      } else if (isFuture) {
+        cell.classList.add('hm-future');
+      } else if (byDate[ds] && byDate[ds].length > 0) {
+        cell.classList.add('hm-done');
+        var w0 = byDate[ds][0];
+        var feelStr = w0.feeling ? ' (' + w0.feeling + ')' : '';
+        cell.title = DAYS[cellDate.getDay()] + ' ' + cellDate.getDate() + ' ' + MONTHS[cellDate.getMonth()] + ': ' + (w0.planned_title || 'Session') + feelStr;
+      } else {
+        // Check plan to see if it was a training day
+        var isTraining = false;
+        var dayName = DAYS[cellDate.getDay()];
+        var daysFromStart = Math.floor((cellDate - startDate) / 86400000);
+        var weekNum = Math.max(1, Math.floor(daysFromStart / 7) + 1);
+        if (P.plan && P.plan.weeks) {
+          var planWk = P.plan.weeks.find(function(w) { return w.week === Math.min(P.plan.weeks.length, weekNum); });
+          if (planWk && planWk.days) {
+            var planDay = planWk.days.find(function(d) { return d.day === dayName; });
+            isTraining = planDay && planDay.sport !== 'rest';
+          }
+        }
+        if (isTraining) {
+          cell.classList.add('hm-missed');
+          cell.title = DAYS[cellDate.getDay()] + ' ' + cellDate.getDate() + ' ' + MONTHS[cellDate.getMonth()] + ': Missed';
+        } else {
+          cell.classList.add('hm-rest');
+          cell.title = DAYS[cellDate.getDay()] + ' ' + cellDate.getDate() + ': Rest';
+        }
+      }
+      weekDiv.appendChild(cell);
+    }
+    container.appendChild(weekDiv);
+  }
+}
+
+function renderVolumeChart(workouts) {
+  // Count sessions logged per week for the last 8 weeks
+  var todaySunday = new Date(TODAY);
+  todaySunday.setDate(TODAY.getDate() - TODAY.getDay());
+  todaySunday.setHours(0,0,0,0);
+
+  var bySundayKey = {};
+  workouts.forEach(function(w) {
+    if (!w.completed_at) return;
+    var d = new Date(w.completed_at);
+    var ws = new Date(d); ws.setDate(d.getDate() - d.getDay()); ws.setHours(0,0,0,0);
+    var key = ws.toISOString().split('T')[0];
+    bySundayKey[key] = (bySundayKey[key] || 0) + 1;
+  });
+
+  var weeks = [];
+  for (var i = 7; i >= 0; i--) {
+    var ws2 = new Date(todaySunday);
+    ws2.setDate(todaySunday.getDate() - i * 7);
+    var key2 = ws2.toISOString().split('T')[0];
+    weeks.push({ key: key2, label: MONTHS[ws2.getMonth()].substring(0,3)+' '+ws2.getDate(), count: bySundayKey[key2] || 0, isCurrent: i === 0 });
+  }
+
+  var maxCount = Math.max(1, P.training_days || 4);
+  weeks.forEach(function(w) { if (w.count > maxCount) maxCount = w.count; });
+
+  var container = document.getElementById('volume-chart');
+  container.innerHTML = weeks.map(function(w) {
+    var h = Math.max(3, Math.round(w.count / maxCount * 100));
+    var bg = w.isCurrent ? 'var(--blue)' : w.count > 0 ? 'var(--teal)' : 'var(--gray-200)';
+    return '<div class="vol-col" title="' + w.label + ': ' + w.count + ' session(s)">' +
+      '<div class="vol-bar" style="height:' + h + '%;background:' + bg + ';"></div>' +
+      '<div class="vol-lbl">' + (w.isCurrent ? '&#x25CF;' : w.label.split(' ')[1]) + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function renderSportBreakdown(workouts) {
+  var counts = { swim: 0, bike: 0, run: 0, brick: 0, strength: 0, other: 0 };
+  workouts.forEach(function(w) {
+    if (counts[w.sport] !== undefined) counts[w.sport]++;
+    else counts.other++;
+  });
+  // Merge brick/strength/other into "other" for display simplicity
+  counts.other += counts.brick + counts.strength;
+  delete counts.brick; delete counts.strength;
+
+  var sports = [
+    { key:'swim', icon:'&#x1F3CA;', label:'Swim', cls:'swim' },
+    { key:'bike', icon:'&#x1F6B4;', label:'Bike', cls:'bike' },
+    { key:'run',  icon:'&#x1F3C3;', label:'Run',  cls:'run' },
+    { key:'other',icon:'&#x1F3AF;', label:'Other', cls:'other' }
+  ].filter(function(s) { return counts[s.key] > 0; });
+
+  var maxC = Math.max(1, Math.max.apply(null, sports.map(function(s){return counts[s.key];})));
+  var container = document.getElementById('sport-bars');
+  if (sports.length === 0) {
+    container.innerHTML = '<div class="prog-empty">Log your first session to see your sport breakdown!</div>';
+    return;
+  }
+  container.innerHTML = sports.map(function(s) {
+    var pct = Math.round(counts[s.key] / maxC * 100);
+    return '<div class="sport-bar-row">' +
+      '<div class="sport-bar-icon">' + s.icon + '</div>' +
+      '<div class="sport-bar-label">' + s.label + '</div>' +
+      '<div class="sport-bar-track"><div class="sport-bar-fill ' + s.cls + '" style="width:' + pct + '%"></div></div>' +
+      '<div class="sport-bar-count">' + counts[s.key] + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function renderRecentSessions(workouts) {
+  var feelEmoji = { great:'&#x1F929;', good:'&#x1F604;', ok:'&#x1F610;', hard:'&#x1F625;', terrible:'&#x1F915;' };
+  var recent = workouts.slice(0, 8);
+  var container = document.getElementById('recent-list');
+  if (recent.length === 0) {
+    container.innerHTML = '<div class="prog-empty">No sessions logged yet.<br>Tap &#x2705; on any day in This Week to log your first one!</div>';
+    return;
+  }
+  container.innerHTML = recent.map(function(w) {
+    var d = w.completed_at ? new Date(w.completed_at) : null;
+    var dateStr = d ? DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] : '';
+    var dur = w.actual_duration || w.planned_duration || '';
+    var feel = feelEmoji[w.feeling] || '';
+    return '<div class="recent-item">' +
+      '<div class="recent-sport">' + si(w.sport) + '</div>' +
+      '<div class="recent-info"><div class="recent-title">' + (w.planned_title || 'Session') + '</div>' +
+      '<div class="recent-meta">' + (dur ? dur : '') + (w.note ? (dur ? ' &bull; ' : '') + w.note : '') + '</div></div>' +
+      (feel ? '<div class="recent-feeling">' + feel + '</div>' : '') +
+      '<div class="recent-date">' + dateStr + '</div>' +
+      '</div>';
+  }).join('');
+}
 
 
 // PULL TO REFRESH
