@@ -1328,12 +1328,16 @@ function renderToday() {
     document.getElementById('today-workout-detail').textContent = todaySession.detail || '';
     document.getElementById('today-dur-chip').textContent = todaySession.duration || '';
     _pendingLogSession = todaySession;
-    // Hide button until we know if already logged
     document.getElementById('today-log-btn').style.display = 'none';
     document.getElementById('today-rest-msg').style.display = 'none';
-    var todayStr = TODAY.toISOString().split('T')[0];
     apiGet('/api/workouts/all').then(function(workouts) {
-      var loggedToday = workouts && workouts.some(function(w){ return w.completed_at && w.completed_at.startsWith(todayStr); });
+      // Compare in local time — completed_at may be UTC so convert properly
+      var todayLocal = TODAY.toLocaleDateString('en-CA'); // YYYY-MM-DD in local tz
+      var loggedToday = workouts && workouts.some(function(w) {
+        if (!w.completed_at) return false;
+        var d = new Date(w.completed_at);
+        return d.toLocaleDateString('en-CA') === todayLocal;
+      });
       var logBtn = document.getElementById('today-log-btn');
       if (!logBtn) return;
       logBtn.style.display = 'flex';
