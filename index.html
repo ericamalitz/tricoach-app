@@ -227,6 +227,12 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .b-base{background:var(--blue-mid);color:#1d4ed8;}.b-build{background:#ffedd5;color:#c2410c;}.b-peak{background:#fee2e2;color:#b91c1c;}.b-taper{background:var(--teal-light);color:#0f766e;}.b-rec{background:#d1fae5;color:#065f46;}.b-hrs{background:var(--gray-100);color:var(--gray-500);}.b-now{background:var(--blue-mid);color:var(--blue);}
 .week-days{padding:0.25rem 0.5rem 0.5rem;}
 .day-row{display:flex;align-items:center;gap:0.65rem;padding:0.45rem 0.5rem;border-radius:7px;}
+.day-row[draggable="true"]{cursor:grab;transition:background 0.15s,opacity 0.15s;}
+.day-row[draggable="true"]:hover{background:var(--blue-light);}
+.day-row.drag-source{opacity:0.4;}
+.day-row.drag-target{background:var(--teal-light);outline:2px solid var(--teal);outline-offset:-2px;}
+.day-row.plan-sel{background:var(--blue-light);outline:2px solid var(--blue);outline-offset:-2px;}
+.drag-handle{color:var(--gray-300);font-size:14px;cursor:grab;flex-shrink:0;padding:0 2px;user-select:none;}
 .day-name{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-400);min-width:26px;}
 .day-sport-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 .si-swim{background:#dbeafe;}.si-bike{background:#ffedd5;}.si-run{background:var(--teal-light);}.si-brick{background:#f3e8ff;}.si-rest{background:var(--gray-100);}.si-strength{background:#fef3c7;}.si-test{background:#fce7f3;}.si-walk{background:#f0fdf4;}.si-other{background:var(--gray-100);}
@@ -1085,8 +1091,113 @@ async function regenPlan(){document.getElementById('gen-btn').disabled=true;try{
 function si(s){var m={swim:'&#x1F3CA;',bike:'&#x1F6B4;',run:'&#x1F3C3;',brick:'&#x26A1;',rest:'&#x1F634;',strength:'&#x1F4AA;',yoga:'&#x1F9D8;',test:'&#x1F52C;',walk:'&#x1F6B6;',other:'&#x1F3AF;'};return m[s]||'&#x1F3AF;';}
 function bc(ph){var p=(ph||'').toLowerCase();return p.includes('base')?'b-base':p.includes('build')?'b-build':p.includes('peak')?'b-peak':p.includes('taper')?'b-taper':'b-base';}
 
-function renderPlan(){if(!P.plan){document.getElementById('plan-content').innerHTML='<div style="padding:2rem;text-align:center;color:var(--gray-500);font-size:13px">Your plan is loading... chat with your coach in the meantime!</div>';document.getElementById('plan-content').classList.add('show');return;}var tw=P.plan.weeks?P.plan.weeks.length:0;document.getElementById('plan-sub').textContent=(P.event||'Training')+' - '+P.name+' - '+tw+'-week plan';document.getElementById('phase-tabs').innerHTML=(P.plan.phases||[]).map(function(p){return '<div class="phase-tab">'+p.name+': Wk '+p.weeks+'</div>';}).join('');var c=document.getElementById('plan-content');c.innerHTML='';var curWk=getCurrentWeek();(P.plan.weeks||[]).forEach(function(w){var isCur=w.week===curWk;var isUpcoming=w.week===1&&curWk<=0;var div=document.createElement('div');div.className='week-card '+(w.isRecovery?'recovery':'')+(isCur?' current-week':'');var extra=[isCur?'<span class="badge b-now">Now</span>':'',isUpcoming?'<span class="badge b-now">Starts soon</span>':'',w.isRecovery?'<span class="badge b-rec">Recovery</span>':'',w.isTestWeek?'<span class="badge b-rec">Test</span>':''].filter(Boolean).join('');div.innerHTML='<div class="week-head" onclick="toggleWk('+w.week+')"><div class="wh-left"><div class="wh-num">Week '+w.week+'</div><div class="wh-focus">'+(w.focus||w.phase)+'</div></div><div class="wh-badges"><span class="badge '+bc(w.phase)+'">'+w.phase+'</span>'+extra+'<span class="badge b-hrs">'+(w.totalHours||'?')+'h</span></div></div><div class="week-days" id="wd-'+w.week+'" style="'+(w.week<=2||isCur||isUpcoming?'':'display:none')+'">'+(w.days||[]).map(function(d){return '<div class="day-row"><div class="day-name">'+d.day+'</div><div class="day-sport-icon si-'+(d.sport||'other')+'">'+si(d.sport)+'</div><div class="day-info"><div class="day-title">'+d.title+'</div><div class="day-detail">'+d.detail+'</div></div><div class="day-dur">'+d.duration+'</div>'+(d.sport!=='rest'?'<button onclick="deletePlanDay('+w.week+',\''+d.day+'\')" style="background:none;border:none;color:var(--gray-300);font-size:13px;cursor:pointer;padding:0.2rem 0.3rem;border-radius:4px;flex-shrink:0;" title="Remove session">&#x2715;</button>':'')+'</div>';}).join('')+'</div>';c.appendChild(div);});document.getElementById('plan-content').classList.add('show');}
+function renderPlan(){
+  if(!P.plan){document.getElementById('plan-content').innerHTML='<div style="padding:2rem;text-align:center;color:var(--gray-500);font-size:13px">Your plan is loading... chat with your coach in the meantime!</div>';document.getElementById('plan-content').classList.add('show');return;}
+  var tw=P.plan.weeks?P.plan.weeks.length:0;
+  document.getElementById('plan-sub').textContent=(P.event||'Training')+' - '+P.name+' - '+tw+'-week plan';
+  document.getElementById('phase-tabs').innerHTML=(P.plan.phases||[]).map(function(p){return '<div class="phase-tab">'+p.name+': Wk '+p.weeks+'</div>';}).join('');
+  var c=document.getElementById('plan-content');c.innerHTML='';
+  var curWk=getCurrentWeek();
+  (P.plan.weeks||[]).forEach(function(w){
+    var isCur=w.week===curWk;var isUpcoming=w.week===1&&curWk<=0;
+    var div=document.createElement('div');
+    div.className='week-card '+(w.isRecovery?'recovery':'')+(isCur?' current-week':'');
+    var extra=[isCur?'<span class="badge b-now">Now</span>':'',isUpcoming?'<span class="badge b-now">Starts soon</span>':'',w.isRecovery?'<span class="badge b-rec">Recovery</span>':'',w.isTestWeek?'<span class="badge b-rec">Test</span>':''].filter(Boolean).join('');
+    var daysHtml=(w.days||[]).map(function(d){
+      var isRest=d.sport==='rest';
+      var draggable=isRest?'':' draggable="true" data-week="'+w.week+'" data-day="'+d.day+'"';
+      var handle=isRest?'<div style="width:18px;flex-shrink:0;"></div>':'<div class="drag-handle">&#x2630;</div>';
+      var deleteBtn=isRest?'':'<button onclick="deletePlanDay('+w.week+',\''+d.day+'\')" style="background:none;border:none;color:var(--gray-300);font-size:13px;cursor:pointer;padding:0.2rem 0.3rem;border-radius:4px;flex-shrink:0;" title="Remove session">&#x2715;</button>';
+      return '<div class="day-row"'+draggable+'>'+handle+'<div class="day-name">'+d.day+'</div><div class="day-sport-icon si-'+(d.sport||'other')+'">'+si(d.sport)+'</div><div class="day-info"><div class="day-title">'+d.title+'</div><div class="day-detail">'+d.detail+'</div></div><div class="day-dur">'+d.duration+'</div>'+deleteBtn+'</div>';
+    }).join('');
+    div.innerHTML='<div class="week-head" onclick="toggleWk('+w.week+')"><div class="wh-left"><div class="wh-num">Week '+w.week+'</div><div class="wh-focus">'+(w.focus||w.phase)+'</div></div><div class="wh-badges"><span class="badge '+bc(w.phase)+'">'+w.phase+'</span>'+extra+'<span class="badge b-hrs">'+(w.totalHours||'?')+'h</span></div></div><div class="week-days" id="wd-'+w.week+'" style="'+(w.week<=2||isCur||isUpcoming?'':'display:none')+'">'+daysHtml+'</div>';
+    c.appendChild(div);
+  });
+  document.getElementById('plan-content').classList.add('show');
+  initPlanDragDrop();
+}
 function toggleWk(n){var el=document.getElementById('wd-'+n);if(el)el.style.display=el.style.display==='none'?'':'none';}
+
+// PLAN DRAG AND DROP
+var _planDragSrc = null; // {week, day}
+var _planTapSel = null;  // {week, day, el} for mobile tap-to-swap
+
+function initPlanDragDrop() {
+  var rows = document.querySelectorAll('#plan-content .day-row[draggable="true"]');
+  rows.forEach(function(row) {
+    // Desktop HTML5 drag
+    row.addEventListener('dragstart', function(e) {
+      _planDragSrc = { week: parseInt(row.dataset.week), day: row.dataset.day };
+      row.classList.add('drag-source');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', function() {
+      row.classList.remove('drag-source');
+      document.querySelectorAll('.day-row.drag-target').forEach(function(r){ r.classList.remove('drag-target'); });
+    });
+    row.addEventListener('dragover', function(e) {
+      e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+      document.querySelectorAll('.day-row.drag-target').forEach(function(r){ r.classList.remove('drag-target'); });
+      if (row.dataset.week === String(_planDragSrc && _planDragSrc.week)) row.classList.add('drag-target');
+    });
+    row.addEventListener('dragleave', function() { row.classList.remove('drag-target'); });
+    row.addEventListener('drop', function(e) {
+      e.preventDefault();
+      row.classList.remove('drag-target');
+      if (!_planDragSrc) return;
+      var toWeek = parseInt(row.dataset.week);
+      var toDay = row.dataset.day;
+      if (_planDragSrc.week === toWeek && _planDragSrc.day !== toDay) {
+        planSwapDays(_planDragSrc.week, _planDragSrc.day, toDay);
+      }
+      _planDragSrc = null;
+    });
+
+    // Mobile: tap to select, tap another to swap
+    row.addEventListener('click', function(e) {
+      // Don't trigger if clicking delete button
+      if (e.target.tagName === 'BUTTON') return;
+      var week = parseInt(row.dataset.week); var day = row.dataset.day;
+      if (_planTapSel) {
+        if (_planTapSel.week === week && _planTapSel.day === day) {
+          // Tap same — deselect
+          _planTapSel.el.classList.remove('plan-sel');
+          _planTapSel = null;
+        } else if (_planTapSel.week === week) {
+          // Tap different day same week — swap
+          _planTapSel.el.classList.remove('plan-sel');
+          planSwapDays(week, _planTapSel.day, day);
+          _planTapSel = null;
+        } else {
+          // Different week — move selection
+          _planTapSel.el.classList.remove('plan-sel');
+          _planTapSel = { week: week, day: day, el: row };
+          row.classList.add('plan-sel');
+          showToast('Tap another day in Week ' + week + ' to swap, or tap again to cancel');
+        }
+      } else {
+        _planTapSel = { week: week, day: day, el: row };
+        row.classList.add('plan-sel');
+        showToast('Tap another day in Week ' + week + ' to swap');
+      }
+    });
+  });
+}
+
+function planSwapDays(weekNum, fromDay, toDay) {
+  if (!P.plan || !P.plan.weeks) return;
+  var planWeek = P.plan.weeks.find(function(w){ return w.week === weekNum; });
+  if (!planWeek || !planWeek.days) return;
+  var from = planWeek.days.find(function(d){ return d.day === fromDay; });
+  var to   = planWeek.days.find(function(d){ return d.day === toDay; });
+  if (!from || !to) return;
+  var tmp = { sport:from.sport, title:from.title, detail:from.detail, duration:from.duration };
+  from.sport=to.sport; from.title=to.title; from.detail=to.detail; from.duration=to.duration;
+  to.sport=tmp.sport; to.title=tmp.title; to.detail=tmp.detail; to.duration=tmp.duration;
+  renderPlan(); renderWeek();
+  showToast('Swapped ' + fromDay + ' ↔ ' + toDay + ' ✓');
+  try { apiPost('/api/save-plan', { plan: P.plan }); } catch(e) {}
+}
 
 // WEEK VIEW
 function wkOff(d){weekOffset+=d;renderWeek();}
