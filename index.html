@@ -259,6 +259,12 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .sb-icon{font-size:16px;flex-shrink:0;}.sb-name{font-size:12px;font-weight:700;color:var(--navy);}.sb-desc{font-size:11px;color:var(--gray-500);margin-top:1px;}
 .sb-meta{margin-left:auto;text-align:right;flex-shrink:0;}.sb-meta strong{display:block;font-size:12px;font-weight:700;color:var(--navy);}.sb-meta span{font-size:10px;color:var(--gray-400);}
 .done-btn{margin-top:0.85rem;padding:0.55rem 1.1rem;background:var(--teal);border:none;border-radius:7px;color:white;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;width:100%;}
+.log-free-btn{margin-top:0.5rem;padding:0.55rem 1.1rem;background:var(--white);border:1.5px solid var(--gray-200);border-radius:7px;color:var(--gray-600);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;width:100%;}
+.log-free-btn:active{background:var(--gray-100);}
+.sport-chips{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.85rem;}
+.sport-chip{padding:0.4rem 0.75rem;border-radius:100px;border:2px solid var(--gray-200);background:var(--white);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:4px;}
+.sport-chip.sel{border-color:var(--blue);background:var(--blue-light);color:var(--blue);}
+.sport-chip:active{border-color:var(--blue);}
 
 /* PROFILE */
 .profile-scroll{flex:1;overflow-y:auto;padding:1rem;-webkit-overflow-scrolling:touch;}
@@ -635,6 +641,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
     <div class="tab-panel" id="tab-week">
       <div class="scroll-wrap">
         <div class="week-nav"><button class="wnav-btn" onclick="wkOff(-1)">&#x2039;</button><div class="wnav-title"><h2 id="wk-title">This week</h2><p id="wk-sub">Loading...</p></div><button class="wnav-btn" onclick="wkOff(1)">&#x203A;</button><button class="wnav-btn" onclick="syncPlan(this)" title="Sync plan" style="margin-left:4px;font-size:13px;">&#x1F504;</button></div>
+        <button class="log-free-btn" onclick="openFreeLogModal()" style="margin-bottom:0.75rem;">&#x2795; Log a workout</button>
         <div class="stats-row" id="stats-row"></div>
         <div class="cal-grid" id="cal-grid"></div>
         <div class="ddc" id="ddc"></div>
@@ -1075,10 +1082,10 @@ function resizeTA(el){el.style.height='auto';el.style.height=Math.min(el.scrollH
 // PLAN
 async function regenPlan(){document.getElementById('gen-btn').disabled=true;try{var isOwn=P.plan_type==='own';if(isOwn){var t=prompt('Update your plan:',P.own_plan_text||'');if(t!==null&&t.trim())P.own_plan_text=t.trim();var r=await apiPost('/api/parse-plan',{planText:P.own_plan_text,profile:P});if(r&&r.plan){P.plan=r.plan;renderPlan();renderWeek();}}else{var r=await apiPost('/api/generate-plan',{profile:P});if(r&&r.plan){P.plan=r.plan;renderPlan();renderWeek();}}}catch(e){alert('Could not regenerate - try again!');}document.getElementById('gen-btn').disabled=false;}
 
-function si(s){var m={swim:'&#x1F3CA;',bike:'&#x1F6B4;',run:'&#x1F3C3;',brick:'&#x26A1;',rest:'&#x1F634;',strength:'&#x1F4AA;',test:'&#x1F52C;',walk:'&#x1F6B6;',other:'&#x1F3AF;'};return m[s]||'&#x1F3AF;';}
+function si(s){var m={swim:'&#x1F3CA;',bike:'&#x1F6B4;',run:'&#x1F3C3;',brick:'&#x26A1;',rest:'&#x1F634;',strength:'&#x1F4AA;',yoga:'&#x1F9D8;',test:'&#x1F52C;',walk:'&#x1F6B6;',other:'&#x1F3AF;'};return m[s]||'&#x1F3AF;';}
 function bc(ph){var p=(ph||'').toLowerCase();return p.includes('base')?'b-base':p.includes('build')?'b-build':p.includes('peak')?'b-peak':p.includes('taper')?'b-taper':'b-base';}
 
-function renderPlan(){if(!P.plan){document.getElementById('plan-content').innerHTML='<div style="padding:2rem;text-align:center;color:var(--gray-500);font-size:13px">Your plan is loading... chat with your coach in the meantime!</div>';document.getElementById('plan-content').classList.add('show');return;}var tw=P.plan.weeks?P.plan.weeks.length:0;document.getElementById('plan-sub').textContent=(P.event||'Training')+' - '+P.name+' - '+tw+'-week plan';document.getElementById('phase-tabs').innerHTML=(P.plan.phases||[]).map(function(p){return '<div class="phase-tab">'+p.name+': Wk '+p.weeks+'</div>';}).join('');var c=document.getElementById('plan-content');c.innerHTML='';var curWk=getCurrentWeek();(P.plan.weeks||[]).forEach(function(w){var isCur=w.week===curWk;var isUpcoming=w.week===1&&curWk<=0;var div=document.createElement('div');div.className='week-card '+(w.isRecovery?'recovery':'')+(isCur?' current-week':'');var extra=[isCur?'<span class="badge b-now">Now</span>':'',isUpcoming?'<span class="badge b-now">Starts soon</span>':'',w.isRecovery?'<span class="badge b-rec">Recovery</span>':'',w.isTestWeek?'<span class="badge b-rec">Test</span>':''].filter(Boolean).join('');div.innerHTML='<div class="week-head" onclick="toggleWk('+w.week+')"><div class="wh-left"><div class="wh-num">Week '+w.week+'</div><div class="wh-focus">'+(w.focus||w.phase)+'</div></div><div class="wh-badges"><span class="badge '+bc(w.phase)+'">'+w.phase+'</span>'+extra+'<span class="badge b-hrs">'+(w.totalHours||'?')+'h</span></div></div><div class="week-days" id="wd-'+w.week+'" style="'+(w.week<=2||isCur||isUpcoming?'':'display:none')+'">'+(w.days||[]).map(function(d){return '<div class="day-row"><div class="day-name">'+d.day+'</div><div class="day-sport-icon si-'+(d.sport||'other')+'">'+si(d.sport)+'</div><div class="day-info"><div class="day-title">'+d.title+'</div><div class="day-detail">'+d.detail+'</div></div><div class="day-dur">'+d.duration+'</div></div>';}).join('')+'</div>';c.appendChild(div);});document.getElementById('plan-content').classList.add('show');}
+function renderPlan(){if(!P.plan){document.getElementById('plan-content').innerHTML='<div style="padding:2rem;text-align:center;color:var(--gray-500);font-size:13px">Your plan is loading... chat with your coach in the meantime!</div>';document.getElementById('plan-content').classList.add('show');return;}var tw=P.plan.weeks?P.plan.weeks.length:0;document.getElementById('plan-sub').textContent=(P.event||'Training')+' - '+P.name+' - '+tw+'-week plan';document.getElementById('phase-tabs').innerHTML=(P.plan.phases||[]).map(function(p){return '<div class="phase-tab">'+p.name+': Wk '+p.weeks+'</div>';}).join('');var c=document.getElementById('plan-content');c.innerHTML='';var curWk=getCurrentWeek();(P.plan.weeks||[]).forEach(function(w){var isCur=w.week===curWk;var isUpcoming=w.week===1&&curWk<=0;var div=document.createElement('div');div.className='week-card '+(w.isRecovery?'recovery':'')+(isCur?' current-week':'');var extra=[isCur?'<span class="badge b-now">Now</span>':'',isUpcoming?'<span class="badge b-now">Starts soon</span>':'',w.isRecovery?'<span class="badge b-rec">Recovery</span>':'',w.isTestWeek?'<span class="badge b-rec">Test</span>':''].filter(Boolean).join('');div.innerHTML='<div class="week-head" onclick="toggleWk('+w.week+')"><div class="wh-left"><div class="wh-num">Week '+w.week+'</div><div class="wh-focus">'+(w.focus||w.phase)+'</div></div><div class="wh-badges"><span class="badge '+bc(w.phase)+'">'+w.phase+'</span>'+extra+'<span class="badge b-hrs">'+(w.totalHours||'?')+'h</span></div></div><div class="week-days" id="wd-'+w.week+'" style="'+(w.week<=2||isCur||isUpcoming?'':'display:none')+'">'+(w.days||[]).map(function(d){return '<div class="day-row"><div class="day-name">'+d.day+'</div><div class="day-sport-icon si-'+(d.sport||'other')+'">'+si(d.sport)+'</div><div class="day-info"><div class="day-title">'+d.title+'</div><div class="day-detail">'+d.detail+'</div></div><div class="day-dur">'+d.duration+'</div>'+(d.sport!=='rest'?'<button onclick="deletePlanDay('+w.week+',\''+d.day+'\')" style="background:none;border:none;color:var(--gray-300);font-size:13px;cursor:pointer;padding:0.2rem 0.3rem;border-radius:4px;flex-shrink:0;" title="Remove session">&#x2715;</button>':'')+'</div>';}).join('')+'</div>';c.appendChild(div);});document.getElementById('plan-content').classList.add('show');}
 function toggleWk(n){var el=document.getElementById('wd-'+n);if(el)el.style.display=el.style.display==='none'?'':'none';}
 
 // WEEK VIEW
@@ -1683,6 +1690,76 @@ async function submitEdit() {
   }
   btn.disabled = false; btn.textContent = 'Save changes ✅';
 }
+// FREE-FORM WORKOUT LOG
+var _freeSport = 'swim';
+var _freeFeeling = 'ok';
+
+function openFreeLogModal() {
+  _freeSport = 'swim'; _freeFeeling = 'ok';
+  document.getElementById('free-duration').value = '';
+  document.getElementById('free-note').value = '';
+  document.querySelectorAll('#free-sport-chips .sport-chip').forEach(function(c){ c.classList.toggle('sel', c.dataset.v === 'swim'); });
+  document.querySelectorAll('#free-log-modal .feeling-btn').forEach(function(b){ b.classList.toggle('sel', b.dataset.v === 'ok'); });
+  document.getElementById('free-log-modal').classList.add('open');
+}
+
+function closeFreeLogModal(e) {
+  if (!e || e.target === document.getElementById('free-log-modal')) {
+    document.getElementById('free-log-modal').classList.remove('open');
+  }
+}
+
+function selFreeSport(el) {
+  document.querySelectorAll('#free-sport-chips .sport-chip').forEach(function(c){ c.classList.remove('sel'); });
+  el.classList.add('sel'); _freeSport = el.dataset.v;
+}
+
+function selFreeFeeling(btn) {
+  document.querySelectorAll('#free-log-modal .feeling-btn').forEach(function(b){ b.classList.remove('sel'); });
+  btn.classList.add('sel'); _freeFeeling = btn.dataset.v;
+}
+
+async function submitFreeLog() {
+  var btn = document.getElementById('free-log-submit-btn');
+  var dur = document.getElementById('free-duration').value.trim();
+  if (!dur) { alert('Enter a duration'); return; }
+  btn.disabled = true; btn.textContent = 'Saving...';
+  var startDate = P.start_date ? new Date(P.start_date) : TODAY;
+  var daysSinceStart = Math.floor((TODAY - startDate) / 86400000);
+  var weekNum = Math.max(1, Math.floor(daysSinceStart / 7) + 1);
+  var sportLabels = { swim:'Swim', bike:'Ride', run:'Run', strength:'Strength', yoga:'Yoga', walk:'Walk', other:'Workout' };
+  try {
+    await apiPost('/api/workout', {
+      week: weekNum, day: DAYS[TODAY.getDay()], sport: _freeSport,
+      planned_title: (sportLabels[_freeSport]||'Workout') + ' (unplanned)',
+      planned_duration: '', actual_duration: dur, feeling: _freeFeeling,
+      note: document.getElementById('free-note').value.trim()
+    });
+    document.getElementById('free-log-modal').classList.remove('open');
+    progressLoaded = false;
+    showToast('Workout logged! 💪');
+    var msg = 'Just did an unplanned ' + _freeSport + ': ' + dur + '. Felt ' + _freeFeeling + '.';
+    var note2 = document.getElementById('free-note').value.trim();
+    if (note2) msg += ' ' + note2;
+    showTab('chat'); document.getElementById('chat-in').value = msg; sendMsg();
+  } catch(e) { alert('Could not save — try again'); }
+  btn.disabled = false; btn.textContent = 'Save workout ✅';
+}
+
+// DELETE PLAN DAY — replace with rest
+async function deletePlanDay(weekNum, dayName) {
+  if (!confirm('Remove ' + dayName + ' session from Week ' + weekNum + '?')) return;
+  if (!P.plan || !P.plan.weeks) return;
+  var planWeek = P.plan.weeks.find(function(w){ return w.week === weekNum; });
+  if (!planWeek || !planWeek.days) return;
+  var dayObj = planWeek.days.find(function(d){ return d.day === dayName; });
+  if (!dayObj) return;
+  dayObj.sport = 'rest'; dayObj.title = 'Rest'; dayObj.detail = 'Recovery day.'; dayObj.duration = '—';
+  renderPlan(); renderWeek();
+  showToast(dayName + ' Week ' + weekNum + ' cleared ✓');
+  try { await apiPost('/api/save-plan', { plan: P.plan }); } catch(e) { console.log('Save failed:', e); }
+}
+
 var _healthToken = null;
 async function loadHealthToken() {
   try {
@@ -1834,6 +1911,34 @@ renderPills(0);
     <div class="modal-field"><label>Notes</label><textarea id="edit-note" placeholder="How did it feel?"></textarea></div>
     <button class="btn-log" id="edit-submit-btn" onclick="submitEdit()">Save changes &#x2705;</button>
     <button class="btn-log-skip" onclick="closeEditModal()">Cancel</button>
+  </div>
+</div>
+<!-- FREE-FORM LOG MODAL -->
+<div class="modal-overlay" id="free-log-modal" onclick="closeFreeLogModal(event)">
+  <div class="modal-card">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Log a workout</div>
+    <div class="modal-sub">Anything outside your plan</div>
+    <div class="sport-chips" id="free-sport-chips">
+      <div class="sport-chip sel" data-v="swim" onclick="selFreeSport(this)">🏊 Swim</div>
+      <div class="sport-chip" data-v="bike" onclick="selFreeSport(this)">🚴 Bike</div>
+      <div class="sport-chip" data-v="run" onclick="selFreeSport(this)">🏃 Run</div>
+      <div class="sport-chip" data-v="strength" onclick="selFreeSport(this)">💪 Strength</div>
+      <div class="sport-chip" data-v="yoga" onclick="selFreeSport(this)">🧘 Yoga</div>
+      <div class="sport-chip" data-v="walk" onclick="selFreeSport(this)">🚶 Walk</div>
+      <div class="sport-chip" data-v="other" onclick="selFreeSport(this)">🎯 Other</div>
+    </div>
+    <div class="feeling-row">
+      <button class="feeling-btn" data-v="great" onclick="selFreeFeeling(this)"><span>&#x1F929;</span><span class="feeling-label">Great!</span></button>
+      <button class="feeling-btn" data-v="good" onclick="selFreeFeeling(this)"><span>&#x1F604;</span><span class="feeling-label">Good</span></button>
+      <button class="feeling-btn sel" data-v="ok" onclick="selFreeFeeling(this)"><span>&#x1F610;</span><span class="feeling-label">OK</span></button>
+      <button class="feeling-btn" data-v="hard" onclick="selFreeFeeling(this)"><span>&#x1F625;</span><span class="feeling-label">Hard</span></button>
+      <button class="feeling-btn" data-v="terrible" onclick="selFreeFeeling(this)"><span>&#x1F915;</span><span class="feeling-label">Rough</span></button>
+    </div>
+    <div class="modal-field"><label>Duration</label><input type="text" id="free-duration" placeholder="e.g. 45 min, 1.5km swim"/></div>
+    <div class="modal-field"><label>Notes (optional)</label><textarea id="free-note" placeholder="What did you do? How did it feel?"></textarea></div>
+    <button class="btn-log" id="free-log-submit-btn" onclick="submitFreeLog()">Save workout ✅</button>
+    <button class="btn-log-skip" onclick="closeFreeLogModal()">Cancel</button>
   </div>
 </div>
 </body>
