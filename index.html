@@ -1328,6 +1328,24 @@ function renderToday() {
     document.getElementById('today-workout-detail').textContent = todaySession.detail || '';
     document.getElementById('today-dur-chip').textContent = todaySession.duration || '';
     _pendingLogSession = todaySession;
+    // Check if already logged today
+    var todayStr = TODAY.toISOString().split('T')[0];
+    apiGet('/api/workouts/all').then(function(workouts) {
+      var loggedToday = workouts && workouts.some(function(w){ return w.completed_at && w.completed_at.startsWith(todayStr); });
+      var logBtn = document.getElementById('today-log-btn');
+      if (!logBtn) return;
+      if (loggedToday) {
+        logBtn.style.display = 'flex';
+        logBtn.style.background = 'var(--teal)';
+        logBtn.innerHTML = '✅ Session logged — great work!';
+        logBtn.onclick = null; // disable re-logging
+      } else {
+        logBtn.style.display = 'flex';
+        logBtn.style.background = 'var(--navy)';
+        logBtn.innerHTML = '✅ Log this session';
+        logBtn.onclick = function(){ openLogModal(_pendingLogSession, new Date()); };
+      }
+    });
     document.getElementById('today-log-btn').style.display = 'flex';
     document.getElementById('today-rest-msg').style.display = 'none';
   }
@@ -1611,61 +1629,64 @@ async function syncPlan(btn) {
 }
 
 
-// SESSION SWAP — tap shows details, long press enters swap mode
+// SESSION SWAP — event delegation for selection, long press for swap
 var selectedDayIdx = null;
 var swapMode = false;
 
 function initDragDrop() {
-  var cells = Array.from(document.querySelectorAll('.cal-cell'));
-  cells.forEach(function(cell, idx) {
-    var newCell = cell.cloneNode(true);
-    cell.parentNode.replaceChild(newCell, cell);
+  var grid = document.getElementById('cal-grid');
+  // Remove old listener if any by replacing grid's clone
+  var newGrid = grid.cloneNode(true);
+  grid.parentNode.replaceChild(newGrid, grid);
 
-    var pressTimer = null;
+  // Single delegated click listener on the grid
+  newGrid.addEventListener('click', function(e) {
+    var cell = e.target.closest('.cal-cell');
+    if (!cell) return;
+    var cells = Array.from(newGrid.querySelectorAll('.cal-cell'));
+    var idx = cells.indexOf(cell);
+    if (idx === -1) return;
 
-    // Single tap — show day details (or complete swap if in swap mode)
-    newCell.addEventListener('click', function(e) {
-      if (swapMode) {
-        if (selectedDayIdx === idx) {
-          // Tap same day — cancel swap mode
-          exitSwapMode();
-        } else {
-          // Complete the swap
-          var fromIdx = selectedDayIdx;
-          exitSwapMode();
-          swapDays(fromIdx, idx);
-        }
+    if (swapMode) {
+      if (selectedDayIdx === idx) {
+        exitSwapMode();
       } else {
-        // Normal tap — show details + highlight selected cell
-        document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('selected'); });
-        newCell.classList.add('selected');
-        var wd = getWkWorkouts(getCurrentWeekStart());
-        var d = wd[idx];
-        var ws = getCurrentWeekStart();
-        var date = new Date(ws);
-        date.setDate(ws.getDate() + idx);
-        showDay(d, date);
+        var fromIdx = selectedDayIdx;
+        exitSwapMode();
+        swapDays(fromIdx, idx);
       }
-    });
+      return;
+    }
 
-    // Long press — enter swap mode
-    newCell.addEventListener('touchstart', function(e) {
+    // Select cell
+    cells.forEach(function(c){ c.classList.remove('selected'); });
+    cell.classList.add('selected');
+
+    var wd = getWkWorkouts(getCurrentWeekStart());
+    var d = wd[idx];
+    var ws = getCurrentWeekStart();
+    var date = new Date(ws);
+    date.setDate(ws.getDate() + idx);
+    showDay(d, date);
+  });
+
+  // Long press on individual cells for swap mode
+  var cells = Array.from(newGrid.querySelectorAll('.cal-cell'));
+  cells.forEach(function(cell, idx) {
+    var pressTimer = null;
+    cell.addEventListener('touchstart', function(e) {
       pressTimer = setTimeout(function() {
         pressTimer = null;
         enterSwapMode(idx);
-      }, 500);
+      }, 600);
     }, { passive: true });
-
-    newCell.addEventListener('touchend', function() {
+    cell.addEventListener('touchend', function() {
       if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
     }, { passive: true });
-
-    newCell.addEventListener('touchmove', function() {
+    cell.addEventListener('touchmove', function() {
       if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
     }, { passive: true });
-
-    // Desktop right-click or double-click for swap
-    newCell.addEventListener('dblclick', function() {
+    cell.addEventListener('dblclick', function() {
       if (swapMode) { exitSwapMode(); } else { enterSwapMode(idx); }
     });
   });
@@ -1680,15 +1701,18 @@ function getCurrentWeekStart() {
 function enterSwapMode(idx) {
   swapMode = true;
   selectedDayIdx = idx;
-  document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('drag-over'); });
-  document.querySelectorAll('.cal-cell')[idx] && document.querySelectorAll('.cal-cell')[idx].classList.add('drag-over');
-  showToast('Swap mode: tap another day to swap, or tap this day to cancel');
+  var grid = document.getElementById('cal-grid');
+  Array.from(grid.querySelectorAll('.cal-cell')).forEach(function(c){ c.classList.remove('drag-over'); });
+  var cells = grid.querySelectorAll('.cal-cell');
+  if (cells[idx]) cells[idx].classList.add('drag-over');
+  showToast('Tap another day to swap, or tap this day to cancel');
 }
 
 function exitSwapMode() {
   swapMode = false;
   selectedDayIdx = null;
-  document.querySelectorAll('.cal-cell').forEach(function(c){ c.classList.remove('drag-over'); });
+  var grid = document.getElementById('cal-grid');
+  if (grid) Array.from(grid.querySelectorAll('.cal-cell')).forEach(function(c){ c.classList.remove('drag-over'); });
 }
 
 function showToast(msg) {
