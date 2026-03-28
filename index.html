@@ -1328,26 +1328,29 @@ function renderToday() {
     document.getElementById('today-workout-detail').textContent = todaySession.detail || '';
     document.getElementById('today-dur-chip').textContent = todaySession.duration || '';
     _pendingLogSession = todaySession;
-    // Check if already logged today
+    // Hide button until we know if already logged
+    document.getElementById('today-log-btn').style.display = 'none';
+    document.getElementById('today-rest-msg').style.display = 'none';
     var todayStr = TODAY.toISOString().split('T')[0];
     apiGet('/api/workouts/all').then(function(workouts) {
       var loggedToday = workouts && workouts.some(function(w){ return w.completed_at && w.completed_at.startsWith(todayStr); });
       var logBtn = document.getElementById('today-log-btn');
       if (!logBtn) return;
+      logBtn.style.display = 'flex';
       if (loggedToday) {
-        logBtn.style.display = 'flex';
         logBtn.style.background = 'var(--teal)';
-        logBtn.innerHTML = '✅ Session logged — great work!';
-        logBtn.onclick = null; // disable re-logging
+        logBtn.innerHTML = '✅ Session logged — great work today!';
+        logBtn.onclick = null;
+        logBtn.style.cursor = 'default';
+        logBtn.style.opacity = '0.85';
       } else {
-        logBtn.style.display = 'flex';
         logBtn.style.background = 'var(--navy)';
         logBtn.innerHTML = '✅ Log this session';
+        logBtn.style.cursor = 'pointer';
+        logBtn.style.opacity = '1';
         logBtn.onclick = function(){ openLogModal(_pendingLogSession, new Date()); };
       }
     });
-    document.getElementById('today-log-btn').style.display = 'flex';
-    document.getElementById('today-rest-msg').style.display = 'none';
   }
 
   // Quick stats
