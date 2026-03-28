@@ -280,10 +280,16 @@ nav.nav{flex:1;padding:0 0.75rem;}
 .today-hero-detail{font-size:13px;color:var(--gray-600);line-height:1.5;margin-bottom:0.85rem;}
 .today-hero-meta{display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.85rem;}
 .today-hero-chip{background:var(--gray-100);border-radius:var(--radius-pill);padding:0.25rem 0.75rem;font-size:12px;font-weight:600;color:var(--gray-600);}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0.3rem;margin-bottom:1rem;}
-.cal-cell{background:var(--white);border:var(--border);border-radius:12px;padding:0.5rem 0.25rem;min-height:90px;cursor:pointer;display:flex;flex-direction:column;gap:0.2rem;box-shadow:var(--shadow-sm);transition:all 0.15s;}
+.cal-grid{display:flex;gap:0.35rem;margin-bottom:1rem;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;}
+.cal-grid::-webkit-scrollbar{display:none;}
+.cal-cell{background:var(--white);border:var(--border);border-radius:12px;padding:0.55rem 0.35rem;min-height:90px;min-width:72px;flex:0 0 72px;cursor:pointer;display:flex;flex-direction:column;gap:0.2rem;box-shadow:var(--shadow-sm);transition:all 0.15s;scroll-snap-align:start;}
 .cal-cell:active{transform:scale(0.97);}
 .cal-cell.today{border-color:var(--sage);background:var(--sage-light);border-width:2px;}
+.cal-cell.selected{border-color:var(--navy);background:var(--navy);box-shadow:0 4px 14px rgba(26,38,64,0.2);}
+.cal-cell.selected .cal-day-name{color:rgba(255,255,255,0.6);}
+.cal-cell.selected .cal-day-num{color:white;}
+.cal-cell.selected .cal-title{color:rgba(255,255,255,0.75);}
+.cal-cell.selected .cal-dur{color:#93c5fd;}
 .cal-cell.past{opacity:0.4;}.cal-cell.before-start{opacity:0.3;background:var(--gray-100);}
 .cal-day-name{font-size:8px;font-weight:700;text-transform:uppercase;color:var(--gray-400);}
 .cal-day-num{font-family:var(--font-d);font-size:1.05rem;font-weight:800;color:var(--navy);line-height:1;}
@@ -338,8 +344,6 @@ nav.nav{flex:1;padding:0 0.75rem;}
   .messages{padding:0.9rem;}
   .scroll-wrap{padding:0.9rem;}
   .profile-scroll{padding:0.9rem;}
-  .cal-grid{gap:0.2rem;}
-  .cal-cell{min-height:72px;padding:0.4rem 0.2rem;}
   .stats-row{gap:0.4rem;}
   .ob-card{padding:1.25rem;border-radius:var(--radius);}
   .auth-card{padding:1.75rem;}
@@ -1498,7 +1502,14 @@ var activeWd=wd.filter(function(d,i){
   return dayDate>=startDate;
 });
 var total=activeWd.reduce(function(s,d){var m=d.mins||0;return s+(m>0&&d.sport!=='rest'?m+8:0);},0);
-var sess=activeWd.filter(function(d){return d.sport!=='rest';}).length;document.getElementById('stats-row').innerHTML='<div class="stat-box"><div class="stat-label">Sessions</div><div class="stat-value">'+sess+'</div><div class="stat-sub">planned</div></div><div class="stat-box"><div class="stat-label">Volume</div><div class="stat-value">'+Math.floor(total/60)+'<span style="font-size:1rem">h</span>'+(total%60?total%60+'m':'')+'</div><div class="stat-sub">this week</div></div><div class="stat-box"><div class="stat-label">Phase</div><div class="stat-value" style="font-size:0.85rem;padding-top:8px">'+(wd[1]&&wd[1].phase?wd[1].phase:'Base')+'</div><div class="stat-sub">'+(wd[0]&&wd[0].isRecovery?'rest week':'training')+'</div></div>';var grid=document.getElementById('cal-grid');grid.innerHTML='';var startDate=P.start_date?new Date(P.start_date):null;wd.forEach(function(d,i){var date=new Date(ws);date.setDate(ws.getDate()+i);var isToday=date.toDateString()===TODAY.toDateString();var isPast=date<TODAY&&!isToday;var isBeforeStart=startDate&&date<startDate&&!isToday;var cell=document.createElement('div');cell.className='cal-cell '+(isToday?'today':'')+(isBeforeStart?' before-start':isPast&&d.sport!=='rest'?' past':'');cell.onclick=function(){showDay(d,date);};var calMins=parseInt(d.duration)||0;var calTotal=calMins>0&&!isBeforeStart&&d.sport!=='rest'?calMins+8:0;var calStr=calTotal>0?calTotal+' min':'';cell.innerHTML='<div class="cal-day-name">'+DAYS[date.getDay()]+'</div><div class="cal-day-num">'+date.getDate()+'</div><div class="cal-sport">'+si(isBeforeStart?'rest':d.sport)+'</div><div class="cal-title">'+(isBeforeStart?'Pre-training':d.title)+'</div>'+(calStr?'<div class="cal-dur">'+calStr+'</div>':'');grid.appendChild(cell);});showDay(wd[TODAY.getDay()]||wd[1],new Date(ws.getTime()+TODAY.getDay()*86400000));
+var sess=activeWd.filter(function(d){return d.sport!=='rest';}).length;document.getElementById('stats-row').innerHTML='<div class="stat-box"><div class="stat-label">Sessions</div><div class="stat-value">'+sess+'</div><div class="stat-sub">planned</div></div><div class="stat-box"><div class="stat-label">Volume</div><div class="stat-value">'+Math.floor(total/60)+'<span style="font-size:1rem">h</span>'+(total%60?total%60+'m':'')+'</div><div class="stat-sub">this week</div></div><div class="stat-box"><div class="stat-label">Phase</div><div class="stat-value" style="font-size:0.85rem;padding-top:8px">'+(wd[1]&&wd[1].phase?wd[1].phase:'Base')+'</div><div class="stat-sub">'+(wd[0]&&wd[0].isRecovery?'rest week':'training')+'</div></div>';var grid=document.getElementById('cal-grid');grid.innerHTML='';var startDate=P.start_date?new Date(P.start_date):null;wd.forEach(function(d,i){var date=new Date(ws);date.setDate(ws.getDate()+i);var isToday=date.toDateString()===TODAY.toDateString();var isPast=date<TODAY&&!isToday;var isBeforeStart=startDate&&date<startDate&&!isToday;var cell=document.createElement('div');cell.className='cal-cell '+(isToday?'today':'')+(isBeforeStart?' before-start':isPast&&d.sport!=='rest'?' past':'');cell.onclick=function(){
+  document.querySelectorAll('.cal-cell').forEach(function(c){c.classList.remove('selected');});
+  cell.classList.add('selected');
+  showDay(d,date);
+};var calMins=parseInt(d.duration)||0;var calTotal=calMins>0&&!isBeforeStart&&d.sport!=='rest'?calMins+8:0;var calStr=calTotal>0?calTotal+' min':'';cell.innerHTML='<div class="cal-day-name">'+DAYS[date.getDay()]+'</div><div class="cal-day-num">'+date.getDate()+'</div><div class="cal-sport">'+si(isBeforeStart?'rest':d.sport)+'</div><div class="cal-title">'+(isBeforeStart?'Pre-training':d.title)+'</div>'+(calStr?'<div class="cal-dur">'+calStr+'</div>':'');grid.appendChild(cell);});
+// Auto-select and scroll to today's cell
+var todayIdx=TODAY.getDay();var todayCells=grid.querySelectorAll('.cal-cell');var todayCell=todayCells[todayIdx];if(todayCell){todayCell.classList.add('selected');setTimeout(function(){todayCell.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});},80);}
+showDay(wd[TODAY.getDay()]||wd[1],new Date(ws.getTime()+TODAY.getDay()*86400000));
   initDragDrop();}
 
 function getWkWorkouts(ws){var fallback=DAYS.map(function(day,i){return {sport:i===0||i===3||i===6?'rest':'run',title:i===0||i===3||i===6?'Rest':'Session',detail:'',duration:i===0||i===3||i===6?'-':'20 min',mins:i===0||i===3||i===6?0:20,phase:'Base'};});if(!P.plan||!P.plan.weeks)return fallback;var startDate=P.start_date?new Date(P.start_date):TODAY;var daysSinceStart=Math.floor((ws-startDate)/86400000);var wn=daysSinceStart<0?1:Math.floor(daysSinceStart/7)+1;var pw=P.plan.weeks.find(function(w){return w.week===Math.min(P.plan.weeks.length,wn);});if(!pw)return fallback;return DAYS.map(function(day){var d=pw.days&&pw.days.find(function(x){return x.day===day;})||{sport:'rest',title:'Rest',detail:'',duration:'-'};return Object.assign({},d,{mins:parseInt(d.duration)||0,phase:pw.phase,isRecovery:pw.isRecovery});});}
