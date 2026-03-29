@@ -550,7 +550,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
   <div class="step-pills" id="step-pills"></div>
 
   <div class="ob-step active" id="ob0">
-    <div class="step-label">Step 1 of 4</div>
+    <div class="step-label">Step 1 of 5</div>
     <h2>What are you training for?</h2>
     <p class="step-sub">Pick your event - you can change it later!</p>
     <div class="big-grid">
@@ -568,11 +568,14 @@ nav.nav{flex:1;padding:0 0.65rem;}
       <div class="ob-field"><label>Race date</label><input type="date" id="f-date"/></div>
       <div class="ob-field"><label>Training starts</label><input type="date" id="f-start"/></div>
     </div>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-sm);padding:0.75rem 0.9rem;font-size:12px;color:#166534;line-height:1.6;margin-top:0.5rem;">
+      ⚕️ <strong>Health note:</strong> Consult your physician before starting any new exercise program, especially if you have cardiovascular disease, joint problems, diabetes, or any other health condition. TriCoach provides training guidance, not medical advice.
+    </div>
     <button class="btn-go" onclick="ob(1)">Next</button>
   </div>
 
   <div class="ob-step" id="ob1">
-    <div class="step-label">Step 2 of 4</div>
+    <div class="step-label">Step 2 of 5</div>
     <h2>Tell us about you!</h2>
     <p class="step-sub">Just the basics - your coach needs to know who they are talking to!</p>
     <div class="ob-field"><label>Your first name</label><input type="text" id="f-name" placeholder="e.g. Erica" autocomplete="given-name"/></div>
@@ -595,8 +598,46 @@ nav.nav{flex:1;padding:0 0.65rem;}
     <div class="btn-row-ob"><button class="btn-back-ob" onclick="ob(0)">Back</button><button class="btn-go" style="flex:1" onclick="ob(2)">Next</button></div>
   </div>
 
+  <!-- SWIM SAFETY — only shown for tri events -->
   <div class="ob-step" id="ob2">
-    <div class="step-label">Step 3 of 4</div>
+    <div class="step-label" id="ob2-label">Step 3 of 5</div>
+    <h2 id="ob2-title">Swimming ability</h2>
+    <p class="step-sub" id="ob2-sub">We need to know your swim level to build a safe plan.</p>
+    <div id="ob2-swim" style="display:none">
+      <div style="background:#fef9c3;border:1px solid #fde047;border-radius:var(--radius-sm);padding:0.75rem 0.9rem;font-size:13px;color:#854d0e;margin-bottom:1rem;line-height:1.6;">
+        🏊 <strong>Important swim safety check</strong> — triathlon events include open water swimming. Your plan will only include swim sessions if you can already swim safely.
+      </div>
+      <div class="section-label">Can you swim 100m without stopping?</div>
+      <div class="chip-row" id="cg-swim-safe">
+        <div class="chip" data-v="yes" onclick="pick('cg-swim-safe',this);updateSwimLevel()">Yes, comfortably</div>
+        <div class="chip" data-v="almost" onclick="pick('cg-swim-safe',this);updateSwimLevel()">Almost — need practice</div>
+        <div class="chip" data-v="no" onclick="pick('cg-swim-safe',this);updateSwimLevel()">Not yet</div>
+      </div>
+      <div id="swim-safe-warning" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius-sm);padding:0.75rem 0.9rem;font-size:13px;color:#991b1b;margin-top:0.5rem;line-height:1.6;">
+        ⚠️ We strongly recommend taking swim lessons before race day. Your plan will start with pool orientation sessions and build from there — but please prioritise learning to swim safely with a qualified instructor.
+      </div>
+      <div id="swim-level-section" style="display:none;margin-top:0.75rem;">
+        <div class="section-label">Swim experience level</div>
+        <div class="chip-row" id="cg-swim-level">
+          <div class="chip" data-v="beginner" onclick="pick('cg-swim-level',this)">Beginner</div>
+          <div class="chip sel" data-v="intermediate" onclick="pick('cg-swim-level',this)">Intermediate</div>
+          <div class="chip" data-v="advanced" onclick="pick('cg-swim-level',this)">Strong swimmer</div>
+        </div>
+      </div>
+    </div>
+    <div id="ob2-noswim">
+      <div class="section-label">Cycling experience</div>
+      <div class="chip-row" id="cg-bike-level">
+        <div class="chip" data-v="beginner" onclick="pick('cg-bike-level',this)">Beginner</div>
+        <div class="chip sel" data-v="intermediate" onclick="pick('cg-bike-level',this)">Intermediate</div>
+        <div class="chip" data-v="advanced" onclick="pick('cg-bike-level',this)">Strong cyclist</div>
+      </div>
+    </div>
+    <div class="btn-row-ob"><button class="btn-back-ob" onclick="ob(1)">Back</button><button class="btn-go" style="flex:1" onclick="ob(3)">Next</button></div>
+  </div>
+
+  <div class="ob-step" id="ob3">
+    <div class="step-label">Step 4 of 5</div>
     <h2>How much can you train?</h2>
     <p class="step-sub">Be realistic! A plan you can actually do beats a perfect plan you can't.</p>
     <div class="section-label">Training days per week</div>
@@ -625,11 +666,11 @@ nav.nav{flex:1;padding:0 0.65rem;}
       <label>What time are you aiming for?</label>
       <input type="text" id="f-time-goal" placeholder="e.g. Sub 2:30, under 4 hours"/>
     </div>
-    <div class="btn-row-ob"><button class="btn-back-ob" onclick="ob(1)">Back</button><button class="btn-go" style="flex:1" onclick="ob(3)">Next</button></div>
+    <div class="btn-row-ob"><button class="btn-back-ob" onclick="ob(2)">Back</button><button class="btn-go" style="flex:1" onclick="ob(4)">Next</button></div>
   </div>
 
-  <div class="ob-step" id="ob3">
-    <div class="step-label">Step 4 of 4</div>
+  <div class="ob-step" id="ob4">
+    <div class="step-label">Step 5 of 5</div>
     <h2>Almost there!</h2>
     <p class="step-sub">Do you want us to build your plan, or do you have your own?</p>
     <div class="plan-type-grid">
@@ -648,7 +689,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
       <div class="section-label">Paste or describe your plan</div>
       <div class="ob-field"><textarea id="plan-text-input" style="min-height:100px" placeholder="Paste your plan here..."></textarea></div>
     </div>
-    <div class="btn-row-ob"><button class="btn-back-ob" onclick="ob(2)">Back</button><button class="btn-go" style="flex:1" id="btn-launch" onclick="launch()" disabled>Let's go!</button></div>
+    <div class="btn-row-ob"><button class="btn-back-ob" onclick="ob(3)">Back</button><button class="btn-go" style="flex:1" id="btn-launch" onclick="launch()" disabled>Let's go!</button></div>
   </div>
 </div>
 </div>
@@ -732,6 +773,9 @@ nav.nav{flex:1;padding:0 0.65rem;}
             <div class="today-stat-lbl">Wks to race</div>
           </div>
         </div>
+
+        <!-- Fatigue warning (shown when 2+ recent hard sessions) -->
+        <div id="today-fatigue-warning" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--radius);padding:0.85rem 1rem;margin-bottom:1rem;display:none;gap:0.75rem;align-items:flex-start;font-size:13px;color:#9a3412;line-height:1.55;"></div>
 
         <!-- Coach tip -->
         <div class="today-tip-card">
@@ -1087,15 +1131,32 @@ async function apiGet(path){
 }
 
 // ONBOARDING
-function renderPills(active){const c=document.getElementById('step-pills');c.innerHTML='';for(let i=0;i<4;i++){const d=document.createElement('div');d.className='step-pill '+(i<active?'done':i===active?'active':'');c.appendChild(d);}}
+function renderPills(active){const c=document.getElementById('step-pills');c.innerHTML='';for(let i=0;i<5;i++){const d=document.createElement('div');d.className='step-pill '+(i<active?'done':i===active?'active':'');c.appendChild(d);}}
 function selEvent(el){document.querySelectorAll('.big-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');selectedEvent=el.dataset.v;}
 function selPlanType(t){planType=t;document.getElementById('choice-ai').classList.toggle('sel',t==='ai');document.getElementById('choice-own').classList.toggle('sel',t==='own');document.getElementById('own-plan-input').style.display=t==='own'?'':'none';document.getElementById('btn-launch').disabled=false;}
 function pick(gid,el){document.querySelectorAll('#'+gid+' .chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');if(gid==='cg-goal')document.getElementById('time-goal-field').style.display=el.dataset.v==='time-goal'?'':'none';}
 function getChip(gid){return document.querySelector('#'+gid+' .sel')?.dataset.v||'';}
 
+function updateSwimLevel(){
+  var safe = getChip('cg-swim-safe');
+  var warn = document.getElementById('swim-safe-warning');
+  var lvl  = document.getElementById('swim-level-section');
+  if(safe==='no'){warn.style.display='block';lvl.style.display='none';}
+  else if(safe==='almost'||safe==='yes'){warn.style.display='none';lvl.style.display='block';}
+  else{warn.style.display='none';lvl.style.display='none';}
+}
+
 function ob(n){
   if(n===1){if(!selectedEvent){alert('Pick your event first!');return;}if(!document.getElementById('f-date').value){alert('Enter your race date!');return;}if(!document.getElementById('f-start').value){alert('When do you want to start training?');return;}}
-  if(n===2){if(!document.getElementById('f-name').value.trim()){alert("What's your name?");return;}}
+  if(n===2){if(!document.getElementById('f-name').value.trim()){alert("What's your name?");return;}
+    // Show swim questions only for tri events
+    const isTri = /triathlon|ironman|70\.3/i.test(selectedEvent);
+    document.getElementById('ob2-swim').style.display = isTri ? 'block' : 'none';
+    document.getElementById('ob2-noswim').style.display = isTri ? 'none' : 'block';
+    document.getElementById('ob2-label').textContent = isTri ? 'Step 3 of 5' : 'Step 3 of 5';
+    document.getElementById('ob2-title').textContent = isTri ? 'Swimming ability' : 'Sport experience';
+    document.getElementById('ob2-sub').textContent = isTri ? 'We need to know your swim level to build a safe plan.' : 'Tell us about your cycling experience.';
+  }
   renderPills(n);document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));document.getElementById('ob'+n).classList.add('active');
 }
 
@@ -1104,7 +1165,11 @@ async function launch(){
   const name=document.getElementById('f-name').value.trim();
   if(!name){alert("What's your name?");btn.disabled=false;return;}
   const planText=planType==='own'?document.getElementById('plan-text-input').value.trim():'';
-  P={name,event:selectedEvent,race_name:document.getElementById('f-race').value.trim()||selectedEvent,race_date:document.getElementById('f-date').value,start_date:document.getElementById('f-start').value,phone:document.getElementById('f-phone').value.trim(),plan_type:planType,ai_role:'follow',goal:getChip('cg-goal')+(document.getElementById('f-time-goal')&&document.getElementById('f-time-goal').value?' - '+document.getElementById('f-time-goal').value:''),level:getChip('cg-level')||'beginner',current_hours:getChip('cg-hours')||'4-6',training_days:parseInt(getChip('cg-days')||'4'),current_fitness:document.getElementById('f-current').value.trim(),injuries:'',notes:'',travel:'',own_plan_text:planText,plan_name:'',swim_level:'intermediate',bike_level:'intermediate',run_level:'intermediate',css_pace:'',ftp:''};
+  const isTri = /triathlon|ironman|70\.3/i.test(selectedEvent);
+  const swimSafe = getChip('cg-swim-safe') || 'yes';
+  const swimLevel = getChip('cg-swim-level') || 'beginner';
+  const bikeLevel = getChip('cg-bike-level') || 'intermediate';
+  P={name,event:selectedEvent,race_name:document.getElementById('f-race').value.trim()||selectedEvent,race_date:document.getElementById('f-date').value,start_date:document.getElementById('f-start').value,phone:document.getElementById('f-phone').value.trim(),plan_type:planType,ai_role:'follow',goal:getChip('cg-goal')+(document.getElementById('f-time-goal')&&document.getElementById('f-time-goal').value?' - '+document.getElementById('f-time-goal').value:''),level:getChip('cg-level')||'beginner',current_hours:getChip('cg-hours')||'4-6',training_days:parseInt(getChip('cg-days')||'4'),current_fitness:document.getElementById('f-current').value.trim(),injuries:'',notes:'',travel:'',own_plan_text:planText,plan_name:'',swim_level:isTri?swimLevel:'none',bike_level:isTri?bikeLevel:'intermediate',run_level:'intermediate',swim_safe:swimSafe,css_pace:'',ftp:''};
   const isOwn=planType==='own';
   const steps=isOwn?['Saving your profile','Reading your plan','Setting up AI coaching','Almost ready...','Done!']:['Saving your profile','Calculating your weeks','Building your plan','Scheduling sessions','Almost ready...'];
   document.getElementById('gen-title').textContent=isOwn?'Setting up your coaching':'Building your plan';
@@ -1387,6 +1452,22 @@ function renderToday() {
       if(twk&&twk.days){twk.days.forEach(function(d){if(d.sport==='rest')return;var dayIdx=DAYS.indexOf(d.day);var calDate=new Date(weekStart);calDate.setDate(weekStart.getDate()+dayIdx);calDate.setHours(0,0,0,0);if(calDate>=startDate)planned++;});}
     }
     document.getElementById('td-week').textContent = thisWeekDone + (planned>0 ? ' / '+planned : '');
+
+    // FEEDBACK LOOP — check last 3 feelings for fatigue signal
+    var recentFeelings = workouts.slice(0, 5).map(function(w){ return w.feeling; }).filter(Boolean);
+    var hardCount = recentFeelings.filter(function(f){ return f==='hard'||f==='rough'; }).length;
+    var feedbackEl = document.getElementById('today-fatigue-warning');
+    if (feedbackEl) {
+      if (hardCount >= 3) {
+        feedbackEl.style.display = 'flex';
+        feedbackEl.innerHTML = '⚠️ <div><strong>Your body may need extra recovery.</strong> You\'ve logged ' + hardCount + ' tough sessions recently. Consider swapping today\'s session for an easy 20min walk or full rest — talk to your coach.</div>';
+      } else if (hardCount === 2) {
+        feedbackEl.style.display = 'flex';
+        feedbackEl.innerHTML = '💛 <div>Two tough sessions logged recently. Keep today easy — stay in Zone 2 and don\'t push if you\'re tired.</div>';
+      } else {
+        feedbackEl.style.display = 'none';
+      }
+    }
   });
 
   // Tomorrow preview
