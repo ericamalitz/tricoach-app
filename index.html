@@ -1209,7 +1209,7 @@ function initApp(){
   var badge=document.getElementById('plan-badge');badge.textContent=isOwn?'Own':'AI';badge.className='plan-type-badge '+(isOwn?'badge-own':'badge-ai');
   var banner=document.getElementById('plan-banner');banner.className='info-banner '+(isOwn?'own-plan':'ai');
   document.getElementById('banner-title').textContent=isOwn?'Your plan - AI coaching':'Evidence-based periodization';
-  document.getElementById('banner-sub').textContent=isOwn?'TriCoach coaches you through your existing plan':"Friel's Training Bible - Progressive overload - Recovery weeks";
+  document.getElementById('banner-sub').textContent=isOwn?'TriCoach coaches you through your existing plan':'Evidence-based periodization · Progressive overload · Recovery weeks';
   var gb=document.getElementById('gen-btn');gb.textContent=isOwn?'Edit plan':'Regenerate';gb.className='btn-gen '+(isOwn?'own':'');
   renderBars();renderPlan();renderWeek();loadProfileForm();loadHealthToken();
   showTab('today');
