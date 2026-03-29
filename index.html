@@ -371,8 +371,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
   /* Stats row bigger on desktop */
   .stats-row .stat-value{font-size:1.75rem;}
   .stats-row .stat-box{padding:1rem 1.25rem;}
-  /* Today tab max width on large screens */
-  .today-scroll{max-width:720px;margin:0 auto;}
+  /* Today tab max width removed — now uses two-column layout */
 }
 
 /* ─── MODALS ─────────────────────────────────────────────────────────────────── */
@@ -463,39 +462,47 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .prog-empty{text-align:center;padding:1.5rem 1rem;font-size:13px;color:var(--gray-400);line-height:1.6;}
 
 /* ─── TODAY DASHBOARD ────────────────────────────────────────────────────────── */
-.today-scroll{flex:1;overflow-y:auto;padding:1.1rem;-webkit-overflow-scrolling:touch;}
-.today-greeting{margin-bottom:1.1rem;}
+.today-scroll{flex:1;overflow-y:auto;padding:1.25rem;-webkit-overflow-scrolling:touch;}
+.today-greeting{margin-bottom:1.25rem;}
 .today-greeting-name{font-family:var(--font-d);font-size:1.75rem;font-weight:800;color:var(--navy);line-height:1.15;}
 .today-greeting-sub{font-size:13px;color:var(--gray-500);margin-top:3px;}
-.today-workout-card{border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;box-shadow:var(--shadow);border:var(--border);background:var(--white);}
+.today-cols{display:flex;gap:1.25rem;align-items:flex-start;}
+.today-col-left{flex:1;min-width:0;display:flex;flex-direction:column;gap:1rem;}
+.today-col-right{width:340px;min-width:340px;flex-shrink:0;display:flex;flex-direction:column;gap:1rem;}
+.today-workout-card{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:var(--border);background:var(--white);}
 .today-sport-stripe{height:5px;width:100%;}
-.stripe-swim{background:var(--blue);}.stripe-bike{background:var(--orange);}.stripe-run{background:var(--blue);}.stripe-strength{background:var(--amber);}.stripe-yoga{background:#d946ef;}.stripe-walk{background:var(--teal);}.stripe-rest{background:var(--gray-200);}.stripe-other{background:var(--gray-300);}.stripe-brick{background:var(--purple);}
-.today-workout-inner{padding:1.1rem;}
-.today-workout-eyebrow{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;}
-.today-sport-badge{display:inline-flex;align-items:center;gap:5px;padding:0.2rem 0.65rem;border-radius:var(--radius-pill);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;}
+.stripe-swim{background:var(--blue);}.stripe-bike{background:var(--orange);}.stripe-run{background:var(--teal);}.stripe-strength{background:var(--amber);}.stripe-yoga{background:#d946ef;}.stripe-walk{background:var(--teal);}.stripe-rest{background:var(--gray-200);}.stripe-other{background:var(--gray-300);}.stripe-brick{background:var(--purple);}
+.today-workout-inner{padding:1.25rem;}
+.today-workout-eyebrow{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;}
+.today-sport-badge{display:inline-flex;align-items:center;gap:5px;padding:0.2rem 0.75rem;border-radius:var(--radius-pill);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;}
 .badge-swim{background:#dbeafe;color:#1d4ed8;}.badge-bike{background:#ffedd5;color:#c2410c;}.badge-run{background:#dcfce7;color:#166534;}.badge-rest{background:var(--gray-100);color:var(--gray-500);}.badge-strength{background:#fef9c3;color:#854d0e;}.badge-yoga{background:#fdf4ff;color:#86198f;}.badge-walk{background:var(--teal-light);color:#0f766e;}.badge-other{background:var(--gray-100);color:var(--gray-500);}.badge-brick{background:#f3e8ff;color:#6b21a8;}
-.today-duration-chip{margin-left:auto;font-size:12px;font-weight:700;color:var(--gray-500);background:var(--gray-100);padding:0.2rem 0.65rem;border-radius:var(--radius-pill);}
-.today-workout-title{font-family:var(--font-d);font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:0.4rem;line-height:1.2;}
-.today-workout-detail{font-size:13.5px;color:var(--gray-600);line-height:1.6;margin-bottom:1rem;}
-.today-log-btn{width:100%;padding:0.85rem;background:var(--navy);color:white;border:none;border-radius:10px;font-family:var(--font-d);font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 14px rgba(26,38,64,0.2);transition:all 0.15s;}
+.today-duration-chip{margin-left:auto;font-size:12px;font-weight:700;color:var(--gray-500);background:var(--gray-100);padding:0.2rem 0.75rem;border-radius:var(--radius-pill);}
+.today-workout-title{font-family:var(--font-d);font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:0.5rem;line-height:1.2;}
+.today-workout-detail{font-size:14px;color:var(--gray-600);line-height:1.65;margin-bottom:1rem;}
+.today-log-btn{width:100%;padding:0.9rem;background:var(--navy);color:white;border:none;border-radius:10px;font-family:var(--font-d);font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 14px rgba(26,38,64,0.2);transition:all 0.15s;}
 .today-log-btn:active{transform:scale(0.98);background:var(--blue);}
-.today-rest-msg{text-align:center;padding:1rem 0;color:var(--gray-500);font-size:14px;}
-.today-quick-stats{display:flex;gap:0.5rem;margin-bottom:1rem;}
-.today-stat-chip{flex:1;background:var(--white);border:var(--border);border-radius:12px;padding:0.7rem 0.5rem;text-align:center;box-shadow:var(--shadow-sm);}
-.today-stat-val{font-family:var(--font-d);font-size:1.3rem;font-weight:800;color:var(--navy);line-height:1;}
-.today-stat-lbl{font-size:10px;color:var(--gray-400);margin-top:3px;font-weight:600;}
-.today-tip-card{background:var(--white);border:var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;box-shadow:var(--shadow-sm);}
-.today-tip-head{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.65rem;}
-.today-tip-av{width:30px;height:30px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:800;color:white;flex-shrink:0;}
+.today-rest-msg{text-align:center;padding:0.75rem 0;color:var(--gray-500);font-size:14px;}
+.today-quick-stats{display:flex;gap:0.6rem;}
+.today-stat-chip{flex:1;background:var(--white);border:var(--border);border-radius:12px;padding:0.85rem 0.5rem;text-align:center;box-shadow:var(--shadow-sm);}
+.today-stat-val{font-family:var(--font-d);font-size:1.4rem;font-weight:800;color:var(--navy);line-height:1;}
+.today-stat-lbl{font-size:10px;color:var(--gray-400);margin-top:4px;font-weight:600;}
+.today-tip-card{background:var(--white);border:var(--border);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow-sm);}
+.today-tip-head{display:flex;align-items:center;gap:0.65rem;margin-bottom:0.75rem;}
+.today-tip-av{width:32px;height:32px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:800;color:white;flex-shrink:0;}
 .today-tip-name{font-size:13px;font-weight:700;color:var(--navy);}
 .today-tip-text{font-size:14px;color:var(--gray-700);line-height:1.65;}
 .today-tip-loading{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray-400);}
 .today-tip-spin{width:14px;height:14px;border-radius:50%;border:2px solid var(--gray-200);border-top-color:var(--blue);animation:spin 0.8s linear infinite;flex-shrink:0;}
-.today-ask-btn{display:inline-flex;align-items:center;gap:4px;margin-top:0.65rem;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;background:none;border:none;padding:0;font-family:var(--font);}
-.today-tomorrow{background:var(--gray-50);border:var(--border);border-radius:12px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.75rem;}
-.today-tomorrow-lbl{font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px;}
+.today-ask-btn{display:inline-flex;align-items:center;gap:4px;margin-top:0.75rem;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;background:none;border:none;padding:0;font-family:var(--font);}
+.today-tomorrow{background:var(--gray-50);border:var(--border);border-radius:12px;padding:0.85rem 1rem;display:flex;align-items:center;gap:0.75rem;}
+.today-tomorrow-lbl{font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px;}
 .today-tomorrow-val{font-size:13px;font-weight:600;color:var(--navy);}
-.today-plan-link{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:0.75rem;padding:0.6rem;font-size:13px;font-weight:600;color:var(--gray-500);cursor:pointer;background:none;border:none;font-family:var(--font);width:100%;}
+.today-plan-link{display:flex;align-items:center;justify-content:center;gap:5px;padding:0.6rem;font-size:13px;font-weight:600;color:var(--gray-400);cursor:pointer;background:none;border:none;font-family:var(--font);width:100%;}
+@media(max-width:768px){
+  .today-cols{flex-direction:column;}
+  .today-col-right{width:100%;min-width:0;}
+  .today-scroll{padding:0.9rem;}
+}
 
 /* ─── ME TAB (Progress + Profile merged) ────────────────────────────────────── */
 .me-scroll{flex:1;overflow-y:auto;padding:1.1rem;-webkit-overflow-scrolling:touch;}
@@ -761,68 +768,78 @@ nav.nav{flex:1;padding:0 0.65rem;}
     <!-- TODAY DASHBOARD -->
     <div class="tab-panel active" id="tab-today">
       <div class="today-scroll">
+        <!-- Greeting spans full width -->
         <div class="today-greeting">
           <div class="today-greeting-name" id="today-greeting-name">Good morning</div>
           <div class="today-greeting-sub" id="today-greeting-sub">Loading your day...</div>
         </div>
 
-        <!-- Today's workout hero card -->
-        <div class="today-workout-card" id="today-workout-card">
-          <div class="today-sport-stripe stripe-rest" id="today-stripe"></div>
-          <div class="today-workout-inner">
-            <div class="today-workout-eyebrow">
-              <div class="today-sport-badge badge-rest" id="today-sport-badge">Loading</div>
-              <div class="today-duration-chip" id="today-dur-chip"></div>
+        <!-- Two-column layout on desktop -->
+        <div class="today-cols">
+          <!-- Left: workout + stats + fatigue -->
+          <div class="today-col-left">
+            <!-- Today's workout hero card -->
+            <div class="today-workout-card" id="today-workout-card">
+              <div class="today-sport-stripe stripe-rest" id="today-stripe"></div>
+              <div class="today-workout-inner">
+                <div class="today-workout-eyebrow">
+                  <div class="today-sport-badge badge-rest" id="today-sport-badge">Loading</div>
+                  <div class="today-duration-chip" id="today-dur-chip"></div>
+                </div>
+                <div class="today-workout-title" id="today-workout-title">Loading...</div>
+                <div class="today-workout-detail" id="today-workout-detail"></div>
+                <button class="today-log-btn" id="today-log-btn" onclick="openLogModal(_pendingLogSession,new Date())" style="display:none">✅ Log this session</button>
+                <div class="today-rest-msg" id="today-rest-msg" style="display:none">🛋️ Rest day — your body is building fitness right now.</div>
+              </div>
             </div>
-            <div class="today-workout-title" id="today-workout-title">Loading...</div>
-            <div class="today-workout-detail" id="today-workout-detail"></div>
-            <button class="today-log-btn" id="today-log-btn" onclick="openLogModal(_pendingLogSession,new Date())" style="display:none">✅ Log this session</button>
-            <div class="today-rest-msg" id="today-rest-msg" style="display:none">🛋️ Rest day — your body is building fitness right now.</div>
+
+            <!-- Quick stats -->
+            <div class="today-quick-stats">
+              <div class="today-stat-chip">
+                <div class="today-stat-val" id="td-streak">—</div>
+                <div class="today-stat-lbl">🔥 Streak</div>
+              </div>
+              <div class="today-stat-chip">
+                <div class="today-stat-val" id="td-week" style="font-size:1rem;padding-top:4px">—</div>
+                <div class="today-stat-lbl">This week</div>
+              </div>
+              <div class="today-stat-chip">
+                <div class="today-stat-val" id="td-race">—</div>
+                <div class="today-stat-lbl">Wks to race</div>
+              </div>
+            </div>
+
+            <!-- Fatigue warning -->
+            <div id="today-fatigue-warning" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--radius);padding:0.85rem 1rem;margin-bottom:1rem;gap:0.75rem;align-items:flex-start;font-size:13px;color:#9a3412;line-height:1.55;"></div>
+
+            <!-- Plan link (desktop: show in left col) -->
+            <button class="today-plan-link" onclick="showTab('plan')">View full training plan →</button>
+          </div>
+
+          <!-- Right: coach tip + tomorrow -->
+          <div class="today-col-right">
+            <!-- Coach tip -->
+            <div class="today-tip-card">
+              <div class="today-tip-head">
+                <div class="today-tip-av">TC</div>
+                <div class="today-tip-name">TriCoach</div>
+              </div>
+              <div id="today-tip-body">
+                <div class="today-tip-loading"><div class="today-tip-spin"></div>Getting your coach tip...</div>
+              </div>
+              <button class="today-ask-btn" onclick="showTab('chat')">💬 Ask your coach →</button>
+            </div>
+
+            <!-- Tomorrow preview -->
+            <div class="today-tomorrow" id="today-tomorrow" style="display:none">
+              <div style="font-size:1.5rem" id="today-tomorrow-icon">📅</div>
+              <div>
+                <div class="today-tomorrow-lbl">Tomorrow</div>
+                <div class="today-tomorrow-val" id="today-tomorrow-val">Rest day</div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- Quick stats -->
-        <div class="today-quick-stats">
-          <div class="today-stat-chip">
-            <div class="today-stat-val" id="td-streak">—</div>
-            <div class="today-stat-lbl">🔥 Streak</div>
-          </div>
-          <div class="today-stat-chip">
-            <div class="today-stat-val" id="td-week" style="font-size:1rem;padding-top:4px">—</div>
-            <div class="today-stat-lbl">This week</div>
-          </div>
-          <div class="today-stat-chip">
-            <div class="today-stat-val" id="td-race">—</div>
-            <div class="today-stat-lbl">Wks to race</div>
-          </div>
-        </div>
-
-        <!-- Fatigue warning (shown when 2+ recent hard sessions) -->
-        <div id="today-fatigue-warning" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--radius);padding:0.85rem 1rem;margin-bottom:1rem;display:none;gap:0.75rem;align-items:flex-start;font-size:13px;color:#9a3412;line-height:1.55;"></div>
-
-        <!-- Coach tip -->
-        <div class="today-tip-card">
-          <div class="today-tip-head">
-            <div class="today-tip-av">TC</div>
-            <div class="today-tip-name">TriCoach</div>
-          </div>
-          <div id="today-tip-body">
-            <div class="today-tip-loading"><div class="today-tip-spin"></div>Getting your coach tip...</div>
-          </div>
-          <button class="today-ask-btn" onclick="showTab('chat')">💬 Ask your coach →</button>
-        </div>
-
-        <!-- Tomorrow preview -->
-        <div class="today-tomorrow" id="today-tomorrow" style="display:none">
-          <div style="font-size:1.5rem" id="today-tomorrow-icon">📅</div>
-          <div>
-            <div class="today-tomorrow-lbl">Tomorrow</div>
-            <div class="today-tomorrow-val" id="today-tomorrow-val">Rest day</div>
-          </div>
-        </div>
-
-        <!-- Plan link -->
-        <button class="today-plan-link" onclick="showTab('plan')">View full training plan →</button>
       </div>
     </div>
 
@@ -1239,8 +1256,8 @@ function initApp(){
   document.getElementById('mobile-days').textContent=diff>0?diff:'-';
   var badge=document.getElementById('plan-badge');badge.textContent=isOwn?'Own':'AI';badge.className='plan-type-badge '+(isOwn?'badge-own':'badge-ai');
   var banner=document.getElementById('plan-banner');banner.className='info-banner '+(isOwn?'own-plan':'ai');
-  document.getElementById('banner-title').textContent=isOwn?'Your plan - AI coaching':'Evidence-based periodization';
-  document.getElementById('banner-sub').textContent=isOwn?'TriCoach coaches you through your existing plan':'Evidence-based periodization · Progressive overload · Recovery weeks';
+  document.getElementById('banner-title').textContent=isOwn?'Your plan — AI coached':'Evidence-based periodization';
+  document.getElementById('banner-sub').textContent=isOwn?'TriCoach coaches you through your existing plan':'Progressive overload · Recovery weeks · Sport science';
   var gb=document.getElementById('gen-btn');gb.textContent=isOwn?'Edit plan':'Regenerate';gb.className='btn-gen '+(isOwn?'own':'');
   renderBars();renderPlan();renderWeek();loadProfileForm();loadHealthToken();
   showTab('today');
