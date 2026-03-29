@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>TriCoach</title>
@@ -137,7 +138,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--navy);font-size:15
 .gen-steps li.cur::before{content:'◉';color:var(--blue);}
 
 /* ─── APP LAYOUT ─────────────────────────────────────────────────────────────── */
-#screen-app{flex-direction:row;height:100vh;overflow:hidden;}
+#screen-app{flex-direction:row;height:100vh;overflow:hidden;background:var(--navy);}
 
 /* ─── DESKTOP SIDEBAR ────────────────────────────────────────────────────────── */
 .sidebar{width:230px;min-width:230px;background:var(--navy);border-right:none;display:flex;flex-direction:column;padding:1.5rem 0;flex-shrink:0;}
@@ -769,9 +770,9 @@ nav.nav{flex:1;padding:0 0.65rem;}
     </div>
 
     <div class="tab-panel" id="tab-plan">
-      <div class="scroll-wrap" style="padding-top:0">
-        <div id="plan-banner" style="background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:0 0 var(--radius) var(--radius);padding:0.9rem 1rem;margin:0 0 1rem 0;display:flex;align-items:center;gap:0.9rem;"><div style="font-size:1.3rem;flex-shrink:0">&#x1F4D6;</div><div><div id="banner-title" style="font-size:13px;font-weight:700;color:white;margin-bottom:2px;">Loading...</div><div id="banner-sub" style="font-size:11px;color:rgba(255,255,255,0.6);line-height:1.4;"></div></div></div>
+      <div class="scroll-wrap">
         <div class="page-head"><div><div class="page-title">Training Plan</div><div class="page-sub" id="plan-sub">Loading...</div></div><button class="btn-gen" id="gen-btn" onclick="regenPlan()">Regenerate</button></div>
+        <div id="plan-banner" style="background:var(--navy);border-radius:var(--radius);padding:0.85rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.9rem;"><div style="font-size:1.3rem;flex-shrink:0">&#x1F4D6;</div><div><div id="banner-title" style="font-size:13px;font-weight:700;color:white;margin-bottom:2px;">Loading...</div><div id="banner-sub" style="font-size:11px;color:rgba(255,255,255,0.6);line-height:1.4;"></div></div></div>
         <div class="phase-tabs" id="phase-tabs"></div>
         <div class="plan-content" id="plan-content"></div>
       </div>
