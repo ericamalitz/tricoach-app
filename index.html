@@ -234,9 +234,9 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .btn-gen{padding:0.5rem 1.1rem;background:var(--blue);border:none;border-radius:var(--radius-sm);color:white;font-family:var(--font-d);font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
 .btn-gen:disabled{opacity:0.4;cursor:not-allowed;}
 .btn-gen.own{background:var(--purple);}
-.info-banner{border-radius:0;padding:1rem 1.25rem;margin-bottom:0;display:flex;align-items:center;gap:0.9rem;flex-shrink:0;border-bottom:none;}
-.info-banner.ai{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);box-shadow:0 2px 0 var(--navy-mid);}
-.info-banner.own-plan{background:linear-gradient(135deg,#4c1d95 0%,#6d28d9 100%);box-shadow:0 2px 0 #4c1d95;}
+.info-banner{border-radius:0;padding:1rem 1.25rem;margin-bottom:0;display:flex;align-items:center;gap:0.9rem;flex-shrink:0;}
+.info-banner.ai{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);}
+.info-banner.own-plan{background:linear-gradient(135deg,#4c1d95 0%,#6d28d9 100%);}
 .info-icon{font-size:1.4rem;flex-shrink:0;}.info-title{font-size:13px;font-weight:700;color:white;margin-bottom:2px;}.info-sub{font-size:11px;color:rgba(255,255,255,0.6);line-height:1.4;}
 .phase-tabs{display:flex;gap:0.3rem;margin-bottom:1.1rem;overflow-x:auto;padding-bottom:2px;}
 .phase-tab{padding:0.3rem 0.85rem;border-radius:var(--radius-pill);border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-500);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
@@ -768,9 +768,9 @@ nav.nav{flex:1;padding:0 0.65rem;}
       </div>
     </div>
 
-    <div class="tab-panel" id="tab-plan" style="background:var(--navy)">
-      <div class="info-banner ai" id="plan-banner"><div class="info-icon">&#x1F4D6;</div><div><div class="info-title" id="banner-title">Loading...</div><div class="info-sub" id="banner-sub"></div></div></div>
-      <div class="scroll-wrap" style="background:var(--bg)">
+    <div class="tab-panel" id="tab-plan">
+      <div class="scroll-wrap">
+        <div id="plan-banner" style="background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:var(--radius);padding:0.9rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.9rem;"><div style="font-size:1.3rem;flex-shrink:0">&#x1F4D6;</div><div><div id="banner-title" style="font-size:13px;font-weight:700;color:white;margin-bottom:2px;">Loading...</div><div id="banner-sub" style="font-size:11px;color:rgba(255,255,255,0.6);line-height:1.4;"></div></div></div>
         <div class="page-head"><div><div class="page-title">Training Plan</div><div class="page-sub" id="plan-sub">Loading...</div></div><button class="btn-gen" id="gen-btn" onclick="regenPlan()">Regenerate</button></div>
         <div class="phase-tabs" id="phase-tabs"></div>
         <div class="plan-content" id="plan-content"></div>
