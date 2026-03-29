@@ -343,10 +343,6 @@ nav.nav{flex:1;padding:0 0.65rem;}
   #tab-week{padding-bottom:100px;}
   #tab-profile{padding-bottom:100px;}
   #tab-progress{padding-bottom:100px;}
-  .week-layout{flex-direction:column;overflow-y:auto;}
-  .week-left{overflow-y:visible;flex-shrink:0;}
-  .week-right{width:100%;min-width:0;border-left:none;border-top:var(--border);padding:1rem;}
-  .week-right .ddc{background:transparent;border:none;box-shadow:none;padding:0;}
   .chat-top{padding:0.75rem 1rem;}
   .messages{padding:0.9rem;}
   .scroll-wrap{padding:0.9rem;}
@@ -360,18 +356,14 @@ nav.nav{flex:1;padding:0 0.65rem;}
 }
 @media(min-width:769px) and (max-width:1024px){
   .sidebar{width:205px;min-width:205px;}
-  .week-right{width:320px;min-width:320px;}
 }
 @media(min-width:769px){
-  /* Week view — ddc loses card styling, right panel is the container */
-  .week-right .ddc{background:transparent;border:none;box-shadow:none;padding:0;}
-  /* Calendar becomes a proper grid on desktop, not scroll */
+  /* Calendar — proper grid on desktop */
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);overflow-x:visible;scroll-snap-type:none;}
-  .cal-cell{min-height:100px;min-width:0;flex:unset;}
+  .cal-cell{min-height:110px;min-width:0;flex:unset;}
   /* Stats row bigger on desktop */
   .stats-row .stat-value{font-size:1.75rem;}
   .stats-row .stat-box{padding:1rem 1.25rem;}
-  /* Today tab — single centered column */
 }
 
 /* ─── MODALS ─────────────────────────────────────────────────────────────────── */
@@ -503,12 +495,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
 /* ─── ME TAB (Progress + Profile merged) ────────────────────────────────────── */
 .me-scroll{flex:1;overflow-y:auto;padding:1.1rem;-webkit-overflow-scrolling:touch;}
 
-/* ─── WEEK TWO-COLUMN DESKTOP LAYOUT ────────────────────────────────────────── */
-.week-layout{display:flex;flex:1;overflow:hidden;}
-.week-left{flex:1;overflow-y:auto;min-width:0;-webkit-overflow-scrolling:touch;}
-.week-left::-webkit-scrollbar{width:3px;}.week-left::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:2px;}
-.week-right{width:380px;min-width:380px;flex-shrink:0;border-left:var(--border);background:var(--white);overflow-y:auto;padding:1.25rem;-webkit-overflow-scrolling:touch;}
-.week-right::-webkit-scrollbar{width:3px;}.week-right::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:2px;}
+/* ─── WEEK TWO-COLUMN DESKTOP LAYOUT (removed) ──────────────────────────────── */
 
 /* PULL TO REFRESH */
 #ptr-bar{position:fixed;top:54px;left:0;right:0;height:0;overflow:hidden;background:var(--white);border-bottom:none;z-index:400;transition:height 0.15s;display:flex;align-items:center;justify-content:center;}
@@ -844,20 +831,12 @@ nav.nav{flex:1;padding:0 0.65rem;}
     </div>
 
     <div class="tab-panel" id="tab-week">
-      <div class="week-layout">
-        <!-- Left column: nav + stats + calendar -->
-        <div class="week-left">
-          <div class="scroll-wrap" style="padding-bottom:1rem;">
-            <div class="week-nav"><button class="wnav-btn" onclick="wkOff(-1)">&#x2039;</button><div class="wnav-title"><h2 id="wk-title">This week</h2><p id="wk-sub">Loading...</p></div><button class="wnav-btn" onclick="wkOff(1)">&#x203A;</button><button class="wnav-btn" onclick="syncPlan(this)" title="Sync plan" style="margin-left:4px;font-size:13px;">&#x1F504;</button></div>
-            <button class="log-free-btn" onclick="openFreeLogModal()" style="margin-bottom:0.75rem;">&#x2795; Log a workout</button>
-            <div class="stats-row" id="stats-row"></div>
-            <div class="cal-grid" id="cal-grid"></div>
-          </div>
-        </div>
-        <!-- Right column: session detail -->
-        <div class="week-right">
-          <div class="ddc" id="ddc"></div>
-        </div>
+      <div class="scroll-wrap">
+        <div class="week-nav"><button class="wnav-btn" onclick="wkOff(-1)">&#x2039;</button><div class="wnav-title"><h2 id="wk-title">This week</h2><p id="wk-sub">Loading...</p></div><button class="wnav-btn" onclick="wkOff(1)">&#x203A;</button><button class="wnav-btn" onclick="syncPlan(this)" title="Sync plan" style="margin-left:4px;font-size:13px;">&#x1F504;</button></div>
+        <button class="log-free-btn" onclick="openFreeLogModal()" style="margin-bottom:0.75rem;">&#x2795; Log a workout</button>
+        <div class="stats-row" id="stats-row"></div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="ddc" id="ddc"></div>
       </div>
     </div>
 
