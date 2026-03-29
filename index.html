@@ -234,7 +234,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .btn-gen{padding:0.5rem 1.1rem;background:var(--blue);border:none;border-radius:var(--radius-sm);color:white;font-family:var(--font-d);font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
 .btn-gen:disabled{opacity:0.4;cursor:not-allowed;}
 .btn-gen.own{background:var(--purple);}
-.info-banner{border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:0.9rem;}
+.info-banner{border-radius:0;padding:1rem 1.25rem;margin-bottom:0;display:flex;align-items:center;gap:0.9rem;flex-shrink:0;}
 .info-banner.ai{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);}
 .info-banner.own-plan{background:linear-gradient(135deg,#4c1d95 0%,#6d28d9 100%);}
 .info-icon{font-size:1.4rem;flex-shrink:0;}.info-title{font-size:13px;font-weight:700;color:white;margin-bottom:2px;}.info-sub{font-size:11px;color:rgba(255,255,255,0.6);line-height:1.4;}
@@ -243,7 +243,7 @@ nav.nav{flex:1;padding:0 0.65rem;}
 .plan-content{display:none;}.plan-content.show{display:block;}
 .week-card{background:var(--white);border-radius:var(--radius);border:var(--border);margin-bottom:0.65rem;overflow:hidden;box-shadow:var(--shadow-sm);}
 .week-card.recovery{border-color:#d1fae5;background:#f0fdf4;}
-.week-card.current-week{border-color:var(--blue);border-width:2px;box-shadow:0 4px 16px rgba(90,125,92,0.1);}
+.week-card.current-week{border-color:var(--blue);border-width:2px;box-shadow:0 4px 16px rgba(59,130,246,0.1);}
 .week-head{padding:0.85rem 1rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
 .wh-left{display:flex;align-items:center;gap:0.7rem;}
 .wh-num{font-family:var(--font-d);font-size:0.95rem;font-weight:800;color:var(--navy);}
@@ -769,9 +769,9 @@ nav.nav{flex:1;padding:0 0.65rem;}
     </div>
 
     <div class="tab-panel" id="tab-plan">
+      <div class="info-banner ai" id="plan-banner"><div class="info-icon">&#x1F4D6;</div><div><div class="info-title" id="banner-title">Loading...</div><div class="info-sub" id="banner-sub"></div></div></div>
       <div class="scroll-wrap">
         <div class="page-head"><div><div class="page-title">Training Plan</div><div class="page-sub" id="plan-sub">Loading...</div></div><button class="btn-gen" id="gen-btn" onclick="regenPlan()">Regenerate</button></div>
-        <div class="info-banner ai" id="plan-banner"><div class="info-icon">&#x1F4D6;</div><div><div class="info-title" id="banner-title">Loading...</div><div class="info-sub" id="banner-sub"></div></div></div>
         <div class="phase-tabs" id="phase-tabs"></div>
         <div class="plan-content" id="plan-content"></div>
       </div>
