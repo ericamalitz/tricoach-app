@@ -1445,10 +1445,10 @@ function renderToday() {
     if (!workouts) return;
     // Streak
     var byDate = {};
-    workouts.forEach(function(w){ var d=w.completed_at?w.completed_at.split('T')[0]:null; if(d){if(!byDate[d])byDate[d]=[];byDate[d].push(w);} });
+    workouts.forEach(function(w){ var d=w.completed_at?new Date(w.completed_at).toLocaleDateString('en-CA',{timeZone:'America/Chicago'}):null; if(d){if(!byDate[d])byDate[d]=[];byDate[d].push(w);} });
     var todayNorm=new Date(TODAY);todayNorm.setHours(0,0,0,0);
     var streak=0,check=new Date(todayNorm);
-    for(var i=0;i<400;i++){var ds=check.toISOString().split('T')[0];if(byDate[ds]&&byDate[ds].length>0){streak++;check.setDate(check.getDate()-1);}else break;}
+    for(var i=0;i<400;i++){var ds=check.toLocaleDateString('en-CA',{timeZone:'America/Chicago'});if(byDate[ds]&&byDate[ds].length>0){streak++;check.setDate(check.getDate()-1);}else break;}
     document.getElementById('td-streak').textContent = streak;
     // This week
     var weekStart=new Date(todayNorm);weekStart.setDate(todayNorm.getDate()-todayNorm.getDay());weekStart.setHours(0,0,0,0);
@@ -1904,10 +1904,10 @@ function renderProgressStats(workouts) {
   startDate.setHours(0,0,0,0);
   var todayNorm = new Date(TODAY); todayNorm.setHours(0,0,0,0);
 
-  // Build date → workouts map
+  // Build date → workouts map (Chicago local time)
   var byDate = {};
   workouts.forEach(function(w) {
-    var d = w.completed_at ? w.completed_at.split('T')[0] : null;
+    var d = w.completed_at ? new Date(w.completed_at).toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }) : null;
     if (d) { if (!byDate[d]) byDate[d] = []; byDate[d].push(w); }
   });
 
@@ -1915,7 +1915,7 @@ function renderProgressStats(workouts) {
   var streak = 0;
   var check = new Date(todayNorm);
   for (var i = 0; i < 400; i++) {
-    var ds = check.toISOString().split('T')[0];
+    var ds = check.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
     if (byDate[ds] && byDate[ds].length > 0) { streak++; check.setDate(check.getDate() - 1); }
     else break;
   }
@@ -1960,14 +1960,14 @@ function renderProgressStats(workouts) {
     thisWeekPlanned = P.training_days || 4;
   }
 
-  // Completion rate: logged vs planned non-rest sessions
-  // Count through end of current week (Saturday) so the full week is the denominator
-  var weekEnd = new Date(todayNorm);
-  weekEnd.setDate(todayNorm.getDate() + (6 - todayNorm.getDay())); // this Saturday
+  // Completion rate: logged vs planned sessions UP TO AND INCLUDING YESTERDAY only
+  // Never count today or future days as expected — they haven't happened yet
+  var yesterday = new Date(todayNorm);
+  yesterday.setDate(todayNorm.getDate() - 1);
   var expected = 0;
-  if (P.plan && P.plan.weeks) {
+  if (P.plan && P.plan.weeks && startDate <= yesterday) {
     var cursor = new Date(startDate);
-    while (cursor <= weekEnd) {
+    while (cursor <= yesterday) {
       var daysFromStart = Math.floor((cursor - startDate) / 86400000);
       var wn = Math.floor(daysFromStart / 7) + 1;
       var planWk = P.plan.weeks.find(function(w) { return w.week === Math.min(P.plan.weeks.length, wn); });
@@ -1978,11 +1978,14 @@ function renderProgressStats(workouts) {
       }
       cursor.setDate(cursor.getDate() + 1);
     }
-  } else {
-    var daysElapsed = Math.max(1, Math.floor((todayNorm - startDate) / 86400000) + 1);
-    expected = Math.round(daysElapsed * (P.training_days || 4) / 7);
   }
-  var rate = expected > 0 ? Math.min(100, Math.round(workouts.length / Math.max(1, expected) * 100)) : 0;
+  // Count logged workouts up to yesterday too
+  var loggedBeforeToday = workouts.filter(function(w) {
+    if (!w.completed_at) return false;
+    var d = new Date(w.completed_at).toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+    return d <= yesterday.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+  }).length;
+  var rate = expected > 0 ? Math.min(100, Math.round(loggedBeforeToday / expected * 100)) : 100;
 
   document.getElementById('prog-streak').textContent = streak;
   document.getElementById('prog-best').textContent = bestStreak;
@@ -1999,7 +2002,8 @@ function renderProgressStats(workouts) {
 function renderHeatmap(workouts) {
   var byDate = {};
   workouts.forEach(function(w) {
-    var d = w.completed_at ? w.completed_at.split('T')[0] : null;
+    // Use Chicago local date — not UTC split
+    var d = w.completed_at ? new Date(w.completed_at).toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }) : null;
     if (d) { if (!byDate[d]) byDate[d] = []; byDate[d].push(w); }
   });
 
@@ -2022,7 +2026,7 @@ function renderHeatmap(workouts) {
       var cell = document.createElement('div');
       var cellDate = new Date(gridStart);
       cellDate.setDate(gridStart.getDate() + week * 7 + dayIdx);
-      var ds = cellDate.toISOString().split('T')[0];
+      var ds = cellDate.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
       var isToday = cellDate.toDateString() === todayNorm.toDateString();
       var isFuture = cellDate > todayNorm;
       var isPreStart = cellDate < startDate;
@@ -2040,8 +2044,8 @@ function renderHeatmap(workouts) {
         var w0 = byDate[ds][0];
         var feelStr = w0.feeling ? ' (' + w0.feeling + ')' : '';
         cell.title = DAYS[cellDate.getDay()] + ' ' + cellDate.getDate() + ' ' + MONTHS[cellDate.getMonth()] + ': ' + (w0.planned_title || 'Session') + feelStr;
-      } else {
-        // Check plan to see if it was a training day
+      } else if (!isToday && !isFuture) {
+        // Past day with no logged workout — check if it was a training day or rest
         var isTraining = false;
         var dayName = DAYS[cellDate.getDay()];
         var daysFromStart = Math.floor((cellDate - startDate) / 86400000);
@@ -2058,7 +2062,7 @@ function renderHeatmap(workouts) {
           cell.title = DAYS[cellDate.getDay()] + ' ' + cellDate.getDate() + ' ' + MONTHS[cellDate.getMonth()] + ': Missed';
         } else {
           cell.classList.add('hm-rest');
-          cell.title = DAYS[cellDate.getDay()] + ' ' + cellDate.getDate() + ': Rest';
+          cell.title = DAYS[cellDate.getDay()] + ' ' + cellDate.getDate() + ': Rest day';
         }
       }
       weekDiv.appendChild(cell);
