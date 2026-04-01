@@ -1205,6 +1205,9 @@ function getCurrentWeek(){
 }
 
 function initApp(){
+  // Wake Railway from sleep immediately on app load
+  fetch(RAILWAY_URL + '/').catch(() => {});
+
   var isOwn=P.plan_type==='own';
   document.getElementById('s-name').textContent=P.name||'Athlete';
   document.getElementById('s-meta').textContent=(P.event||'Training')+' - '+(P.training_days||4)+' days/wk';
@@ -1492,7 +1495,19 @@ function renderToday() {
   if (_todayTip) renderTodayTip(_todayTip);
 }
 
-async function sendMsg(){var inp=document.getElementById('chat-in');var text=inp.value.trim();if(!text)return;inp.value='';resizeTA(inp);document.getElementById('qr').innerHTML='';addMsg('user',text);showTyping(true);try{var r=await callCoach(text);showTyping(false);addMsg('coach',r);var l=text.toLowerCase();if(l.includes('done')||l.includes('finished'))setQR(["How was that?","What's tomorrow?","Log my stats"]);else if(l.includes('tired')||l.includes('sore'))setQR(["Should I rest?","Recovery tips","Adjust this week"]);else setQR(["Tell me more","Adjust my plan","Motivate me!"]);}catch(e){showTyping(false);addMsg('coach','Could not reach the server. Is Railway running?');}}
+async function sendMsg(){var inp=document.getElementById('chat-in');var text=inp.value.trim();if(!text)return;inp.value='';resizeTA(inp);document.getElementById('qr').innerHTML='';addMsg('user',text);showTyping(true);
+try{var r=await callCoach(text);showTyping(false);addMsg('coach',r);var l=text.toLowerCase();if(l.includes('done')||l.includes('finished'))setQR(["How was that?","What's tomorrow?","Log my stats"]);else if(l.includes('tired')||l.includes('sore'))setQR(["Should I rest?","Recovery tips","Adjust this week"]);else setQR(["Tell me more","Adjust my plan","Motivate me!"]);}
+catch(e){
+  // Railway may be waking up from sleep — retry once after 4s
+  try{
+    await delay(4000);
+    var r=await callCoach(text);
+    showTyping(false);addMsg('coach',r);
+  }catch(e2){
+    showTyping(false);
+    addMsg('coach','Having trouble connecting right now. The server may be waking up — try sending your message again in a moment.');
+  }
+}}
 function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 function resizeTA(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
 
